@@ -19,5 +19,5 @@
   },
   "exclude": ["node_modules"],
   // Include all source code for building
-  "include": ["element-web-guest-module/src"]
+  "include": ["element-web-guest-module/src", "e2e/src"]
 }

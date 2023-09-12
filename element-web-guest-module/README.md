@@ -13,6 +13,7 @@ modules:
 ```
 
 Build Element and deploy your custom version as described by the original documentation.
+In case you want to create a docker-based build process, you might find inspiration in the setup [we use for our e2e tests](../e2e/src/deploy/elementWeb/Dockerfile).
 
 ## Configure the Element Module
 

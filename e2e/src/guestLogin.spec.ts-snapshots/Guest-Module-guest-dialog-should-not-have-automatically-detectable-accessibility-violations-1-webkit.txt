@@ -1,0 +1,20 @@
+[
+  {
+    "rule": "color-contrast",
+    "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    "targets": [
+      {
+        "target": [
+          ".mx_RoomSearch_spotlightTriggerText"
+        ],
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.5 (foreground color: #6c737e, background color: #d8dde4, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+      },
+      {
+        "target": [
+          "kbd"
+        ],
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.73 (foreground color: #747474, background color: #bec7d4, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+      }
+    ]
+  }
+]
