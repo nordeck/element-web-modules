@@ -1,0 +1,28 @@
+{
+  "name": "e2e",
+  "description": "End-to-end tests for element-web-guest-module",
+  "author": "Nordeck IT + Consulting GmbH",
+  "license": "Apache-2.0",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@axe-core/playwright": "^4.7.3",
+    "@playwright/test": "^1.37.1",
+    "@types/node": "^20.6.0",
+    "cross-fetch": "^4.0.0",
+    "eslint": "^8.49.0",
+    "eslint-plugin-playwright": "^0.16.0",
+    "shx": "^0.3.4",
+    "testcontainers": "^10.2.1",
+    "typescript": "~5.0.4"
+  },
+  "scripts": {
+    "clean": "echo \"Nothing to clean\"",
+    "build": "yarn workspace @nordeck/element-web-guest-module build && yarn workspace @nordeck/element-web-guest-module package && shx cp ../element-web-guest-module/*.tgz src/deploy/elementWeb/module.tgz",
+    "tsc": "tsc",
+    "lint": "eslint . --max-warnings=0",
+    "depcheck": "depcheck --ignores=typescript",
+    "e2e": "playwright test --headed --project=chromium --workers=1 --reporter=dot",
+    "e2e:all": "yarn playwright test --reporter=dot"
+  }
+}

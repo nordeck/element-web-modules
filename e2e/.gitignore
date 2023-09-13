@@ -1,0 +1,7 @@
+# Playwright output
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Temporary folders used in some modules
+src/deploy/**/.tmp/

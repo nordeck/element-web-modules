@@ -2,7 +2,8 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "element-web-guest-module"
+    "element-web-guest-module",
+    "e2e"
   ],
   "scripts": {
     "clean": "yarn workspaces run clean",
@@ -16,7 +17,8 @@
     "depcheck": "yarn workspaces run depcheck",
     "deduplicate": "yarn-deduplicate",
     "prepare": "husky install",
-    "release": "node ./scripts/publishAllPackages.js"
+    "release": "node ./scripts/publishAllPackages.js",
+    "e2e": "yarn workspace e2e e2e"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

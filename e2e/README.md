@@ -1,0 +1,34 @@
+# End-to-end tests
+
+End-to-end tests for the components in this repository.
+
+## Getting Started
+
+### Prerequisites
+
+Running the e2e tests requires Docker to be installed.
+
+### Running Tests
+
+The e2e tests are testing the guest module for Element and for Synapse.
+Make sure to always run `yarn build` in the root folder before initially running the tests or after changing a component.
+
+1. **Element Module**: It uses the module that is packaged by `yarn build`.
+   Only run this if there are actual changes in the module to not
+
+Afterwards you can run `yarn e2e` to perform the tests.
+
+### Common Issues
+
+> Browser was not installed. Invoke 'Install Playwright Browsers' action to install missing browsers.
+
+If you encounter this message, make sure to install the Browsers via `npx playwright install`.
+
+### Available Scripts
+
+In the project directory, you can run:
+
+- `yarn build`: Run all required build steps for the e2e tests to run.
+- `yarn lint`: Run eslint on the tests.
+- `yarn depcheck`: Check for missing or unused dependencies.
+- `yarn e2e`: Runs the end-to-end tests in a single browser. Pass `--debug` to enable the debug UI. Pass `--ui` to enable the Playwright UI Mode.
