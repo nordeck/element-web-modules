@@ -17,7 +17,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { Page, TestInfo, VideoMode, test as base } from '@playwright/test';
 import { ElementWebPage } from './pages';
-import { User, deactivateUser, registerUser } from './util';
+import { User, deactivateAllUsers, registerUser } from './util';
 
 type Fixtures = {
   alice: User;
@@ -63,8 +63,6 @@ export const test = base.extend<Fixtures>({
     const user = await registerUser('Bob');
 
     await use(user);
-
-    await deactivateUser(user);
   },
 
   guestPage: async ({ browser, contextOptions, video }, use, testInfo) => {
@@ -150,4 +148,9 @@ export const test = base.extend<Fixtures>({
 
     await use(fn);
   },
+});
+
+// deactivate all existing users before each test
+test.beforeEach(async ({ request }) => {
+  await deactivateAllUsers(request);
 });

@@ -15,6 +15,6 @@
  */
 
 export { getElementWebUrl, getSynapseUrl } from './config';
-export { deactivateUser } from './deactivateUser';
+export { deactivateAllUsers } from './deactivateAllUsers';
 export { registerUser } from './registerUser';
 export type { Credentials, User } from './registerUser';
