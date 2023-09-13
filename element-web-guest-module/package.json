@@ -32,7 +32,7 @@
     "typescript": "~5.0.4"
   },
   "dependencies": {
-    "@matrix-org/react-sdk-module-api": "^2.0.0",
+    "@matrix-org/react-sdk-module-api": "^2.1.0",
     "joi": "^17.10.1"
   },
   "peerDependencies": {
