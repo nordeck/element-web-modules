@@ -17,4 +17,10 @@
 import { GuestModule } from './GuestModule';
 
 export default GuestModule;
+export {
+  GUEST_MODULE_CONFIG_KEY,
+  GUEST_MODULE_CONFIG_NAMESPACE,
+  assertValidGuestModuleConfig,
+} from './config';
 export type { GuestModuleConfig } from './config';
+export { shouldShowComponent } from './shouldShowComponent';

@@ -126,4 +126,65 @@ test.describe('Guest Module', () => {
       'A new name (Guest)',
     );
   });
+
+  test('should limit UI actions for the guest users', async ({
+    aliceElementWebPage,
+    guestElementWebPage,
+  }) => {
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
+      visibility: 'public',
+    });
+
+    await guestElementWebPage.navigateToRoomWithLink(roomId);
+
+    const loginFormPage = await guestElementWebPage.openGuestLoginForm();
+
+    await loginFormPage.continueAsGuest('My Name');
+
+    await guestElementWebPage.waitForRoom('My New Room');
+
+    // Alice (i.e. a regular user) can do everything
+    for (const locator of aliceElementWebPage.getHiddenGuestLocators()) {
+      await expect(locator).toBeAttached();
+    }
+
+    // The guest misses these elements
+    for (const locator of guestElementWebPage.getHiddenGuestLocators()) {
+      await expect(locator).not.toBeAttached();
+    }
+  });
+
+  test('should deny home server actions for the guest user', async ({
+    aliceElementWebPage,
+    guestElementWebPage,
+    bob,
+  }) => {
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
+      visibility: 'public',
+    });
+
+    await guestElementWebPage.navigateToRoomWithLink(roomId);
+
+    const loginFormPage = await guestElementWebPage.openGuestLoginForm();
+
+    await loginFormPage.continueAsGuest('My Name');
+
+    await guestElementWebPage.waitForRoom('My New Room');
+
+    // Use the matrix client since the buttons are already hidden from the UI
+
+    await expect(
+      aliceElementWebPage.createRoom('A new room'),
+    ).resolves.not.toThrow();
+    await expect(
+      aliceElementWebPage.inviteUser(bob.username),
+    ).resolves.not.toThrow();
+
+    await expect(guestElementWebPage.createRoom('A new room')).rejects.toThrow(
+      /You are not permitted to create rooms/,
+    );
+    await expect(guestElementWebPage.inviteUser(bob.username)).rejects.toThrow(
+      /Invites have been disabled on this server/,
+    );
+  });
 });

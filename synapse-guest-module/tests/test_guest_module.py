@@ -129,3 +129,43 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
             UserID.from_string("@guest-asdf:matrix.local"),
             "My User (Guest)",
         )
+
+    async def test_callback_user_may_create_room_no_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_user_may_create_room(
+            "@my-user:matrix.local",
+        )
+
+        self.assertTrue(allow)
+
+    async def test_callback_user_may_create_room_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_user_may_create_room(
+            "@guest-asdf:matrix.local",
+        )
+
+        self.assertFalse(allow)
+
+    async def test_callback_user_may_invite_no_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_user_may_invite(
+            "@my-user:matrix.local",
+            "@inviter:matrix.local",
+            "!room:matrix.local",
+        )
+
+        self.assertTrue(allow)
+
+    async def test_callback_user_may_invite_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_user_may_invite(
+            "@guest-asdf:matrix.local",
+            "@inviter:matrix.local",
+            "!room:matrix.local",
+        )
+
+        self.assertFalse(allow)

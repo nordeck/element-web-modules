@@ -16,7 +16,7 @@
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
     "test": "jest --watch",
-    "depcheck": "depcheck",
+    "depcheck": "depcheck --ignore-patterns='customisations/*'",
     "package": "rimraf *.tgz && npm pack"
   },
   "devDependencies": {
@@ -50,7 +50,8 @@
     "directory": "element-web-guest-module"
   },
   "files": [
-    "build"
+    "build",
+    "customisations"
   ],
   "keywords": [
     "element",

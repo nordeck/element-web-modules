@@ -114,6 +114,21 @@ export class ElementWebPage {
       .click();
   }
 
+  async inviteUser(username: string) {
+    const roomId = this.getCurrentRoomId();
+
+    // Instead of controlling the UI, we use the matrix client as it is faster.
+    await this.page.evaluate(
+      async ({ roomId, username }) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const client = (window as any).mxMatrixClientPeg.get();
+
+        await client.invite(roomId, `@${username}:localhost`);
+      },
+      { roomId, username },
+    );
+  }
+
   async login(username: string, password: string): Promise<Credentials> {
     const synapseUrl = getSynapseUrl();
     const url = `${synapseUrl}/_matrix/client/r0/login`;
@@ -228,5 +243,22 @@ export class ElementWebPage {
     await userSettingsPage.open();
 
     return userSettingsPage;
+  }
+
+  public getHiddenGuestLocators(): Locator[] {
+    return [
+      // Controlled by UIComponent.CreateRooms, UIComponent.ExploreRooms
+      this.navigationRegion.getByRole('button', { name: 'Start chat' }),
+      this.navigationRegion.getByRole('button', { name: 'Add room' }),
+
+      // Controlled by UIComponent.CreateSpaces
+      this.navigationRegion.getByRole('button', { name: 'Create a space' }),
+
+      // Controlled by UIComponent.InviteUsers
+      this.mainRegion.getByRole('button', { name: 'Invite to this room' }),
+
+      // Controlled by UIComponent.RoomOptionsMenu
+      this.headerRegion.getByRole('button', { name: 'Room options' }),
+    ];
   }
 }

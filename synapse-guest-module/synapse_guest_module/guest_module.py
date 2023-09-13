@@ -38,6 +38,10 @@ class GuestModule:
         self._api.register_third_party_rules_callbacks(
             on_profile_update=self.profile_update
         )
+        self._api.register_spam_checker_callbacks(
+            user_may_create_room=self.callback_user_may_create_room,
+            user_may_invite=self.callback_user_may_invite,
+        )
 
     @staticmethod
     def parse_config(config: Dict[str, Any]) -> GuestModuleConfig:
@@ -108,3 +112,25 @@ class GuestModule:
                     new_profile_display_name.strip() + self._config.display_name_suffix
                 )
                 await self._api.set_displayname(user_id_1, guest_display_name)
+
+    async def callback_user_may_create_room(
+        self,
+        user_id: str,
+    ) -> bool:
+        """Returns whether this user is allowed to create a room. Guest users
+        should not be able to do that.
+        """
+        user_is_guest = user_id.startswith("@" + self._config.user_id_prefix)
+        return not user_is_guest
+
+    async def callback_user_may_invite(
+        self,
+        inviter: str,
+        invitee: str,
+        room_id: str,
+    ) -> bool:
+        """Returns whether this user is allowed to invite someone into a room.
+        Guest users should not be able to to that.
+        """
+        user_is_guest = inviter.startswith("@" + self._config.user_id_prefix)
+        return not user_is_guest
