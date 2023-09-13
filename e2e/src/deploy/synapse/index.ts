@@ -16,7 +16,7 @@
 
 import fetch from 'cross-fetch';
 import { randomBytes } from 'crypto';
-import { readFile } from 'fs/promises';
+import { readFile, rm } from 'fs/promises';
 import path from 'path';
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 
@@ -28,6 +28,7 @@ function randB64Bytes(numBytes: number): string {
 
 export async function startSynapse({
   containerImage = 'matrixdotorg/synapse:v1.90.0',
+  moduleContainerImage = 'nordeck/synapse-guest-module',
 }: { containerImage?: string; moduleContainerImage?: string } = {}): Promise<{
   synapseUrl: string;
   synapseHostUrl: string;
@@ -49,6 +50,9 @@ export async function startSynapse({
     .replace(/{{MACAROON_SECRET_KEY}}/g, macaroonSecret)
     .replace(/{{FORM_SECRET}}/g, formSecret);
 
+  // Load the module from the docker container to the local folder
+  const modulesFolder = await loadModuleToTmp(moduleContainerImage);
+
   container = await new GenericContainer(containerImage)
     // Load addition python modules from the /modules folder
     .withEnvironment({ PYTHONPATH: '/modules' })
@@ -57,7 +61,7 @@ export async function startSynapse({
     ])
     .withCopyDirectoriesToContainer([
       {
-        source: path.resolve(__dirname, 'modules'),
+        source: modulesFolder,
         target: '/modules',
       },
     ])
@@ -118,4 +122,25 @@ export async function stopSynapse() {
 
     console.log('Stopped synapse');
   }
+}
+
+async function loadModuleToTmp(containerImage: string): Promise<string> {
+  const modulesFolder = path.resolve(__dirname, './.tmp/modules');
+
+  await rm(path.resolve(modulesFolder, './*'), {
+    recursive: true,
+    force: true,
+  });
+
+  await new GenericContainer(containerImage)
+    .withBindMounts([
+      {
+        source: modulesFolder,
+        target: '/modules',
+        mode: 'rw',
+      },
+    ])
+    .start();
+
+  return modulesFolder;
 }

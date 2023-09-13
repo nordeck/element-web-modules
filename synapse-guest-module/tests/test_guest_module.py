@@ -1,0 +1,131 @@
+# Copyright 2023 Nordeck IT + Consulting GmbH
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import aiounittest
+from synapse.module_api import ProfileInfo
+from synapse.module_api.errors import ConfigError
+from synapse.types import UserID
+
+from synapse_guest_module.config import GuestModuleConfig
+from synapse_guest_module.guest_module import GuestModule
+from tests import create_module
+
+
+class GuestModuleTest(aiounittest.AsyncTestCase):
+    async def test_parse_config_empty(self) -> None:
+        config = GuestModule.parse_config({})
+
+        self.assertEqual(
+            config,
+            GuestModuleConfig(
+                user_id_prefix="guest-",
+                display_name_suffix=" (Guest)",
+            ),
+        )
+
+    async def test_parse_config_custom(self) -> None:
+        config = GuestModule.parse_config(
+            {
+                "user_id_prefix": "tmp-",
+                "display_name_suffix": " (Temporary)",
+            }
+        )
+
+        self.assertEqual(
+            config,
+            GuestModuleConfig(
+                user_id_prefix="tmp-",
+                display_name_suffix=" (Temporary)",
+            ),
+        )
+
+    async def test_parse_config_fail_user_id_prefix(self) -> None:
+        with self.assertRaisesRegex(
+            ConfigError, "Config option 'user_id_prefix' must be a string"
+        ):
+            GuestModule.parse_config(
+                {
+                    "user_id_prefix": 1234,
+                }
+            )
+
+    async def test_parse_config_fail_display_name_suffix(self) -> None:
+        with self.assertRaisesRegex(
+            ConfigError, "Config option 'display_name_suffix' must be a string"
+        ):
+            GuestModule.parse_config(
+                {
+                    "display_name_suffix": 1234,
+                }
+            )
+
+    async def test_get_username_for_registration(self) -> None:
+        module, _ = create_module()
+
+        username = await module.get_username_for_registration(
+            {},
+            {},
+        )
+
+        assert isinstance(username, str)
+        self.assertRegex(username, r"^guest-[A-Za-z0-9]+$")
+
+    async def test_get_displayname_for_registration(self) -> None:
+        module, _ = create_module()
+
+        displayname = await module.get_displayname_for_registration(
+            {},
+            {},
+        )
+
+        self.assertIsNone(displayname)
+
+    async def test_profile_update_no_guest(self) -> None:
+        module, module_api = create_module()
+
+        await module.profile_update(
+            "@my-user:matrix.local",
+            ProfileInfo(display_name="My User", avatar_url=None),
+            True,
+            False,
+        )
+
+        module_api.set_displayname.assert_not_called()
+
+    async def test_profile_update_guest_keep(self) -> None:
+        module, module_api = create_module()
+
+        await module.profile_update(
+            "@guest-asdf:matrix.local",
+            ProfileInfo(display_name="My User (Guest)", avatar_url=None),
+            True,
+            False,
+        )
+
+        module_api.set_displayname.assert_not_called()
+
+    async def test_profile_update_guest_add_and_trim(self) -> None:
+        module, module_api = create_module()
+
+        await module.profile_update(
+            "@guest-asdf:matrix.local",
+            ProfileInfo(display_name="My User ", avatar_url=None),
+            True,
+            False,
+        )
+
+        module_api.set_displayname.assert_awaited_once_with(
+            UserID.from_string("@guest-asdf:matrix.local"),
+            "My User (Guest)",
+        )

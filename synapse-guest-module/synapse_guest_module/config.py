@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from synapse_guest_module.guest_module import GuestModule
+import attr
 
-__all__ = ["GuestModule"]
+
+@attr.s(frozen=True, auto_attribs=True)
+class GuestModuleConfig:
+    user_id_prefix: str
+    display_name_suffix: str

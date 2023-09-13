@@ -12,6 +12,7 @@
     "build": "yarn clean && yarn build:compile && yarn build:types",
     "build:types": "tsc --emitDeclarationOnly && api-extractor run --verbose --local",
     "build:compile": "node build.js",
+    "docker:build": "echo \"Nothing to build\"",
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
     "test": "jest --watch",
