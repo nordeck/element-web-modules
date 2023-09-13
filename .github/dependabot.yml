@@ -1,0 +1,29 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    open-pull-requests-limit: 15
+    schedule:
+      interval: 'weekly'
+    groups:
+      development-dependencies:
+        dependency-type: 'development'
+    ignore:
+      # For TypeScript, ignore all updates. Stick to the version of @microsoft/api-extractor.
+      - dependency-name: 'typescript'
+        # Stick to the react version of Element
+      - dependency-name: 'react'
+      - dependency-name: 'react-dom'
+        # Use testing library dependencies that are compatible with react 17
+      - dependency-name: '@testing-library/react'
+        versions: ['13.x', '14.x']
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    open-pull-requests-limit: 15
+    schedule:
+      interval: 'weekly'

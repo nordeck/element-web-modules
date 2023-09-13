@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-js:
+    name: Build Javascript
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@nordeck'
+
+      - name: yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: prettier:check
+        run: yarn prettier:check
+
+      - name: depcheck
+        run: yarn depcheck
+
+      - name: lint
+        run: yarn lint
+
+      - name: type checking and declarations
+        run: yarn tsc
+
+      - name: test
+        run: yarn test:all
+
+      - name: build
+        run: yarn build
+
+  run-changesets:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    timeout-minutes: 5
+    needs:
+      - build-js
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # required for changesets
+          fetch-depth: '0'
+          # don't persist the credentials so the changesets action doesn't use the
+          # github actions token but the git token provided via environment variable
+          persist-credentials: false
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@nordeck'
+
+      - name: yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Generate GitHub token
+        id: generate_token
+        uses: tibdex/github-app-token@0914d50df753bbc42180d982a6550f195390069f # @v2.0.0
+        with:
+          app_id: ${{ secrets.GH_APP_OS_APP_ID }}
+          private_key: ${{ secrets.GH_APP_OS_PRIVATE_KEY }}
+
+      - name: Create Release Pull Request or Publish Packages
+        uses: changesets/action@f13b1baaa620fde937751f5d2c3572b9da32af23 # @v1.4.5
+        with:
+          publish: yarn release
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
