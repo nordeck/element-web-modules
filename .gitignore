@@ -138,3 +138,11 @@ package.json-prepack
 
 # mics
 .DS_Store
+
+# Python
+.venv
+__pycache__/
+.tox/
+*.egg-info/
+_trial_temp/
+.mypy_cache/

@@ -19,7 +19,9 @@ import { startElementWeb } from './elementWeb';
 import { startSynapse } from './synapse';
 
 export default async function globalSetup(_config: FullConfig) {
-  const { synapseUrl, registrationSecret } = await startSynapse();
+  const { synapseUrl, registrationSecret } = await startSynapse({
+    moduleContainerImage: process.env.MODULE_CONTAINER_IMAGE,
+  });
   process.env.SYNAPSE_URL = synapseUrl;
   process.env.SYNAPSE_REGISTRATION_SECRET = registrationSecret;
 

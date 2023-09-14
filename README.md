@@ -23,7 +23,7 @@ Development on the module happens at [GitHub](https://github.com/nordeck/element
 You need to install two modules, one each for Element and Synapse to get all features:
 
 - See the [Readme of the `element-web-guest-module`](./element-web-guest-module/README.md) for instructions on how to install it in Element.
-- TODO: create a Synapse Module
+- See the [Readme of the `synapse-guest-module`](./synapse-guest-module/README.md) for instructions on how to install it in your Synapse homeserver.
 
 ### How to Contribute
 
@@ -54,6 +54,7 @@ In the project directory, you can run:
 - `yarn deduplicate`: Deduplicate dependencies in the `yarn.lock` file.
 - `yarn changeset`: Generate a changeset that provides a description of a
   change.
+- `yarn docker:build`: Builds a container from the output of `yarn build`.
 
 ### Versioning
 

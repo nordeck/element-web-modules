@@ -18,7 +18,8 @@
   },
   "scripts": {
     "clean": "echo \"Nothing to clean\"",
-    "build": "yarn workspace @nordeck/element-web-guest-module build && yarn workspace @nordeck/element-web-guest-module package && shx cp ../element-web-guest-module/*.tgz src/deploy/elementWeb/module.tgz",
+    "build": "yarn workspace @nordeck/element-web-guest-module build && yarn workspace @nordeck/element-web-guest-module package && shx cp ../element-web-guest-module/*.tgz src/deploy/elementWeb/module.tgz && yarn workspace @nordeck/synapse-guest-module docker:build",
+    "docker:build": "echo \"Nothing to build\"",
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
     "depcheck": "depcheck --ignores=typescript",
