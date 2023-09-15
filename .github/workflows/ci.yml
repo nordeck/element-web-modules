@@ -131,6 +131,9 @@ jobs:
       - name: yarn install
         run: yarn install --frozen-lockfile
 
+      - name: yarn build
+        run: yarn workspace @nordeck/element-web-guest-module build
+
       - name: Generate GitHub token
         id: generate_token
         uses: tibdex/github-app-token@0914d50df753bbc42180d982a6550f195390069f # @v2.0.0
