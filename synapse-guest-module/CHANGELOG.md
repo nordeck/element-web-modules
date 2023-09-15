@@ -1,5 +1,11 @@
 # @nordeck/synapse-guest-module
 
+## 0.2.0
+
+### Minor Changes
+
+- 00c92e0: Don't include guest users in the search results.
+
 ## 0.1.0
 
 ### Minor Changes
