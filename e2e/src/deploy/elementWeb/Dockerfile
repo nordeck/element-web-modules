@@ -12,6 +12,7 @@ RUN yarn --network-timeout=200000 install
 # Add all configurations
 COPY /module.tgz /src
 COPY /build_config.yaml /src
+COPY /customisations.json /src
 
 # Build Element
 RUN bash /src/scripts/docker-package.sh

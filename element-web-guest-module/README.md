@@ -12,6 +12,14 @@ modules:
   - '@nordeck/element-web-guest-module@^1.0.0'
 ```
 
+Also create a `customisations.json` file with the following content:
+
+```json
+{
+  "src/customisations/ComponentVisibility.ts": "node_modules/@nordeck/element-web-guest-module/customisations/ComponentVisibility.ts"
+}
+```
+
 Build Element and deploy your custom version as described by the original documentation.
 In case you want to create a docker-based build process, you might find inspiration in the setup [we use for our e2e tests](../e2e/src/deploy/elementWeb/Dockerfile).
 
@@ -67,6 +75,14 @@ Example configuration:
      - 'file:../element-web-guest-module/element-web-guest-module'
    ```
 
-4. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
+4. (In the `element-web` folder) Create a `customisations.json` with the following content:
+
+   ```json
+   {
+     "src/customisations/ComponentVisibility.ts": "node_modules/@nordeck/element-web-guest-module/customisations/ComponentVisibility.ts"
+   }
+   ```
+
+5. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
 
 > **Important**: You must run `yarn build` in this repo and restart Element after each change in the module.

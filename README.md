@@ -13,6 +13,7 @@ Guest users...
 - ... have a **real user account** on the Homeserver.
 - ... get a **username** with the (configurable) pattern `@guest-<random-identifier>`.
 - ... have a **display name** that always includes the (configurable) suffix ` (Guest)`.
+- ... are **restricted** in what they can do (can't create rooms or participate in direct messages on the homeserver).
 
 ## Getting Started
 
