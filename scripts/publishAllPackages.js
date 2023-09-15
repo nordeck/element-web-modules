@@ -45,7 +45,7 @@ for (let p of packages) {
 
   console.log(`🔄 Publish package ${name}@${version}`);
 
-  child_process.execSync('npm publish --registry https://npm.pkg.github.com', {
+  child_process.execSync('npm publish --registry https://registry.npmjs.org', {
     cwd: packagePath,
   });
 
@@ -60,7 +60,7 @@ console.log('Done!');
 function versionNeedsUpload(name, version) {
   try {
     const result = child_process.execSync(
-      `npm view "${name}@${version}" --registry https://npm.pkg.github.com --json`,
+      `npm view "${name}@${version}" --registry https://registry.npmjs.org --json`,
     );
 
     // this line throws if not exists
