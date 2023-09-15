@@ -17,11 +17,17 @@ import secrets
 import string
 from typing import Any, Dict, Optional
 
-from synapse.module_api import ModuleApi, ProfileInfo, UserProfile
+from synapse.module_api import (
+    ModuleApi,
+    ProfileInfo,
+    UserProfile,
+    run_as_background_process,
+)
 from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
 
 from synapse_guest_module.config import GuestModuleConfig
+from synapse_guest_module.guest_user_reaper import GuestUserReaper
 
 logger = logging.getLogger("synapse.contrib." + __name__)
 
@@ -44,6 +50,15 @@ class GuestModule:
             check_username_for_spam=self.callback_check_username_for_spam,
         )
 
+        # Start the user reaper
+        self.reaper = GuestUserReaper(api, config)
+        if config.enable_user_reaper:
+            run_as_background_process(
+                "guest_module_reaper_bg_task",
+                self.reaper.run,
+                bg_start_span=False,
+            )
+
     @staticmethod
     def parse_config(config: Dict[str, Any]) -> GuestModuleConfig:
         """Parse the module configuration"""
@@ -56,9 +71,24 @@ class GuestModule:
         if not isinstance(display_name_suffix, str):
             raise ConfigError("Config option 'display_name_suffix' must be a string")
 
+        enable_user_reaper = config.get("enable_user_reaper", True)
+        if not isinstance(enable_user_reaper, bool):
+            raise ConfigError("Config option 'enable_user_reaper' must be a bool")
+
+        user_expiration_seconds = config.get(
+            "user_expiration_seconds",
+            24 * 60 * 60,
+        )
+        if not isinstance(user_expiration_seconds, int):
+            raise ConfigError(
+                "Config option 'user_expiration_seconds' must be a number"
+            )
+
         return GuestModuleConfig(
             user_id_prefix,
             display_name_suffix,
+            enable_user_reaper,
+            user_expiration_seconds,
         )
 
     async def get_username_for_registration(

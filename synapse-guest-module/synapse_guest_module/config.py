@@ -19,3 +19,5 @@ import attr
 class GuestModuleConfig:
     user_id_prefix: str
     display_name_suffix: str
+    enable_user_reaper: bool
+    user_expiration_seconds: int

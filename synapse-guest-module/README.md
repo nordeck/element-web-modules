@@ -8,6 +8,7 @@ A [pluggable synapse module](https://matrix-org.github.io/synapse/latest/modules
 2. The temporary users have a mandatory displayname suffix (default: ` (Guest)`) that they can't remove from their profile.
 3. The temporary users are limited in what they can do (examples: create room, invite users).
 4. The temporary users won't be returned by the user directory search results.
+5. The temporary users are disabled after an expiration timeout (default: `24 hours`).
 
 ## Synapse configuration
 
@@ -44,6 +45,8 @@ The module provides (optional) configuration options:
 
 - `user_id_prefix` - the prefix of the usernames that are created by this module. Default: `guest-`.
 - `display_name_suffix` - the suffix added to the display name of guest users. Default: ` (Guest)`.
+- `enable_user_reaper` - if true, the module disables all users that are older than the configured expiration time. Default: `true`.
+- `user_expiration_seconds` - the expiration time in seconds when a guest user expires after their creation. Default: `86400` (=24 hours).
 
 Example configuration:
 

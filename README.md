@@ -14,6 +14,7 @@ Guest users...
 - ... get a **username** with the (configurable) pattern `@guest-<random-identifier>`.
 - ... have a **display name** that always includes the (configurable) suffix ` (Guest)`.
 - ... are **restricted** in what they can do (can't create rooms or participate in direct messages on the homeserver).
+- ... are only **temporary** and will be deactivated after a lifetime of (configurable) 24 hours.
 
 ## Getting Started
 
