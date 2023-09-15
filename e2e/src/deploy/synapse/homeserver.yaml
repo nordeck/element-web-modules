@@ -68,6 +68,9 @@ macaroon_secret_key: '{{MACAROON_SECRET_KEY}}'
 form_secret: '{{FORM_SECRET}}'
 signing_key_path: '/data/localhost.signing.key'
 
+user_directory:
+  search_all_users: true
+
 trusted_key_servers:
   - server_name: 'matrix.org'
 suppress_key_server_warning: true
