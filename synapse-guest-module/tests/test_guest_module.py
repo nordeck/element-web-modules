@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import aiounittest
-from synapse.module_api import ProfileInfo
+from synapse.module_api import ProfileInfo, UserProfile
 from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
 
@@ -169,3 +169,29 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         )
 
         self.assertFalse(allow)
+
+    async def test_callback_check_username_for_spam_no_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_check_username_for_spam(
+            UserProfile(
+                user_id="@my-user:matrix.local",
+                display_name=None,
+                avatar_url=None,
+            ),
+        )
+
+        self.assertFalse(allow)
+
+    async def test_callback_check_username_for_spam_guest(self) -> None:
+        module, _ = create_module()
+
+        allow = await module.callback_check_username_for_spam(
+            UserProfile(
+                user_id="@guest-asdf:matrix.local",
+                display_name=None,
+                avatar_url=None,
+            ),
+        )
+
+        self.assertTrue(allow)

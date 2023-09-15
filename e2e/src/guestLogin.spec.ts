@@ -16,6 +16,7 @@
 
 import { expect } from '@playwright/test';
 import { test } from './fixtures';
+import { registerUser } from './util';
 
 test.describe('Guest Module', () => {
   test.beforeEach(({ page: _ }, testInfo) => {
@@ -186,5 +187,23 @@ test.describe('Guest Module', () => {
     await expect(guestElementWebPage.inviteUser(bob.username)).rejects.toThrow(
       /Invites have been disabled on this server/,
     );
+  });
+
+  test('should not find guests in Element', async ({ aliceElementWebPage }) => {
+    await registerUser('guest-example');
+    await registerUser('normal-example');
+
+    const createDirectMessagePage =
+      await aliceElementWebPage.openCreateDirectMessageDialog();
+
+    createDirectMessagePage.search('example');
+
+    await expect(
+      createDirectMessagePage.getSearchResultEntry('normal-example'),
+    ).toBeVisible();
+
+    await expect(
+      createDirectMessagePage.getSearchResultEntry('guest-example'),
+    ).toBeHidden();
   });
 });

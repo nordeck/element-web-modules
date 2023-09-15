@@ -17,6 +17,7 @@
 import { Locator, Page } from '@playwright/test';
 import fetch from 'cross-fetch';
 import { Credentials, getElementWebUrl, getSynapseUrl } from '../util';
+import { CreateDirectMessagePage } from './createDirectMessagePage';
 import { LoginFormPage } from './loginFormPage';
 import { UserSettingsPage } from './userSettingsPage';
 
@@ -24,8 +25,9 @@ export class ElementWebPage {
   private readonly navigationRegion: Locator;
   private readonly mainRegion: Locator;
   private readonly headerRegion: Locator;
-  public readonly roomNameText: Locator;
-  public readonly userMenuButton: Locator;
+  private readonly roomNameText: Locator;
+  private readonly userMenuButton: Locator;
+  private readonly startChatButton: Locator;
 
   constructor(private readonly page: Page) {
     this.navigationRegion = page.getByRole('navigation');
@@ -34,6 +36,9 @@ export class ElementWebPage {
     this.roomNameText = this.headerRegion.getByRole('heading');
     this.userMenuButton = this.navigationRegion.getByRole('button', {
       name: 'User menu',
+    });
+    this.startChatButton = this.navigationRegion.getByRole('button', {
+      name: 'Start chat',
     });
   }
 
@@ -243,6 +248,17 @@ export class ElementWebPage {
     await userSettingsPage.open();
 
     return userSettingsPage;
+  }
+
+  public async openCreateDirectMessageDialog(): Promise<CreateDirectMessagePage> {
+    const createDirectMessagePage = new CreateDirectMessagePage(
+      this.page,
+      this.startChatButton,
+    );
+
+    await createDirectMessagePage.open();
+
+    return createDirectMessagePage;
   }
 
   public getHiddenGuestLocators(): Locator[] {

@@ -17,7 +17,7 @@ import secrets
 import string
 from typing import Any, Dict, Optional
 
-from synapse.module_api import ModuleApi, ProfileInfo
+from synapse.module_api import ModuleApi, ProfileInfo, UserProfile
 from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
 
@@ -41,6 +41,7 @@ class GuestModule:
         self._api.register_spam_checker_callbacks(
             user_may_create_room=self.callback_user_may_create_room,
             user_may_invite=self.callback_user_may_invite,
+            check_username_for_spam=self.callback_check_username_for_spam,
         )
 
     @staticmethod
@@ -134,3 +135,12 @@ class GuestModule:
         """
         user_is_guest = inviter.startswith("@" + self._config.user_id_prefix)
         return not user_is_guest
+
+    async def callback_check_username_for_spam(self, user_profile: UserProfile) -> bool:
+        """Returns whether this user should appear in the user directory. Since
+        we prefer to not invite guests into normal rooms, we hide them here.
+        """
+        user_is_guest = user_profile["user_id"].startswith(
+            "@" + self._config.user_id_prefix
+        )
+        return user_is_guest

@@ -14,7 +14,29 @@
  * limitations under the License.
  */
 
-export { getElementWebUrl, getSynapseUrl } from './config';
-export { deactivateAllUsers } from './deactivateAllUsers';
-export { registerUser } from './registerUser';
-export type { Credentials, User } from './registerUser';
+import { Locator, Page } from '@playwright/test';
+
+export class CreateDirectMessagePage {
+  public readonly dialog: Locator;
+
+  constructor(
+    page: Page,
+    private readonly startChatButton: Locator,
+  ) {
+    this.dialog = page.getByRole('dialog', { name: 'Direct Messages' });
+  }
+
+  async open() {
+    await this.startChatButton.click();
+
+    await this.dialog.waitFor();
+  }
+
+  async search(text: string) {
+    await this.dialog.getByRole('textbox').fill(text);
+  }
+
+  getSearchResultEntry(text: string): Locator {
+    return this.dialog.getByRole('button', { name: text });
+  }
+}

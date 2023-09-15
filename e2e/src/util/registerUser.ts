@@ -32,7 +32,10 @@ export type User = {
   displayName: string;
 };
 
-export async function registerUser(displayName: string): Promise<User> {
+export async function registerUser(
+  displayName: string,
+  admin = false,
+): Promise<User> {
   const url = `${getSynapseUrl()}/_synapse/admin/v1/register`;
   const usernamePrefix = displayName.toLowerCase();
   const id = Math.round(Math.random() * 100000);
@@ -42,7 +45,7 @@ export async function registerUser(displayName: string): Promise<User> {
   const nonceResp = await fetch(url);
   const { nonce } = (await nonceResp.json()) as { nonce: string };
   const mac = createHmac('sha1', getSynapseRegistrationSecret())
-    .update(`${nonce}\0${username}\0${password}\0notadmin`)
+    .update(`${nonce}\0${username}\0${password}\0${!admin ? 'not' : ''}admin`)
     .digest('hex');
 
   const createResp = await fetch(url, {
@@ -55,7 +58,7 @@ export async function registerUser(displayName: string): Promise<User> {
       username,
       password,
       mac,
-      admin: false,
+      admin,
       displayname: displayName,
     }),
   });
