@@ -31,6 +31,8 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
             GuestModuleConfig(
                 user_id_prefix="guest-",
                 display_name_suffix=" (Guest)",
+                enable_user_reaper=True,
+                user_expiration_seconds=24 * 60 * 60,
             ),
         )
 
@@ -39,6 +41,8 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
             {
                 "user_id_prefix": "tmp-",
                 "display_name_suffix": " (Temporary)",
+                "enable_user_reaper": False,
+                "user_expiration_seconds": 100,
             }
         )
 
@@ -47,6 +51,8 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
             GuestModuleConfig(
                 user_id_prefix="tmp-",
                 display_name_suffix=" (Temporary)",
+                enable_user_reaper=False,
+                user_expiration_seconds=100,
             ),
         )
 
@@ -70,8 +76,28 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
                 }
             )
 
+    async def test_parse_config_fail_enable_user_reaper(self) -> None:
+        with self.assertRaisesRegex(
+            ConfigError, "Config option 'enable_user_reaper' must be a bool"
+        ):
+            GuestModule.parse_config(
+                {
+                    "enable_user_reaper": "False",
+                }
+            )
+
+    async def test_parse_config_fail_user_expiration_seconds(self) -> None:
+        with self.assertRaisesRegex(
+            ConfigError, "Config option 'user_expiration_seconds' must be a number"
+        ):
+            GuestModule.parse_config(
+                {
+                    "user_expiration_seconds": "1",
+                }
+            )
+
     async def test_get_username_for_registration(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         username = await module.get_username_for_registration(
             {},
@@ -82,7 +108,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertRegex(username, r"^guest-[A-Za-z0-9]+$")
 
     async def test_get_displayname_for_registration(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         displayname = await module.get_displayname_for_registration(
             {},
@@ -92,7 +118,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertIsNone(displayname)
 
     async def test_profile_update_no_guest(self) -> None:
-        module, module_api = create_module()
+        module, module_api, _ = create_module()
 
         await module.profile_update(
             "@my-user:matrix.local",
@@ -104,7 +130,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         module_api.set_displayname.assert_not_called()
 
     async def test_profile_update_guest_keep(self) -> None:
-        module, module_api = create_module()
+        module, module_api, _ = create_module()
 
         await module.profile_update(
             "@guest-asdf:matrix.local",
@@ -116,7 +142,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         module_api.set_displayname.assert_not_called()
 
     async def test_profile_update_guest_add_and_trim(self) -> None:
-        module, module_api = create_module()
+        module, module_api, _ = create_module()
 
         await module.profile_update(
             "@guest-asdf:matrix.local",
@@ -131,7 +157,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         )
 
     async def test_callback_user_may_create_room_no_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_user_may_create_room(
             "@my-user:matrix.local",
@@ -140,7 +166,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertTrue(allow)
 
     async def test_callback_user_may_create_room_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_user_may_create_room(
             "@guest-asdf:matrix.local",
@@ -149,7 +175,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertFalse(allow)
 
     async def test_callback_user_may_invite_no_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_user_may_invite(
             "@my-user:matrix.local",
@@ -160,7 +186,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertTrue(allow)
 
     async def test_callback_user_may_invite_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_user_may_invite(
             "@guest-asdf:matrix.local",
@@ -171,7 +197,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertFalse(allow)
 
     async def test_callback_check_username_for_spam_no_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_check_username_for_spam(
             UserProfile(
@@ -184,7 +210,7 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
         self.assertFalse(allow)
 
     async def test_callback_check_username_for_spam_guest(self) -> None:
-        module, _ = create_module()
+        module, _, _ = create_module()
 
         allow = await module.callback_check_username_for_spam(
             UserProfile(
