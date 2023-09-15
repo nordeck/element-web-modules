@@ -106,6 +106,7 @@ def create_module() -> Tuple[GuestModule, Mock, SQLiteStore]:
     module_api = Mock(spec=ModuleApi)
     module_api.http_client = client
     module_api.server_name = "matrix.local"
+    module_api.public_baseurl = "https://matrix.local:1234/"
     module_api.run_db_interaction.side_effect = store.run_db_interaction
     module_api.get_qualified_user_id.side_effect = get_qualified_user_id
     module_api.check_user_exists.return_value = make_awaitable(False)

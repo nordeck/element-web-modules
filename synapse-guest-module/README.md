@@ -17,14 +17,7 @@ This modules requires that the homeserver has the following configuration in the
 ```yaml
 # Required so Element is able to show the room preview where the user can login.
 allow_guest_access: true
-
-# Required so the guest users can be registered.
-enable_registration: true
-enable_registration_without_verification: true
 ```
-
-> ⚠️ This module can only be used when Single Sign On is used exclusively. All users that use the register
-> endpoint will be registered as guest users!
 
 ## Module installation
 

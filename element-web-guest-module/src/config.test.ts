@@ -18,12 +18,25 @@ import { assertValidGuestModuleConfig } from './config';
 
 describe('assertValidGuestModuleConfig', () => {
   it('should accept an empty configuration', () => {
-    expect(() => assertValidGuestModuleConfig({})).not.toThrow();
+    expect(() =>
+      assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'https://synapse.local',
+      }),
+    ).not.toThrow();
+  });
+
+  it('should accept legacy configuration', () => {
+    expect(() =>
+      assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'USE_REGISTER_ENDPOINT',
+      }),
+    ).not.toThrow();
   });
 
   it('should accept undefined', () => {
     expect(() =>
       assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'https://synapse.local',
         skip_single_sign_on: undefined,
         guest_user_prefix: undefined,
       }),
@@ -33,6 +46,7 @@ describe('assertValidGuestModuleConfig', () => {
   it('should accept the configuration', () => {
     expect(() =>
       assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'https://synapse.local',
         skip_single_sign_on: true,
         guest_user_prefix: '@other-',
       }),
@@ -42,6 +56,7 @@ describe('assertValidGuestModuleConfig', () => {
   it('should accept additional properties', () => {
     expect(() =>
       assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'https://synapse.local',
         skip_single_sign_on: true,
         guest_user_prefix: '@other-',
         additional: 'tmp',
@@ -50,6 +65,10 @@ describe('assertValidGuestModuleConfig', () => {
   });
 
   it.each<Object>([
+    { guest_user_homeserver_url: undefined },
+    { guest_user_homeserver_url: null },
+    { guest_user_homeserver_url: 123 },
+    { guest_user_homeserver_url: 'no-uri' },
     { skip_single_sign_on: null },
     { skip_single_sign_on: 123 },
     { guest_user_prefix: null },
@@ -59,10 +78,13 @@ describe('assertValidGuestModuleConfig', () => {
   ])('should reject wrong configuration permissions %j', (patch) => {
     expect(() =>
       assertValidGuestModuleConfig({
+        guest_user_homeserver_url: 'https://synapse.local',
         skip_single_sign_on: true,
         guest_user_prefix: '@guest-',
         ...patch,
       }),
-    ).toThrow(/must be a|match the required pattern|not allowed to be empty/);
+    ).toThrow(
+      /is required|must be a|match the required pattern|not allowed to be empty/,
+    );
   });
 });

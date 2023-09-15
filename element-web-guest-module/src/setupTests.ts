@@ -19,3 +19,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+// Jest don't support the native node-fetch in the jsdom environment yet
+// https://github.com/jsdom/jsdom/issues/1724
+import 'cross-fetch/polyfill';

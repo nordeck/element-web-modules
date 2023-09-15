@@ -21,7 +21,7 @@ import {
 } from '@matrix-org/react-sdk-module-api/lib/components/DialogContent';
 import { TextInputField } from '@matrix-org/react-sdk-module-api/lib/components/TextInputField';
 import { AccountAuthInfo } from '@matrix-org/react-sdk-module-api/lib/types/AccountAuthInfo';
-import { GuestModuleConfig } from '../config';
+import { GuestModuleConfig, LEGACY_REGISTRATION_MODE_URI } from '../config';
 import { generatePassword } from '../utils';
 
 export interface RegisterDialogProps extends DialogProps {
@@ -48,24 +48,46 @@ export class RegisterDialog extends DialogContent<
 
   public async trySubmit(): Promise<RegisterDialogSubmitResult> {
     this.setState({ busy: true, error: undefined });
-    const username = this.state.username;
-    const password = generatePassword();
 
     try {
-      const accountAuthInfo = await this.props.moduleApi.registerSimpleAccount(
-        'guest',
-        password,
-        username,
-      );
+      const homeserverUrl = this.props.config.guest_user_homeserver_url;
 
-      return { accountAuthInfo };
-    } catch (e) {
-      this.setState({
-        busy: false,
-        error: this.t('The account creation failed.'),
+      // Call the CS-API register endpoint that is provided by an older version of the Synapse module.
+      if (homeserverUrl === LEGACY_REGISTRATION_MODE_URI) {
+        const username = this.state.username;
+        const password = generatePassword();
+
+        const accountAuthInfo =
+          await this.props.moduleApi.registerSimpleAccount(
+            'guest',
+            password,
+            username,
+          );
+
+        return { accountAuthInfo };
+      }
+
+      const url = new URL('/_synapse/client/register_guest', homeserverUrl);
+
+      const response = await fetch(url.toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ displayname: this.state.username }),
       });
-      return {};
+
+      if (response.ok) {
+        return { accountAuthInfo: await response.json() };
+      }
+    } catch {
+      // fall through
     }
+
+    this.setState({
+      busy: false,
+      error: this.t('The account creation failed.'),
+    });
+
+    return {};
   }
 
   public render() {
