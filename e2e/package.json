@@ -7,8 +7,8 @@
   "private": true,
   "devDependencies": {
     "@axe-core/playwright": "^4.7.3",
-    "@playwright/test": "^1.37.1",
-    "@types/node": "^20.6.0",
+    "@playwright/test": "^1.38.0",
+    "@types/node": "^20.6.2",
     "cross-fetch": "^4.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-playwright": "^0.16.0",
