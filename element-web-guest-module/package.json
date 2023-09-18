@@ -1,6 +1,6 @@
 {
   "name": "@nordeck/element-web-guest-module",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A module for Element to login as a guest",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
