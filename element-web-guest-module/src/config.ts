@@ -21,9 +21,27 @@ export const GUEST_MODULE_CONFIG_NAMESPACE =
 export const GUEST_MODULE_CONFIG_KEY = 'config';
 
 /**
+ * Use `USE_REGISTER_ENDPOINT` to activate the legacy mode that uses the
+ * Client-Server API registration endpoint instead or the endpoint that our
+ * Synapse module provides. This is needed for backwards-compatibility reasons.
+ */
+export const LEGACY_REGISTRATION_MODE_URI = 'USE_REGISTER_ENDPOINT';
+
+/**
  * Configurations for the guest module.
  */
 export interface GuestModuleConfig {
+  /**
+   * The URL of the homeserver where the guest users should be registered. This
+   * must have the `synapse-guest-module` installed.
+   * @example `https://synapse.local`
+   *
+   * @remark If the URL is set to `USE_REGISTER_ENDPOINT`, this activates a legacy
+   *         mode that will call the original register endpoint. This is only
+   *         supposed to be used with a legacy synapse module implementation.
+   */
+  guest_user_homeserver_url: string;
+
   /**
    * If true, the user will be forwarded to the login page instead of to the SSO
    * login. This is only required if the home server has no SSO support.
@@ -39,6 +57,10 @@ export interface GuestModuleConfig {
 }
 
 const guestModuleConfigSchema = Joi.object<GuestModuleConfig, true>({
+  guest_user_homeserver_url: Joi.string()
+    .uri()
+    .allow(LEGACY_REGISTRATION_MODE_URI)
+    .required(),
   skip_single_sign_on: Joi.boolean(),
   guest_user_prefix: Joi.string().pattern(/@[a-zA-Z-_1-9]+/),
 }).unknown();

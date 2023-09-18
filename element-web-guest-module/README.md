@@ -25,6 +25,10 @@ In case you want to create a docker-based build process, you might find inspirat
 
 ## Configure the Element Module
 
+The module provides required configuration options:
+
+- `guest_user_homeserver_url` - the public API endpoint of the homeserver where the guest users are created at.
+
 There are also other optional configuration options:
 
 - `guest_user_prefix` - the prefix that was used to register the users. Should match the configuration in the module (note that this includes the `@`!). Default: `@guest-`.
@@ -36,6 +40,7 @@ Example configuration:
 {
   "net.nordeck.element_web.module.guest": {
     "config": {
+      "guest_user_homeserver_url": "https://matrix.local/",
       "guest_user_prefix": "@guest-"
       // ... add more optional configurations
     }

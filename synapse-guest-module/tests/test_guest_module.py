@@ -96,27 +96,6 @@ class GuestModuleTest(aiounittest.AsyncTestCase):
                 }
             )
 
-    async def test_get_username_for_registration(self) -> None:
-        module, _, _ = create_module()
-
-        username = await module.get_username_for_registration(
-            {},
-            {},
-        )
-
-        assert isinstance(username, str)
-        self.assertRegex(username, r"^guest-[A-Za-z0-9]+$")
-
-    async def test_get_displayname_for_registration(self) -> None:
-        module, _, _ = create_module()
-
-        displayname = await module.get_displayname_for_registration(
-            {},
-            {},
-        )
-
-        self.assertIsNone(displayname)
-
     async def test_profile_update_no_guest(self) -> None:
         module, module_api, _ = create_module()
 

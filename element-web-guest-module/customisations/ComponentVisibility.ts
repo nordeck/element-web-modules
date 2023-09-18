@@ -39,9 +39,9 @@ import SdkConfig from 'matrix-react-sdk/src/SdkConfig';
 import { UIComponent } from 'matrix-react-sdk/src/settings/UIFeature';
 
 export function getConfig(): GuestModuleConfig {
-  const rawConfig = SdkConfig.get(GUEST_MODULE_CONFIG_NAMESPACE)?.[
-    GUEST_MODULE_CONFIG_KEY
-  ];
+  const rawConfig =
+    SdkConfig.get(GUEST_MODULE_CONFIG_NAMESPACE)?.[GUEST_MODULE_CONFIG_KEY] ??
+    {};
 
   assertValidGuestModuleConfig(rawConfig);
 
