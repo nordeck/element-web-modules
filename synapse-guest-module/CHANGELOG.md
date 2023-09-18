@@ -1,5 +1,13 @@
 # @nordeck/synapse-guest-module
 
+## 0.3.0
+
+### Minor Changes
+
+- 27680cd: Provide a dedicated registration endpoint to not interfere with the original
+  registration endpoint.
+- 997f47b: Deactivate guest users after a configured expiration time.
+
 ## 0.2.0
 
 ### Minor Changes
