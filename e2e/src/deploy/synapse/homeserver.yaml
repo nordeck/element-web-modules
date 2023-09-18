@@ -59,8 +59,7 @@ rc_invites:
 
 media_store_path: '/data/media_store'
 uploads_path: '/data/uploads'
-enable_registration: true
-enable_registration_without_verification: true
+enable_registration: false
 disable_msisdn_registration: false
 registration_shared_secret: '{{REGISTRATION_SECRET}}'
 report_stats: false

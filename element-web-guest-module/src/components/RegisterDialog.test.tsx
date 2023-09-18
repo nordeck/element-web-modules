@@ -16,13 +16,21 @@
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
 import { AccountAuthInfo } from '@matrix-org/react-sdk-module-api/lib/types/AccountAuthInfo';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import React from 'react';
 import { generatePassword } from '../utils';
 import { RegisterDialog } from './RegisterDialog';
 
 jest.mock('../utils');
+
+const server = setupServer();
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 describe('<RegisterDialog />', () => {
   let moduleApi: jest.Mocked<ModuleApi>;
@@ -37,7 +45,7 @@ describe('<RegisterDialog />', () => {
   it('should render without exploding', () => {
     render(
       <RegisterDialog
-        config={{}}
+        config={{ guest_user_homeserver_url: 'http://synapse.local' }}
         moduleApi={moduleApi}
         setOptions={jest.fn()}
         cancel={jest.fn()}
@@ -51,13 +59,74 @@ describe('<RegisterDialog />', () => {
   });
 
   it('should register a guest account', async () => {
+    const ref = React.createRef<RegisterDialog>();
+    render(
+      <RegisterDialog
+        ref={ref}
+        config={{ guest_user_homeserver_url: 'http://synapse.local' }}
+        moduleApi={moduleApi}
+        setOptions={jest.fn()}
+        cancel={jest.fn()}
+      />,
+    );
+
+    const nameInput = screen.getByRole('textbox', { name: 'Name' });
+
+    await userEvent.type(nameInput, 'My Name');
+
+    let resolvePromise: (value: AccountAuthInfo) => void | undefined;
+    server.use(
+      rest.post(
+        'http://synapse.local/_synapse/client/register_guest',
+        async (req, res, ctx) => {
+          const body = await req.json();
+          if (body.displayname !== 'My Name') {
+            return res(ctx.status(400));
+          }
+
+          const response = await new Promise<AccountAuthInfo>((resolve) => {
+            resolvePromise = resolve;
+          });
+
+          return res(ctx.json(response));
+        },
+      ),
+    );
+
+    const trySubmitPromise = ref.current?.trySubmit();
+
+    await waitFor(() => {
+      expect(resolvePromise).toBeDefined();
+    });
+
+    expect(nameInput).not.toBeInTheDocument();
+    expect(screen.getByText('Creating your account...')).toBeInTheDocument();
+
+    resolvePromise!({
+      userId: '@guest-XXX:matrix.local',
+      deviceId: 'DEVICE_0',
+      accessToken: 'syn_...',
+      homeserverUrl: 'http://matrix.local',
+    });
+
+    expect(await trySubmitPromise).toEqual({
+      accountAuthInfo: {
+        userId: '@guest-XXX:matrix.local',
+        deviceId: 'DEVICE_0',
+        accessToken: 'syn_...',
+        homeserverUrl: 'http://matrix.local',
+      },
+    });
+  });
+
+  it('should register a guest account (legacy mode)', async () => {
     jest.mocked(generatePassword).mockReturnValue('RANDOM-PASSWORD');
 
     const ref = React.createRef<RegisterDialog>();
     render(
       <RegisterDialog
         ref={ref}
-        config={{}}
+        config={{ guest_user_homeserver_url: 'USE_REGISTER_ENDPOINT' }}
         moduleApi={moduleApi}
         setOptions={jest.fn()}
         cancel={jest.fn()}
@@ -109,7 +178,37 @@ describe('<RegisterDialog />', () => {
     render(
       <RegisterDialog
         ref={ref}
-        config={{}}
+        config={{ guest_user_homeserver_url: 'http://synapse.local' }}
+        moduleApi={moduleApi}
+        setOptions={jest.fn()}
+        cancel={jest.fn()}
+      />,
+    );
+
+    const nameInput = screen.getByRole('textbox', { name: 'Name' });
+
+    await userEvent.type(nameInput, 'My Name');
+
+    server.use(
+      rest.post(
+        'http://synapse.local/_synapse/client/register_guest',
+        async (_, res, ctx) => res(ctx.status(400)),
+      ),
+    );
+
+    expect(await ref.current?.trySubmit()).toEqual({});
+
+    expect(
+      screen.getByText('The account creation failed.'),
+    ).toBeInTheDocument();
+  });
+
+  it('should show an error if the guest account registration fails (legacy mode)', async () => {
+    const ref = React.createRef<RegisterDialog>();
+    render(
+      <RegisterDialog
+        ref={ref}
+        config={{ guest_user_homeserver_url: 'USE_REGISTER_ENDPOINT' }}
         moduleApi={moduleApi}
         setOptions={jest.fn()}
         cancel={jest.fn()}
@@ -136,7 +235,7 @@ describe('<RegisterDialog />', () => {
 
     render(
       <RegisterDialog
-        config={{}}
+        config={{ guest_user_homeserver_url: 'http://synapse.local' }}
         moduleApi={moduleApi}
         setOptions={jest.fn()}
         cancel={onCancel}
@@ -159,6 +258,7 @@ describe('<RegisterDialog />', () => {
     render(
       <RegisterDialog
         config={{
+          guest_user_homeserver_url: 'http://synapse.local',
           skip_single_sign_on: true,
         }}
         moduleApi={moduleApi}
@@ -182,7 +282,7 @@ describe('<RegisterDialog />', () => {
 
     render(
       <RegisterDialog
-        config={{}}
+        config={{ guest_user_homeserver_url: 'http://synapse.local' }}
         moduleApi={moduleApi}
         setOptions={onSetOptions}
         cancel={jest.fn()}

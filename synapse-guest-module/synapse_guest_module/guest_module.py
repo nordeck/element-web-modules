@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import logging
-import secrets
-import string
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from synapse.module_api import (
     ModuleApi,
@@ -27,6 +25,7 @@ from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
 
 from synapse_guest_module.config import GuestModuleConfig
+from synapse_guest_module.guest_registration_servlet import GuestRegistrationServlet
 from synapse_guest_module.guest_user_reaper import GuestUserReaper
 
 logger = logging.getLogger("synapse.contrib." + __name__)
@@ -37,9 +36,9 @@ class GuestModule:
         self._api = api
         self._config = config
 
-        self._api.register_password_auth_provider_callbacks(
-            get_username_for_registration=self.get_username_for_registration,
-            get_displayname_for_registration=self.get_displayname_for_registration,
+        self.registration_servlet = GuestRegistrationServlet(config, api)
+        self._api.register_web_resource(
+            "/_synapse/client/register_guest", self.registration_servlet
         )
         self._api.register_third_party_rules_callbacks(
             on_profile_update=self.profile_update
@@ -90,33 +89,6 @@ class GuestModule:
             enable_user_reaper,
             user_expiration_seconds,
         )
-
-    async def get_username_for_registration(
-        self,
-        uia_results: Dict[str, Any],
-        params: Dict[str, Any],
-    ) -> Optional[str]:
-        """Returns the username that should be assigned to the user that used
-        the registration endpoint. We only support the registration of guest
-        users that always have the (configurable) `@guest-` prefix.
-        """
-        random_string = "".join(
-            secrets.choice(string.ascii_letters + string.digits) for _ in range(32)
-        )
-        return self._config.user_id_prefix + random_string
-
-    async def get_displayname_for_registration(
-        self,
-        uia_results: Dict[str, Any],
-        params: Dict[str, Any],
-    ) -> Optional[str]:
-        """Returns the default displayname of the registered user. We expect
-        the client to set the displayname after the registration, so we don"t
-        return anything here.
-
-        The guest suffix will be added by `profile_update(...)`.
-        """
-        return None
 
     async def profile_update(
         self,

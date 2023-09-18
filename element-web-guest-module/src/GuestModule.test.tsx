@@ -32,7 +32,9 @@ describe('GuestModule', () => {
       openDialog: jest.fn(),
       overwriteAccountAuth: jest.fn(),
       navigatePermalink: jest.fn(),
-      getConfigValue: jest.fn().mockReturnValue({}),
+      getConfigValue: jest
+        .fn()
+        .mockReturnValue({ guest_user_homeserver_url: 'http://synapse.local' }),
     } as Partial<jest.Mocked<ModuleApi>> as jest.Mocked<ModuleApi>;
   });
 
@@ -86,7 +88,10 @@ describe('GuestModule', () => {
         namespace === 'net.nordeck.element_web.module.guest' &&
         key === 'config'
       ) {
-        return { skip_single_sign_on: false };
+        return {
+          guest_user_homeserver_url: 'http://synapse.local',
+          skip_single_sign_on: false,
+        };
       }
 
       return undefined;
@@ -108,7 +113,12 @@ describe('GuestModule', () => {
         canSubmit: false,
       },
       expect.any(Function),
-      { config: { skip_single_sign_on: false } },
+      {
+        config: {
+          guest_user_homeserver_url: 'http://synapse.local',
+          skip_single_sign_on: false,
+        },
+      },
     );
 
     // await that openDialog was finished so we can validate the
@@ -149,7 +159,7 @@ describe('GuestModule', () => {
           canSubmit: false,
         },
         expect.any(Function),
-        { config: {} },
+        { config: { guest_user_homeserver_url: 'http://synapse.local' } },
       );
 
       // await that openDialog was finished so we can validate the
