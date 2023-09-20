@@ -1,5 +1,11 @@
 # @nordeck/synapse-guest-module
 
+## 0.3.1
+
+### Patch Changes
+
+- 344b7bf: Update the repository name
+
 ## 0.3.0
 
 ### Minor Changes
