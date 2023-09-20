@@ -11,7 +11,7 @@ Running the e2e tests requires Docker to be installed.
 ### Running Tests
 
 The e2e tests are testing the guest module for Element and for Synapse.
-Make sure to always run `yarn build` in the root folder before initially running the tests or after changing a component.
+Make sure to always run `yarn e2e:build` in the root folder before initially running the tests or after changing a component.
 
 1. **Synapse Module**: By default, it uses the image that was built by running `yarn docker:build` in the root folder of this repository.
    Building the container at least once is required to run the tests.
