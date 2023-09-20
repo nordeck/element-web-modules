@@ -14,6 +14,12 @@ This module also requires the installation of a Synapse module:
 - See the [Readme of the `element-web-guest-module`](./packages/element-web-guest-module/README.md) for instructions on how to install it in Element.
 - See the [Readme of the `synapse-guest-module`](./packages/synapse-guest-module/README.md) for instructions on how to install it in your Synapse homeserver.
 
+### Element Web Widget Lifecycle Module
+
+A module to approve widget capabilities so the user is asked:
+
+- See the [Readme of the `element-web-widget-lifecycle-module`](./packages/element-web-widget-lifecycle-module/README.md) for instructions on how to install it in Element.
+
 ## Getting Started
 
 Development on the module happens at [GitHub](https://github.com/nordeck/element-web-modules).
