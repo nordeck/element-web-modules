@@ -1,31 +1,22 @@
-# Element Web Guest Module
+# Element Web Modules
 
-![CI](https://github.com/nordeck/element-web-guest-module/workflows/CI/badge.svg)
+![CI](https://github.com/nordeck/element-web-modules/workflows/CI/badge.svg)
 
-A module for Element to login as a guest.
-Users get a link to a public room, enter their name, and can participate in the room without any further registration.
-This was initially created to allow non-organisation members to join [NeoDateFix](https://github.com/nordeck/matrix-meetings) meeting rooms, even if they don't have a user account in the private and potentially non-federated homeserver.
+A collection of modules for [Element](https://github.com/vector-im/element-web/) using the [Module API](https://www.npmjs.com/package/@matrix-org/react-sdk-module-api).
 
-<img src="./docs/guest-login.gif" alt="A video of a user "  width="500" />
+## Included Modules
 
-Guest users...
+### Element Web Guest Module
 
-- ... have a **real user account** on the Homeserver.
-- ... get a **username** with the (configurable) pattern `@guest-<random-identifier>`.
-- ... have a **display name** that always includes the (configurable) suffix ` (Guest)`.
-- ... are **restricted** in what they can do (can't create rooms or participate in direct messages on the homeserver).
-- ... are only **temporary** and will be deactivated after a lifetime of (configurable) 24 hours.
+A module to login as a guest.
+This module also requires the installation of a Synapse module:
+
+- See the [Readme of the `element-web-guest-module`](./packages/element-web-guest-module/README.md) for instructions on how to install it in Element.
+- See the [Readme of the `synapse-guest-module`](./packages/synapse-guest-module/README.md) for instructions on how to install it in your Synapse homeserver.
 
 ## Getting Started
 
-Development on the module happens at [GitHub](https://github.com/nordeck/element-web-guest-module).
-
-### How to Install
-
-You need to install two modules, one each for Element and Synapse to get all features:
-
-- See the [Readme of the `element-web-guest-module`](./element-web-guest-module/README.md) for instructions on how to install it in Element.
-- See the [Readme of the `synapse-guest-module`](./synapse-guest-module/README.md) for instructions on how to install it in your Synapse homeserver.
+Development on the module happens at [GitHub](https://github.com/nordeck/element-web-modules).
 
 ### How to Contribute
 
@@ -35,7 +26,6 @@ Please take a look at our [Contribution Guidelines](https://github.com/nordeck/.
 
 You need to install Node.js (`>= 20.0.0`, prefer using an LTS version) and run
 `yarn` to work on this package.
-The minimal Element version to use this module is `1.11.40`.
 
 ### Installation
 

@@ -19,5 +19,5 @@
  * running jest from the root directory.
  */
 module.exports = {
-  projects: ['<rootDir>/element-web-guest-module'],
+  projects: ['<rootDir>/packages/*'],
 };

@@ -36,8 +36,8 @@ export class LoginFormPage {
   async continueAsGuest(name: string) {
     await this.nameInput.fill(name);
     await Promise.all([
-      this.continueButton.click(),
       this.loadingSpinner.waitFor(),
+      this.continueButton.click(),
     ]);
     await expect(this.loadingSpinner).toBeHidden();
   }

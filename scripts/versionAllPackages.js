@@ -22,7 +22,7 @@ const child_process = require('child_process');
 console.log(child_process.execSync('yarn changeset version').toString());
 
 // Updates the new version in the synapse-guest-module/setup.cfg
-const packagePath = path.resolve('./', 'synapse-guest-module');
+const packagePath = path.resolve('packages', 'synapse-guest-module');
 
 const { version } = JSON.parse(
   fs.readFileSync(path.resolve(packagePath, 'package.json')),

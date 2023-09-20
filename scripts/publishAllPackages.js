@@ -18,18 +18,25 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
-const packages = ['element-web-guest-module'];
+const packages = fs.readdirSync('packages');
 
 for (let p of packages) {
-  const packagePath = path.resolve('./', p);
+  const packagePath = path.resolve('packages', p);
 
   if (!fs.lstatSync(packagePath).isDirectory()) {
     continue;
   }
 
-  const { name, version } = JSON.parse(
-    fs.readFileSync(path.resolve(packagePath, 'package.json')),
-  );
+  const {
+    name,
+    version,
+    private: isPrivate,
+  } = JSON.parse(fs.readFileSync(path.resolve(packagePath, 'package.json')));
+
+  if (isPrivate) {
+    console.log(`🆗 Package ${name} is private`);
+    continue;
+  }
 
   if (!versionNeedsUpload(name, version)) {
     console.log(`✅ Package ${name} already up-to-date`);
