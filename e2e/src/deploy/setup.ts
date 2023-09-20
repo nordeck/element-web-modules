@@ -17,6 +17,7 @@
 import { FullConfig } from '@playwright/test';
 import { startElementWeb } from './elementWeb';
 import { startSynapse } from './synapse';
+import { startWidgetServer } from './widgets';
 
 export default async function globalSetup(_config: FullConfig) {
   const { synapseUrl, registrationSecret } = await startSynapse({
@@ -25,8 +26,14 @@ export default async function globalSetup(_config: FullConfig) {
   process.env.SYNAPSE_URL = synapseUrl;
   process.env.SYNAPSE_REGISTRATION_SECRET = registrationSecret;
 
+  const { widgetServerUrl } = await startWidgetServer({
+    homeserverUrl: synapseUrl,
+  });
+  process.env.WIDGET_SERVER_URL = widgetServerUrl;
+
   const { elementWebUrl } = await startElementWeb({
     homeserverUrl: synapseUrl,
+    widgetServerUrl,
   });
   process.env.ELEMENT_WEB_URL = elementWebUrl;
 }

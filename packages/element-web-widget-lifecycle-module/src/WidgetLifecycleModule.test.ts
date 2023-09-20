@@ -15,7 +15,13 @@
  */
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
-import { WidgetLifecycleModule } from './WidgetLifecycleModule';
+import {
+  ApprovalOpts,
+  CapabilitiesOpts,
+  WidgetInfo,
+  WidgetLifecycle,
+} from '@matrix-org/react-sdk-module-api/lib/lifecycles/WidgetLifecycle';
+import { WidgetLifecycleModule } from '../src/WidgetLifecycleModule';
 
 describe('WidgetLifecycleModule', () => {
   let moduleApi: jest.Mocked<ModuleApi>;
@@ -26,7 +32,219 @@ describe('WidgetLifecycleModule', () => {
     } as Partial<jest.Mocked<ModuleApi>> as jest.Mocked<ModuleApi>;
   });
 
-  it('should start the module without exploding', () => {
-    expect(() => new WidgetLifecycleModule(moduleApi)).not.toThrow();
+  describe('WidgetLifecycle.PreLoadRequest', () => {
+    it('should approve preloading', () => {
+      moduleApi.getConfigValue.mockImplementation((namespace, key) => {
+        if (
+          namespace === 'net.nordeck.element_web.module.widget_lifecycle' &&
+          key === 'widget_permissions'
+        ) {
+          return {
+            'https://example.com/': { preload_approved: true },
+          };
+        }
+
+        return undefined;
+      });
+
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: undefined };
+      module.emit(WidgetLifecycle.PreLoadRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: true });
+    });
+
+    it('should reject preloading', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: undefined };
+      module.emit(WidgetLifecycle.PreLoadRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: undefined });
+    });
+
+    it('should not override existing value', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: true };
+      module.emit(WidgetLifecycle.PreLoadRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: true });
+    });
+  });
+
+  describe('WidgetLifecycle.IdentityRequest', () => {
+    it('should approve preloading', () => {
+      moduleApi.getConfigValue.mockImplementation((namespace, key) => {
+        if (
+          namespace === 'net.nordeck.element_web.module.widget_lifecycle' &&
+          key === 'widget_permissions'
+        ) {
+          return {
+            'https://example.com/': { identity_approved: true },
+          };
+        }
+
+        return undefined;
+      });
+
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: undefined };
+      module.emit(WidgetLifecycle.IdentityRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: true });
+    });
+
+    it('should reject preloading', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: undefined };
+      module.emit(WidgetLifecycle.IdentityRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: undefined });
+    });
+
+    it('should not override existing value', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: ApprovalOpts = { approved: true };
+      module.emit(WidgetLifecycle.IdentityRequest, opts, mockWidgetInfo());
+
+      expect(opts).toEqual({ approved: true });
+    });
+  });
+
+  describe('WidgetLifecycle.CapabilitiesRequest', () => {
+    it('should approve capabilities', () => {
+      moduleApi.getConfigValue.mockImplementation((namespace, key) => {
+        if (
+          namespace === 'net.nordeck.element_web.module.widget_lifecycle' &&
+          key === 'widget_permissions'
+        ) {
+          return {
+            'https://example.com/': {
+              capabilities_approved: ['org.matrix.msc2931.navigate'],
+            },
+          };
+        }
+
+        return undefined;
+      });
+
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: CapabilitiesOpts = { approvedCapabilities: undefined };
+      module.emit(
+        WidgetLifecycle.CapabilitiesRequest,
+        opts,
+        mockWidgetInfo(),
+        new Set([
+          'org.matrix.msc2931.navigate',
+          'org.matrix.msc2762.timeline:*',
+        ]),
+      );
+
+      expect(opts).toEqual({
+        approvedCapabilities: new Set(['org.matrix.msc2931.navigate']),
+      });
+    });
+
+    it('should not approve capabilities', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: CapabilitiesOpts = { approvedCapabilities: undefined };
+      module.emit(
+        WidgetLifecycle.CapabilitiesRequest,
+        opts,
+        mockWidgetInfo(),
+        new Set([
+          'org.matrix.msc2931.navigate',
+          'org.matrix.msc2762.timeline:*',
+        ]),
+      );
+
+      expect(opts).toEqual({ approvedCapabilities: undefined });
+    });
+
+    it('should not override existing value when approving', () => {
+      moduleApi.getConfigValue.mockImplementation((namespace, key) => {
+        if (
+          namespace === 'net.nordeck.element_web.module.widget_lifecycle' &&
+          key === 'widget_permissions'
+        ) {
+          return {
+            'https://example.com/': {
+              capabilities_approved: ['org.matrix.msc2931.navigate'],
+            },
+          };
+        }
+
+        return undefined;
+      });
+
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: CapabilitiesOpts = {
+        approvedCapabilities: new Set([
+          'org.matrix.msc2762.send.state_event:m.room.name',
+        ]),
+      };
+      module.emit(
+        WidgetLifecycle.CapabilitiesRequest,
+        opts,
+        mockWidgetInfo(),
+        new Set([
+          'org.matrix.msc2931.navigate',
+          'org.matrix.msc2762.timeline:*',
+        ]),
+      );
+
+      expect(opts).toEqual({
+        approvedCapabilities: new Set([
+          'org.matrix.msc2762.send.state_event:m.room.name',
+          'org.matrix.msc2931.navigate',
+        ]),
+      });
+    });
+
+    it('should not override existing value when not approving', () => {
+      const module = new WidgetLifecycleModule(moduleApi);
+
+      const opts: CapabilitiesOpts = {
+        approvedCapabilities: new Set([
+          'org.matrix.msc2762.send.state_event:m.room.name',
+        ]),
+      };
+      module.emit(
+        WidgetLifecycle.CapabilitiesRequest,
+        opts,
+        mockWidgetInfo(),
+        new Set([
+          'org.matrix.msc2931.navigate',
+          'org.matrix.msc2762.timeline:*',
+        ]),
+      );
+
+      expect(opts).toEqual({
+        approvedCapabilities: new Set([
+          'org.matrix.msc2762.send.state_event:m.room.name',
+        ]),
+      });
+    });
   });
 });
+
+function mockWidgetInfo(patch: Partial<WidgetInfo> = {}): WidgetInfo {
+  return {
+    creatorUserId: '@user-id',
+    type: 'm.custom',
+    id: 'widget-id',
+    name: null,
+    title: null,
+    templateUrl: 'https://example.com',
+    origin: 'https://example.com',
+    ...patch,
+  };
+}

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-import { FullConfig } from '@playwright/test';
-import { stopElementWeb } from './elementWeb';
-import { stopSynapse } from './synapse';
-import { stopWidgetServer } from './widgets';
-
-export default async function globalTeardown(_config: FullConfig) {
-  await Promise.all([stopSynapse(), stopWidgetServer(), stopElementWeb()]);
+/**
+ * Checks if string matches pattern. Pattern can end with '*' to support match
+ * by prefix.
+ *
+ * @param str string to check
+ * @param pattern string
+ */
+export function matchPattern(str: string, pattern: string): boolean {
+  return pattern.endsWith('*')
+    ? str.startsWith(pattern.slice(0, pattern.length - 1))
+    : str === pattern;
 }

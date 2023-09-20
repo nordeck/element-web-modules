@@ -17,7 +17,75 @@
 import { assertValidWidgetLifecycleModuleConfig } from './config';
 
 describe('assertValidWidgetLifecycleModuleConfig', () => {
+  it('should accept an missing configuration', () => {
+    expect(() =>
+      assertValidWidgetLifecycleModuleConfig(undefined),
+    ).not.toThrow();
+  });
+
   it('should accept an empty configuration', () => {
     expect(() => assertValidWidgetLifecycleModuleConfig({})).not.toThrow();
+  });
+
+  it('should accept undefined', () => {
+    expect(() =>
+      assertValidWidgetLifecycleModuleConfig({
+        'https://localhost': {
+          preload_approved: undefined,
+          identity_approved: undefined,
+          capabilities_approved: undefined,
+        },
+        'https://localhost/b.html': {},
+      }),
+    ).not.toThrow();
+  });
+
+  it('should accept the configuration', () => {
+    expect(() =>
+      assertValidWidgetLifecycleModuleConfig({
+        'https://localhost': {
+          preload_approved: true,
+          identity_approved: false,
+          capabilities_approved: [],
+        },
+      }),
+    ).not.toThrow();
+  });
+
+  it('should accept additional properties', () => {
+    expect(() =>
+      assertValidWidgetLifecycleModuleConfig({
+        'https://localhost': {
+          preload_approved: true,
+          identity_approved: false,
+          capabilities_approved: ['capability'],
+          additional: 'tmp',
+        },
+      }),
+    ).not.toThrow();
+  });
+
+  it.each<Object>([
+    { preload_approved: null },
+    { preload_approved: 123 },
+    { identity_approved: null },
+    { identity_approved: 123 },
+    { capabilities_approved: null },
+    { capabilities_approved: 123 },
+    { capabilities_approved: [undefined] },
+    { capabilities_approved: [null] },
+    { capabilities_approved: [123] },
+    { capabilities_approved: [''] },
+  ])('should reject wrong configuration permissions %j', (patch) => {
+    expect(() =>
+      assertValidWidgetLifecycleModuleConfig({
+        'https://localhost': {
+          preload_approved: true,
+          identity_approved: false,
+          capabilities_approved: ['capability'],
+          ...patch,
+        },
+      }),
+    ).toThrow(/must be a|must not be a|not allowed to be empty/);
   });
 });

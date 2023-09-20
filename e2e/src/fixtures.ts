@@ -24,6 +24,8 @@ type Fixtures = {
   alicePage: Page;
   aliceElementWebPage: ElementWebPage;
   bob: User;
+  bobPage: Page;
+  bobElementWebPage: ElementWebPage;
   guestPage: Page;
   guestElementWebPage: ElementWebPage;
   runAxeAnalysis: (page: Page) => Promise<string>;
@@ -63,6 +65,48 @@ export const test = base.extend<Fixtures>({
     const user = await registerUser('Bob');
 
     await use(user);
+  },
+
+  bobPage: async ({ browser, contextOptions, video }, use, testInfo) => {
+    // TODO: For some reason we are missing the video in case we are using a
+    // second context https://github.com/microsoft/playwright/issues/9002
+    // We configure it manually instead.
+    const videoMode = typeof video === 'string' ? video : video.mode;
+    const videoOptions = shouldCaptureVideo(videoMode, testInfo)
+      ? {
+          recordVideo: {
+            dir: testInfo.outputDir,
+            size: typeof video !== 'string' ? video.size : undefined,
+          },
+        }
+      : {};
+
+    const context = await browser.newContext({
+      ...contextOptions,
+      ...videoOptions,
+    });
+    const page = await context.newPage();
+
+    try {
+      await use(page);
+    } finally {
+      await context.close();
+
+      const video = page.video();
+
+      if (video) {
+        const path = testInfo.outputPath('video-bob.webm');
+        await video.saveAs(path);
+        testInfo.attach('video', { path, contentType: 'video/webm' });
+      }
+    }
+  },
+
+  bobElementWebPage: async ({ bobPage, bob }, use) => {
+    const elementWebPage = new ElementWebPage(bobPage);
+    await elementWebPage.login(bob.username, bob.password);
+
+    await use(elementWebPage);
   },
 
   guestPage: async ({ browser, contextOptions, video }, use, testInfo) => {

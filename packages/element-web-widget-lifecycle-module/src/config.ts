@@ -18,28 +18,55 @@ import Joi from 'joi';
 
 export const WIDGET_LIFECYCLE_MODULE_CONFIG_NAMESPACE =
   'net.nordeck.element_web.module.widget_lifecycle';
-export const WIDGET_LIFECYCLE_MODULE_CONFIG_KEY = 'config';
+export const WIDGET_LIFECYCLE_MODULE_CONFIG_KEY = 'widget_permissions';
+
+export interface WidgetConfiguration {
+  /**
+   * If true, the widget preload request is approved.
+   */
+  preload_approved?: boolean;
+
+  /**
+   * If true, the widget identity request is approved.
+   */
+  identity_approved?: boolean;
+
+  /**
+   * All listed widget capabilities are approved.
+   */
+  capabilities_approved?: string[];
+}
+
+const widgetLifecycleConfigurationSchema = Joi.object<
+  WidgetConfiguration,
+  true
+>({
+  preload_approved: Joi.boolean(),
+  identity_approved: Joi.boolean(),
+  capabilities_approved: Joi.array().items(Joi.string()),
+}).unknown();
 
 /**
  * Configurations for the widget lifecycle module.
  */
 export interface WidgetLifecycleModuleConfig {
-  // TODO: Add configurations
+  /**
+   * A configuration for each widget url.
+   */
+  [widgetUrl: string]: WidgetConfiguration;
 }
 
 const widgetLifecycleModuleConfigSchema = Joi.object<
   WidgetLifecycleModuleConfig,
   true
->({
-  // TODO: Add configurations
-}).unknown();
+>().pattern(Joi.string().required(), widgetLifecycleConfigurationSchema);
 
 /**
  * Validates that the config has a valid structure for a {@link WidgetLifecycleModuleConfig}.
  */
 export function assertValidWidgetLifecycleModuleConfig(
   config: unknown,
-): asserts config is WidgetLifecycleModuleConfig {
+): asserts config is WidgetLifecycleModuleConfig | undefined {
   const result = widgetLifecycleModuleConfigSchema.validate(config);
 
   if (result.error) {
