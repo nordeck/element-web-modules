@@ -2,8 +2,7 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "element-web-guest-module",
-    "synapse-guest-module",
+    "packages/*",
     "e2e"
   ],
   "scripts": {

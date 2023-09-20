@@ -1,8 +1,26 @@
 # Element Web Guest Module
 
 A module to allow guests to register with Element using the [Module API](https://www.npmjs.com/package/@matrix-org/react-sdk-module-api).
+Users get a link to a public room, enter their name, and can participate in the room without any further registration.
+This was initially created to allow non-organisation members to join [NeoDateFix](https://github.com/nordeck/matrix-meetings) meeting rooms, even if they don't have a user account in the private and potentially non-federated homeserver.
+
+<img src="./docs/guest-login.gif" alt="A video of a user "  width="500" />
+
+Guest users...
+
+- ... have a **real user account** on the Homeserver.
+- ... get a **username** with the (configurable) pattern `@guest-<random-identifier>`.
+- ... have a **display name** that always includes the (configurable) suffix ` (Guest)`.
+- ... are **restricted** in what they can do (can't create rooms or participate in direct messages on the homeserver).
+- ... are only **temporary** and will be deactivated after a lifetime of (configurable) 24 hours.
+
+## Requirements
+
+The minimal Element version to use this module is `1.11.40`.
 
 ## Install the Element Module
+
+> This module requires the [Synapse Guest Module](https://github.com/nordeck/element-web-modules/tree/main/packages/synapse-guest-module) to be installed.
 
 Checkout Element and setup the development environment according to [their documentation](https://github.com/vector-im/element-web/#building-from-source).
 Go into the `element-web` folder and create a `build_config.yaml` file with the following content:
@@ -21,7 +39,7 @@ Also create a `customisations.json` file with the following content:
 ```
 
 Build Element and deploy your custom version as described by the original documentation.
-In case you want to create a docker-based build process, you might find inspiration in the setup [we use for our e2e tests](../e2e/src/deploy/elementWeb/Dockerfile).
+In case you want to create a docker-based build process, you might find inspiration in the setup [we use for our e2e tests](../../e2e/src/deploy/elementWeb/Dockerfile).
 
 ## Configure the Element Module
 
@@ -68,16 +86,17 @@ Example configuration:
    # │  ├─ ...
    # ├─ matrix-js-sdk/
    # │  ├─ ...
-   # ├─ element-web-guest-module/
-   # │  ├─ element-web-guest-module
-   # │  │  ├─ build/
+   # ├─ element-web-modules/
+   # │  ├─ packages
+   # │  │  ├─ element-web-guest-module
+   # │  │  │  ├─ build/
+   # │  │  │  │  ├─ ...
+   # │  │  │  ├─ package.json
    # │  │  │  ├─ ...
-   # │  │  ├─ package.json
-   # │  │  ├─ ...
    # │  ├─ package.json
 
    modules:
-     - 'file:../element-web-guest-module/element-web-guest-module'
+     - 'file:../element-web-modules/packages/element-web-guest-module'
    ```
 
 4. (In the `element-web` folder) Create a `customisations.json` with the following content:

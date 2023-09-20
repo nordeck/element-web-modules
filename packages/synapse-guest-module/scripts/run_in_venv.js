@@ -25,7 +25,7 @@ const path = require('path');
 const child_process = require('child_process');
 
 const cwd = path.resolve(__dirname, '..');
-const venvPath = path.resolve(__dirname, '../../.venv');
+const venvPath = path.resolve(__dirname, '../../../.venv');
 const venvRelativeToCwd = path.relative(cwd, venvPath);
 
 function run(command) {
@@ -47,7 +47,7 @@ async function main() {
   if (!fs.existsSync(venvPath) || !fs.lstatSync(venvPath).isDirectory()) {
     child_process.execSync(`python3 -m venv ${venvRelativeToCwd}`, { cwd });
     await run('pip install tox');
-    await run('pip install -e ."[env]"');
+    await run('pip install -e ."[dev]"');
   }
 
   const command = process.argv.slice(2).join(' ');

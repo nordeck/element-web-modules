@@ -1,3 +1,3 @@
 # Register the module that was created by `yarn build`
 modules:
-  - 'file:module.tgz'
+  - 'file:element-web-guest-module.tgz'

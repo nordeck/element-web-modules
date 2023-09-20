@@ -1,6 +1,6 @@
 {
   "name": "e2e",
-  "description": "End-to-end tests for element-web-guest-module",
+  "description": "End-to-end tests for element-web-modules",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
   "version": "0.0.0",
@@ -18,7 +18,7 @@
   },
   "scripts": {
     "clean": "echo \"Nothing to clean\"",
-    "build": "yarn workspace @nordeck/element-web-guest-module build && yarn workspace @nordeck/element-web-guest-module package && shx cp ../element-web-guest-module/*.tgz src/deploy/elementWeb/module.tgz && yarn workspace @nordeck/synapse-guest-module docker:build",
+    "build": "yarn workspace @nordeck/element-web-guest-module build && yarn workspace @nordeck/element-web-guest-module package && shx rm -rf src/deploy/elementWeb/*.tgz && shx cp ../packages/element-web-guest-module/*.tgz src/deploy/elementWeb/element-web-guest-module.tgz && yarn workspace @nordeck/synapse-guest-module docker:build",
     "docker:build": "echo \"Nothing to build\"",
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
