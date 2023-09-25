@@ -1,6 +1,6 @@
 {
   "name": "@nordeck/element-web-widget-lifecycle-module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A module for Element to automatically accept capabilities for selected widgets",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
