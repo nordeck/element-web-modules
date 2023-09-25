@@ -27,7 +27,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@changesets/cli": "^2.26.2",
     "depcheck": "^1.4.6",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-notice": "^0.9.10",
