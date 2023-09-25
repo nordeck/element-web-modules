@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * Publish all non-published packages to the NPM registry.
+ *
+ * !!! This script is intended to only be run by the github workflow! !!!
+ */
+
 const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
@@ -45,9 +51,10 @@ for (let p of packages) {
 
   console.log(`🔄 Publish package ${name}@${version}`);
 
-  child_process.execSync('npm publish --registry https://registry.npmjs.org', {
-    cwd: packagePath,
-  });
+  child_process.execSync(
+    'npm publish --registry https://registry.npmjs.org --access public',
+    { cwd: packagePath },
+  );
 
   console.log(`✅ Package ${name} published`);
 }
