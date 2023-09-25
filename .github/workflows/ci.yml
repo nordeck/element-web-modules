@@ -18,8 +18,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@nordeck'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: yarn install
         run: yarn install --frozen-lockfile
@@ -125,8 +124,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@nordeck'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: yarn install
         run: yarn install --frozen-lockfile
@@ -148,7 +146,7 @@ jobs:
           publish: yarn release
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
   e2e:
     name: Run e2e tests
@@ -161,8 +159,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@nordeck'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: yarn install
         run: yarn install --frozen-lockfile
