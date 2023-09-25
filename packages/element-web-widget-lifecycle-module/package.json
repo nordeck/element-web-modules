@@ -1,7 +1,7 @@
 {
-  "name": "@nordeck/element-web-guest-module",
-  "version": "0.2.1",
-  "description": "A module for Element to login as a guest",
+  "name": "@nordeck/element-web-widget-lifecycle-module",
+  "version": "0.0.1",
+  "description": "A module for Element to automatically accept capabilities for selected widgets",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
   "main": "./build/index.cjs",
@@ -16,30 +16,17 @@
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
     "test": "jest --watch",
-    "depcheck": "depcheck --ignore-patterns='customisations/*'",
-    "package": "yarn build && npm pack && shx mv nordeck-element-web-guest-module-*.tgz nordeck-element-web-guest-module.tgz"
+    "depcheck": "depcheck",
+    "package": "yarn build && npm pack && shx mv nordeck-element-web-widget-lifecycle-module-*.tgz nordeck-element-web-widget-lifecycle-module.tgz"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.37.0",
-    "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "^12.1.5",
-    "@testing-library/user-event": "^14.5.1",
-    "@types/jest": "^29.5.5",
-    "@types/react": "^17",
-    "cross-fetch": "^4.0.0",
     "esbuild": "^0.19.3",
-    "msw": "^1.3.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "typescript": "~5.0.4"
   },
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.0.0",
     "joi": "^17.10.2"
-  },
-  "peerDependencies": {
-    "react": "^17",
-    "react-dom": "^17"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -48,11 +35,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nordeck/element-web-modules",
-    "directory": "packages/element-web-guest-module"
+    "directory": "packages/element-web-widget-lifecycle-module"
   },
   "files": [
-    "build",
-    "customisations"
+    "build"
   ],
   "keywords": [
     "element",

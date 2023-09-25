@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Locator, Page } from '@playwright/test';
+import { FrameLocator, Locator, Page } from '@playwright/test';
 import fetch from 'cross-fetch';
 import { Credentials, getElementWebUrl, getSynapseUrl } from '../util';
 import { CreateDirectMessagePage } from './createDirectMessagePage';
@@ -25,6 +25,7 @@ export class ElementWebPage {
   private readonly navigationRegion: Locator;
   private readonly mainRegion: Locator;
   private readonly headerRegion: Locator;
+  private readonly sendMessageTextbox: Locator;
   private readonly roomNameText: Locator;
   private readonly userMenuButton: Locator;
   private readonly startChatButton: Locator;
@@ -33,6 +34,7 @@ export class ElementWebPage {
     this.navigationRegion = page.getByRole('navigation');
     this.mainRegion = page.getByRole('main');
     this.headerRegion = this.mainRegion.locator('header');
+    this.sendMessageTextbox = page.getByRole('textbox', { name: /message…/ });
     this.roomNameText = this.headerRegion.getByRole('heading');
     this.userMenuButton = this.navigationRegion.getByRole('button', {
       name: 'User menu',
@@ -113,9 +115,42 @@ export class ElementWebPage {
     await this.waitForRoom(name);
   }
 
+  async acceptRoomInvitation() {
+    await this.page.getByRole('button', { name: 'Accept' }).click();
+  }
+
   async joinRoom() {
     await this.page
       .getByRole('button', { name: 'Join the discussion' })
+      .click();
+  }
+
+  async toggleRoomInfo() {
+    await this.headerRegion.getByRole('button', { name: 'Room info' }).click();
+  }
+
+  async sendMessage(message: string) {
+    // Both for encrypted and non-encrypted cases
+    await this.sendMessageTextbox.type(message);
+    await this.sendMessageTextbox.press('Enter');
+  }
+
+  widgetByTitle(title: string): FrameLocator {
+    return this.page.frameLocator(`iframe[title="${title}"]`);
+  }
+
+  async setupWidget(url: string) {
+    await this.sendMessage(`/addwidget ${url}`);
+
+    await this.toggleRoomInfo();
+    await this.page
+      .getByRole('button', { name: 'Custom' })
+      .locator('..')
+      .getByRole('button', { name: 'Pin' })
+      .click();
+
+    await this.page
+      .getByRole('button', { name: 'Set my room layout for everyone' })
       .click();
   }
 

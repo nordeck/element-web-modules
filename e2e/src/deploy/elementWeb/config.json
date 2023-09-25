@@ -48,5 +48,16 @@
       "guest_user_homeserver_url": "{{HOMESERVER_URL}}",
       "skip_single_sign_on": true
     }
+  },
+  "net.nordeck.element_web.module.widget_lifecycle": {
+    "widget_permissions": {
+      "{{WIDGET_SERVER_URL}}/widget.html": {
+        "preload_approved": true,
+        "identity_approved": true,
+        "capabilities_approved": [
+          "org.matrix.msc2762.receive.state_event:m.room.topic"
+        ]
+      }
+    }
   }
 }

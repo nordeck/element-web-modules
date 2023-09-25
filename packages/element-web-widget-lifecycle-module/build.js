@@ -14,11 +14,28 @@
  * limitations under the License.
  */
 
-import { FullConfig } from '@playwright/test';
-import { stopElementWeb } from './elementWeb';
-import { stopSynapse } from './synapse';
-import { stopWidgetServer } from './widgets';
+// builds ES Modules and CommonJS files and store them in the build folder
 
-export default async function globalTeardown(_config: FullConfig) {
-  await Promise.all([stopSynapse(), stopWidgetServer(), stopElementWeb()]);
-}
+[
+  ['esm', '.mjs'],
+  ['cjs', '.cjs'],
+].forEach(([format, extension]) => {
+  require('esbuild')
+    .build({
+      entryPoints: ['src/index.ts'],
+      logLevel: 'info',
+      outdir: 'build',
+      bundle: true,
+      sourcemap: true,
+      minify: false,
+      format,
+      target: ['es2016'],
+      outExtension: { '.js': extension },
+      packages: 'external',
+      tsconfig: 'tsconfig.json',
+    })
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    });
+});

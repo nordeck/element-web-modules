@@ -15,6 +15,7 @@
     "lint:py": "node ./scripts/run_in_venv.js tox -e check_codestyle",
     "lint:fix": "node ./scripts/run_in_venv.js tox -e fix_codestyle",
     "test": "node ./scripts/run_in_venv.js tox -e py",
-    "depcheck": "echo \"Nothing to check\""
+    "depcheck": "echo \"Nothing to check\"",
+    "package": "yarn docker:build"
   }
 }

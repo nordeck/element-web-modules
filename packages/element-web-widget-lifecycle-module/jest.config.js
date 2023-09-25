@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { FullConfig } from '@playwright/test';
-import { stopElementWeb } from './elementWeb';
-import { stopSynapse } from './synapse';
-import { stopWidgetServer } from './widgets';
-
-export default async function globalTeardown(_config: FullConfig) {
-  await Promise.all([stopSynapse(), stopWidgetServer(), stopElementWeb()]);
-}
+module.exports = {
+  // When running from the repository root directory, we
+  // have to fix the root directory to the current directory.
+  rootDir: '.',
+  roots: ['<rootDir>/src'],
+  preset: 'ts-jest',
+};

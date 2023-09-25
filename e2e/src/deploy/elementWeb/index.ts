@@ -21,9 +21,11 @@ let container: StartedTestContainer | undefined;
 
 export async function startElementWeb({
   homeserverUrl,
+  widgetServerUrl,
   version = 'v1.11.40',
 }: {
   homeserverUrl: string;
+  widgetServerUrl: string;
   version?: string;
 }): Promise<{ elementWebUrl: string }> {
   console.log(`Starting element web… (version ${version})`);
@@ -32,10 +34,9 @@ export async function startElementWeb({
     require.resolve('./config.json'),
     'utf-8',
   );
-  const elementWebConfig = elementWebConfigTemplate.replace(
-    /{{HOMESERVER_URL}}/g,
-    homeserverUrl,
-  );
+  const elementWebConfig = elementWebConfigTemplate
+    .replace(/{{HOMESERVER_URL}}/g, homeserverUrl)
+    .replace(/{{WIDGET_SERVER_URL}}/g, widgetServerUrl);
 
   const elementContainer = await GenericContainer.fromDockerfile(__dirname)
     .withBuildArgs({ ELEMENT_VERSION: version })

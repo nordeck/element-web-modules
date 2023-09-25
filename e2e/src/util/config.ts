@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+export function getWidgetServerUrl(): string {
+  if (!process.env.WIDGET_SERVER_URL) {
+    throw new Error('WIDGET_SERVER_URL unavailable');
+  }
+
+  return process.env.WIDGET_SERVER_URL;
+}
+
 export function getElementWebUrl(): string {
   if (!process.env.ELEMENT_WEB_URL) {
     throw new Error('ELEMENT_WEB_URL unavailable');

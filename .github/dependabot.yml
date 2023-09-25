@@ -14,6 +14,10 @@ updates:
       development-dependencies:
         dependency-type: 'development'
     ignore:
+      # The version of the module api describes the compatibility with the Element version. Every
+      # package can use a different version and we only want to update it if we need new
+      # features.
+      - dependency-name: '@matrix-org/react-sdk-module-api'
       # For TypeScript, ignore all updates. Stick to the version of @microsoft/api-extractor.
       - dependency-name: 'typescript'
         # Stick to the react version of Element

@@ -14,11 +14,5 @@
  * limitations under the License.
  */
 
-import { FullConfig } from '@playwright/test';
-import { stopElementWeb } from './elementWeb';
-import { stopSynapse } from './synapse';
-import { stopWidgetServer } from './widgets';
-
-export default async function globalTeardown(_config: FullConfig) {
-  await Promise.all([stopSynapse(), stopWidgetServer(), stopElementWeb()]);
-}
+export { constructWidgetPermissions } from './constructWidgetPermissions';
+export { matchPattern } from './matchPattern';
