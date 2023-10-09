@@ -20,9 +20,9 @@ import {
   WrapperOpts,
 } from '@matrix-org/react-sdk-module-api/lib/lifecycles/WrapperLifecycle';
 import { render, screen } from '@testing-library/react';
-import { NavbarModule } from './NavbarModule';
+import { OpenDeskModule } from './OpenDeskModule';
 
-describe('NavbarModule', () => {
+describe('OpenDeskModule', () => {
   let moduleApi: jest.Mocked<ModuleApi>;
 
   beforeEach(() => {
@@ -30,6 +30,7 @@ describe('NavbarModule', () => {
       getConfigValue: jest.fn().mockReturnValue({
         ics_navigation_json_url: 'https://example.com/navigation.json',
         ics_silent_url: 'https://example.com/silent',
+        portal_logo_svg_url: 'https://example.com/logo.svg',
         portal_url: 'https://example.com',
       }),
       registerTranslations: jest.fn(),
@@ -38,8 +39,12 @@ describe('NavbarModule', () => {
   });
 
   it('should register custom translations', () => {
-    new NavbarModule(moduleApi);
+    new OpenDeskModule(moduleApi);
     expect(moduleApi.registerTranslations).toBeCalledWith({
+      'Portal logo': {
+        en: 'Portal logo',
+        de: expect.any(String),
+      },
       'Show portal': {
         en: 'Show portal',
         de: expect.any(String),
@@ -48,7 +53,7 @@ describe('NavbarModule', () => {
   });
 
   it('should react to the WrapperLifecycle.Wrapper lifecycle', () => {
-    const module = new NavbarModule(moduleApi);
+    const module = new OpenDeskModule(moduleApi);
     const wrapperOpts: WrapperOpts = { Wrapper: () => null };
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
     const Wrapper = wrapperOpts.Wrapper;

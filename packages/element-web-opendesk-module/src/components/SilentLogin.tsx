@@ -26,7 +26,7 @@ const Root = styled.iframe`
   display: none;
 `;
 
-const SilentLogin = ({ onLoggedIn, url }: Props) => {
+export function SilentLogin({ onLoggedIn, url }: Props) {
   useEffect(() => {
     function listener(event: MessageEvent) {
       if (
@@ -44,6 +44,4 @@ const SilentLogin = ({ onLoggedIn, url }: Props) => {
   }, [onLoggedIn, url.origin]);
 
   return <Root src={url.toString()} title="Silent Login" />;
-};
-
-export default SilentLogin;
+}

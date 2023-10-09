@@ -15,7 +15,7 @@
  */
 
 import { fireEvent, renderWithTheme, screen } from '../test-utils';
-import SilentLogin from './SilentLogin';
+import { SilentLogin } from './SilentLogin';
 
 describe('SilentLogin', () => {
   const url = new URL('https://example.com/silent');

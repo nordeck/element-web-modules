@@ -17,33 +17,28 @@
 import styled from 'styled-components';
 
 type Props = {
-  expanded: boolean;
+  ariaExpanded: boolean;
   onClick: () => void;
 };
 
-const Root = styled.button<{ $expanded: boolean }>`
+const Root = styled.button`
   align-items: center;
-  background-color: ${({ $expanded, theme }) =>
-    $expanded ? theme.colors.electricViolet : 'transparent'};
+  background-color: ${({ 'aria-expanded': ariaExpanded, theme }) =>
+    ariaExpanded ? theme.compound.color.textActionAccent : 'transparent'};
   border: none;
-  color: ${({ $expanded, theme }) =>
-    $expanded ? theme.colors.white : theme.colors.black};
+  color: ${({ 'aria-expanded': ariaExpanded, theme }) =>
+    ariaExpanded ? theme.navbar.color : theme.compound.color.textPrimary};
   cursor: pointer;
   display: flex;
   padding: 0 22px;
 `;
 
-const Launcher = ({ expanded, onClick }: Props) => (
-  <Root
-    $expanded={expanded}
-    aria-expanded={expanded}
-    aria-haspopup={true}
-    onClick={onClick}
-  >
-    <svg fill="currentColor" height="16" width="16">
-      <path d="M0 4h4V0H0v4Zm6 12h4v-4H6v4Zm-6 0h4v-4H0v4Zm0-6h4V6H0v4Zm6 0h4V6H6v4Zm6-10v4h4V0h-4ZM6 4h4V0H6v4Zm6 6h4V6h-4v4Zm0 6h4v-4h-4v4Z" />
-    </svg>
-  </Root>
-);
-
-export default Launcher;
+export function Launcher({ ariaExpanded, onClick }: Props) {
+  return (
+    <Root aria-expanded={ariaExpanded} aria-haspopup={true} onClick={onClick}>
+      <svg fill="currentColor" height="16" width="16">
+        <path d="M0 4h4V0H0v4Zm6 12h4v-4H6v4Zm-6 0h4v-4H0v4Zm0-6h4V6H0v4Zm6 0h4V6H6v4Zm6-10v4h4V0h-4ZM6 4h4V0H6v4Zm6 6h4V6h-4v4Zm0 6h4v-4h-4v4Z" />
+      </svg>
+    </Root>
+  );
+}

@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-import { ReactNode } from 'react';
-import styled from 'styled-components';
+import { renderWithTheme, screen } from '../test-utils';
+import { MatrixChatWrapper } from './MatrixChatWrapper';
 
-type Props = {
-  children: ReactNode;
-};
-
-const Root = styled.div`
-  height: calc(100% - ${({ theme }) => theme.navbar.offsetHeight});
-  position: relative;
-`;
-
-const MatrixChatWrapper = ({ children }: Props) => <Root>{children}</Root>;
-
-export default MatrixChatWrapper;
+describe('MatrixChatWrapper', () => {
+  it('renders with children', () => {
+    const children = 'children';
+    renderWithTheme(<MatrixChatWrapper>{children}</MatrixChatWrapper>);
+    expect(screen.getByText(children)).toBeInTheDocument();
+  });
+});

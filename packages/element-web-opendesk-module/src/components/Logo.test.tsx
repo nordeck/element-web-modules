@@ -15,19 +15,31 @@
  */
 
 import { renderWithTheme, screen } from '../test-utils';
-import Logo from './Logo';
+import { Logo } from './Logo';
 
 describe('Logo', () => {
+  const alt = 'Logo';
   const href = 'https://exmaple.com';
   const label = 'Show portal';
+  const src = 'https://example.com/logo.svg';
+
+  it(`renders with alt "${alt}"`, () => {
+    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    expect(screen.getByRole('img')).toHaveAttribute('alt', alt);
+  });
 
   it(`renders with href "${href}"`, () => {
-    renderWithTheme(<Logo href={href} label={label} />);
+    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
     expect(screen.getByRole('link')).toHaveAttribute('href', href);
   });
 
   it(`renders with aria-label "${label}"`, () => {
-    renderWithTheme(<Logo href={href} label={label} />);
+    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
     expect(screen.getByRole('link')).toHaveAccessibleName(label);
+  });
+
+  it(`renders with src "${src}"`, () => {
+    renderWithTheme(<Logo alt={alt} ariaLabel={label} href={href} src={src} />);
+    expect(screen.getByRole('img')).toHaveAttribute('src', src);
   });
 });

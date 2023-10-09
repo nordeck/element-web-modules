@@ -20,11 +20,12 @@ describe('assertValidNavbarModuleConfig', () => {
   const config = {
     ics_navigation_json_url: 'https://example.com/navigation.json',
     ics_silent_url: 'https://example.com/silent',
+    portal_logo_svg_url: 'https://example.com/logo.svg',
     portal_url: 'https://example.com',
   };
 
-  it('should accept an empty configuration', () => {
-    expect(() => assertValidNavbarModuleConfig(undefined)).not.toThrow();
+  it('should not accept a missing configuration', () => {
+    expect(() => assertValidNavbarModuleConfig(undefined)).toThrow();
   });
 
   it('should accept the configuration', () => {
@@ -46,6 +47,10 @@ describe('assertValidNavbarModuleConfig', () => {
     { ics_silent_url: null },
     { ics_silent_url: 123 },
     { ics_silent_url: 'no-uri' },
+    { portal_logo_svg_url: undefined },
+    { portal_logo_svg_url: null },
+    { portal_logo_svg_url: 123 },
+    { portal_logo_svg_url: 'no-uri' },
     { portal_url: undefined },
     { portal_url: null },
     { portal_url: 123 },

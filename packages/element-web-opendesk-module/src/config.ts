@@ -17,7 +17,7 @@
 import Joi from 'joi';
 
 export const NAVBAR_MODULE_CONFIG_NAMESPACE =
-  'net.nordeck.element_web.module.navbar';
+  'net.nordeck.element_web.module.opendesk';
 
 export const NAVBAR_MODULE_CONFIG_KEY = 'config';
 
@@ -35,6 +35,12 @@ export interface NavbarModuleConfig {
   ics_silent_url: string;
 
   /**
+   * The URL of the portal logo.svg file.
+   * @example `https://example.com/logo.svg`
+   */
+  portal_logo_svg_url: string;
+
+  /**
    * The URL of the portal.
    * @example `https://example.com`
    */
@@ -44,8 +50,11 @@ export interface NavbarModuleConfig {
 const navbarModuleConfigSchema = Joi.object<NavbarModuleConfig, true>({
   ics_navigation_json_url: Joi.string().uri().required(),
   ics_silent_url: Joi.string().uri().required(),
+  portal_logo_svg_url: Joi.string().uri().required(),
   portal_url: Joi.string().uri().required(),
-}).unknown();
+})
+  .unknown()
+  .required();
 
 export function assertValidNavbarModuleConfig(
   config: unknown,

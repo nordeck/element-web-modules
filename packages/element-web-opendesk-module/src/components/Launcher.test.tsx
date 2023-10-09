@@ -16,28 +16,28 @@
 
 import { fireEvent } from '@testing-library/react';
 import { renderWithTheme, screen } from '../test-utils';
-import Launcher from './Launcher';
+import { Launcher } from './Launcher';
 
 describe('Launcher', () => {
   it('renders with aria-expanded "false"', () => {
-    renderWithTheme(<Launcher expanded={false} onClick={() => {}} />);
+    renderWithTheme(<Launcher ariaExpanded={false} onClick={() => {}} />);
     expect(screen.getByRole('button', { expanded: false })).toBeInTheDocument();
   });
 
   it('renders with aria-expanded "true"', () => {
-    renderWithTheme(<Launcher expanded={true} onClick={() => {}} />);
+    renderWithTheme(<Launcher ariaExpanded={true} onClick={() => {}} />);
     expect(screen.getByRole('button', { expanded: true })).toBeInTheDocument();
   });
 
   it('triggers onClick-callback', () => {
     const callback = jest.fn();
-    renderWithTheme(<Launcher expanded={false} onClick={callback} />);
+    renderWithTheme(<Launcher ariaExpanded={false} onClick={callback} />);
     fireEvent.click(screen.getByRole('button'));
     expect(callback).toHaveBeenCalled();
   });
 
   it('renders with aria-haspopup "true"', () => {
-    renderWithTheme(<Launcher expanded={false} onClick={() => {}} />);
+    renderWithTheme(<Launcher ariaExpanded={false} onClick={() => {}} />);
     expect(screen.getByRole('button')).toHaveAttribute('aria-haspopup', 'true');
   });
 });

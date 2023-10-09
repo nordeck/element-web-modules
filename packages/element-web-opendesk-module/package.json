@@ -1,7 +1,7 @@
 {
-  "name": "@nordeck/element-web-navbar-module",
+  "name": "@nordeck/element-web-opendesk-module",
   "version": "0.0.0",
-  "description": "A module for Element to provide a navbar",
+  "description": "A module for Element to provide openDesk specific functionality",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
   "main": "./build/index.cjs",
@@ -17,7 +17,7 @@
     "lint": "eslint . --max-warnings=0",
     "test": "jest --watch",
     "depcheck": "depcheck --ignore-patterns='customisations/*'",
-    "package": "yarn build && npm pack && shx mv nordeck-element-web-navbar-module-*.tgz nordeck-element-web-navbar-module.tgz"
+    "package": "yarn build && npm pack && shx mv nordeck-element-web-opendesk-module-*.tgz nordeck-element-web-opendesk-module.tgz"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.37.0",
@@ -34,6 +34,7 @@
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.1.0",
     "joi": "^17.10.2",
+    "react-focus-lock": "^2.9.5",
     "styled-components": "^6.0.8"
   },
   "peerDependencies": {
@@ -50,7 +51,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nordeck/element-web-modules",
-    "directory": "packages/element-web-navbar-module"
+    "directory": "packages/element-web-opendesk-module"
   },
   "files": [
     "build",

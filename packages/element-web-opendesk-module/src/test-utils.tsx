@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 
-export function language() {
-  return navigator.languages.length
-    ? navigator.languages[0]
-    : navigator.language;
+import { render, RenderOptions } from '@testing-library/react';
+import { ReactElement, ReactNode } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './theme';
+
+type Props = {
+  children: ReactNode;
+};
+
+function Wrapper({ children }: Props) {
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
+
+function renderWithTheme(
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>,
+) {
+  return render(ui, { wrapper: Wrapper, ...options });
+}
+
+export * from '@testing-library/react';
+export { renderWithTheme };

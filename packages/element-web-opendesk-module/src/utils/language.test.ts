@@ -17,17 +17,28 @@
 import { language } from './language';
 
 describe('language', () => {
-  beforeEach(() =>
-    jest.spyOn(navigator, 'language', 'get').mockReturnValue('en'),
-  );
+  it('calls getItem with key "mx_local_settings"', () => {
+    jest.spyOn(Storage.prototype, 'getItem');
+    language();
+    expect(localStorage.getItem).toHaveBeenCalledWith('mx_local_settings');
+  });
 
-  it('returns the default language', () => {
-    jest.spyOn(navigator, 'languages', 'get').mockReturnValue([]);
+  it('returns "en" if key does not exist', () => {
+    jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
     expect(language()).toBe('en');
   });
 
-  it('returns the preferred language', () => {
-    jest.spyOn(navigator, 'languages', 'get').mockReturnValue(['de-DE']);
+  it('returns "de-DE" if settings language is "de"', () => {
+    jest
+      .spyOn(Storage.prototype, 'getItem')
+      .mockReturnValue(JSON.stringify({ language: 'de' }));
     expect(language()).toBe('de-DE');
+  });
+
+  it('returns "en" if settings language is not supported', () => {
+    jest
+      .spyOn(Storage.prototype, 'getItem')
+      .mockReturnValue(JSON.stringify({ language: 'fr' }));
+    expect(language()).toBe('en');
   });
 });

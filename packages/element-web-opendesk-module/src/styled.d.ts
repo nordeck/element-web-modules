@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-import { render, RenderOptions } from '@testing-library/react';
-import { ReactElement, ReactNode } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './theme';
+import 'styled-components';
 
-type Props = {
-  children: ReactNode;
-};
-
-const Wrapper = ({ children }: Props) => (
-  <ThemeProvider theme={theme}>{children}</ThemeProvider>
-);
-
-const renderWithTheme = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: Wrapper, ...options });
-
-export * from '@testing-library/react';
-export { renderWithTheme };
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    compound: {
+      color: {
+        bgCanvasDefault: string;
+        textActionAccent: string;
+        textPrimary: string;
+      };
+      font: {
+        bodyMdSemibold: string;
+      };
+    };
+    navbar: {
+      border: string;
+      boxShadow: string;
+      color: string;
+      height: string;
+      hoverBackgroundColor: string;
+      offsetHeight: string;
+    };
+  }
+}

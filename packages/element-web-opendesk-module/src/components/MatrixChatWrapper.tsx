@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-import 'styled-components';
+import { ReactNode } from 'react';
+import styled from 'styled-components';
 
-declare module 'styled-components' {
-  export interface DefaultTheme {
-    colors: {
-      black: string;
-      cloud: string;
-      electricViolet15: string;
-      electricViolet: string;
-      white: string;
-    };
-    navbar: {
-      borderBottom: string;
-      height: string;
-      offsetHeight: string;
-    };
-  }
+type Props = {
+  children: ReactNode;
+};
+
+const Root = styled.div`
+  height: calc(100% - ${({ theme }) => theme.navbar.offsetHeight});
+  position: relative;
+`;
+
+export function MatrixChatWrapper({ children }: Props) {
+  return <Root>{children}</Root>;
 }

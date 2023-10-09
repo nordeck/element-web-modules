@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-import { NavbarModule } from './NavbarModule';
+import { OpenDeskModule } from './OpenDeskModule';
 
-export default NavbarModule;
+export default OpenDeskModule;

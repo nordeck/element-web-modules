@@ -15,22 +15,27 @@
  */
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
-import { useEffect, useState } from 'react';
+import {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from 'react';
+import FocusLock from 'react-focus-lock';
 import styled from 'styled-components';
 import { NavbarModuleConfig } from '../config';
 import { NavigationJson } from '../navigationJson';
 import { language } from '../utils';
-import Launcher from './Launcher';
-import Logo from './Logo';
-import Menu from './Menu';
-import SilentLogin from './SilentLogin';
+import { Launcher } from './Launcher';
+import { Logo } from './Logo';
+import { Menu } from './Menu';
+import { SilentLogin } from './SilentLogin';
 
 const Root = styled.nav`
-  background-color: ${({ theme }) => theme.colors.white};
-  border-bottom: ${({ theme }) => theme.navbar.borderBottom};
+  background-color: ${({ theme }) => theme.compound.color.bgCanvasDefault};
+  border-bottom: ${({ theme }) => theme.navbar.border};
   display: flex;
   height: ${({ theme }) => theme.navbar.height};
-  position: relative;
 `;
 
 type Props = {
@@ -38,8 +43,8 @@ type Props = {
   moduleApi: ModuleApi;
 };
 
-const Navbar = ({ config, moduleApi }: Props) => {
-  const [expanded, setExpanded] = useState(false);
+export function Navbar({ config, moduleApi }: Props) {
+  const [ariaExpanded, setAriaExpanded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [navigationJson, setNavigationJson] = useState<NavigationJson>();
   const url = new URL(config.ics_silent_url);
@@ -68,20 +73,48 @@ const Navbar = ({ config, moduleApi }: Props) => {
     }
   }, [config.ics_navigation_json_url, loggedIn]);
 
-  const handleExpanded = () => setExpanded(!expanded);
-  const handleLoggedIn = (loggedIn: boolean) => setLoggedIn(loggedIn);
+  const handleAriaExpanded = () => {
+    setAriaExpanded(!ariaExpanded);
+  };
+
+  const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
+    handleAriaExpanded();
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (event.key === 'Escape') {
+      handleAriaExpanded();
+    }
+  };
+
+  const handleLoggedIn = (loggedIn: boolean) => {
+    setLoggedIn(loggedIn);
+  };
 
   return (
     <Root>
       <Logo
+        alt={moduleApi.translateString('Logo')}
+        ariaLabel={moduleApi.translateString('Show portal')}
         href={config.portal_url}
-        label={moduleApi.translateString('Show portal')}
+        src={config.portal_logo_svg_url}
       />
       {loggedIn ? (
         navigationJson && (
           <>
-            <Launcher expanded={expanded} onClick={handleExpanded} />
-            {expanded && <Menu navigationJson={navigationJson} />}
+            <Launcher
+              ariaExpanded={ariaExpanded}
+              onClick={handleAriaExpanded}
+            />
+            {ariaExpanded && (
+              <FocusLock>
+                <Menu
+                  navigationJson={navigationJson}
+                  onClick={handleClick}
+                  onKeyDown={handleKeyDown}
+                />
+              </FocusLock>
+            )}
           </>
         )
       ) : (
@@ -89,6 +122,4 @@ const Navbar = ({ config, moduleApi }: Props) => {
       )}
     </Root>
   );
-};
-
-export default Navbar;
+}

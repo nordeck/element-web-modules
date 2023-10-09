@@ -19,10 +19,11 @@ import { RuntimeModule } from '@matrix-org/react-sdk-module-api/lib/RuntimeModul
 import {
   WrapperLifecycle,
   WrapperListener,
+  WrapperOpts,
 } from '@matrix-org/react-sdk-module-api/lib/lifecycles/WrapperLifecycle';
 import { ThemeProvider } from 'styled-components';
-import MatrixChatWrapper from './components/MatrixChatWrapper';
-import Navbar from './components/Navbar';
+import { MatrixChatWrapper } from './components/MatrixChatWrapper';
+import { Navbar } from './components/Navbar';
 import {
   NAVBAR_MODULE_CONFIG_KEY,
   NAVBAR_MODULE_CONFIG_NAMESPACE,
@@ -31,13 +32,17 @@ import {
 } from './config';
 import { theme } from './theme';
 
-export class NavbarModule extends RuntimeModule {
+export class OpenDeskModule extends RuntimeModule {
   private readonly config: NavbarModuleConfig;
 
   public constructor(moduleApi: ModuleApi) {
     super(moduleApi);
 
     this.moduleApi.registerTranslations({
+      'Portal logo': {
+        en: 'Portal logo',
+        de: 'Portal Logo',
+      },
       'Show portal': {
         en: 'Show portal',
         de: 'Portal anzeigen',
@@ -56,11 +61,14 @@ export class NavbarModule extends RuntimeModule {
     this.on(WrapperLifecycle.Wrapper, this.onWrapper);
   }
 
-  protected onWrapper: WrapperListener = (wrapperOpts) =>
-    (wrapperOpts.Wrapper = ({ children }) => (
-      <ThemeProvider theme={theme}>
-        <Navbar config={this.config} moduleApi={this.moduleApi} />
-        <MatrixChatWrapper>{children}</MatrixChatWrapper>
-      </ThemeProvider>
-    ));
+  protected Wrapper: WrapperOpts['Wrapper'] = ({ children }) => (
+    <ThemeProvider theme={theme}>
+      <Navbar config={this.config} moduleApi={this.moduleApi} />
+      <MatrixChatWrapper>{children}</MatrixChatWrapper>
+    </ThemeProvider>
+  );
+
+  protected onWrapper: WrapperListener = (wrapperOpts) => {
+    wrapperOpts.Wrapper = this.Wrapper;
+  };
 }

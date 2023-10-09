@@ -1,5 +1,5 @@
 ---
-'@nordeck/element-web-navbar-module': patch
+'@nordeck/element-web-opendesk-module': patch
 ---
 
-Introduce navbar module
+Add initial version.

@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-import { DefaultTheme } from 'styled-components';
+export function language() {
+  const settings = JSON.parse(
+    localStorage.getItem('mx_local_settings') ?? '{}',
+  );
 
-const black = '#000';
-const cloud = '#adb3bc';
-const electricViolet = '#5e27dd';
-const electricViolet15 = '#e7dffa';
-const white = '#fff';
+  if (settings.language === 'de') {
+    return 'de-DE';
+  }
 
-const theme: DefaultTheme = {
-  colors: {
-    black,
-    cloud,
-    electricViolet,
-    electricViolet15,
-    white,
-  },
-  navbar: {
-    borderBottom: `1px solid ${cloud}`,
-    height: '63px',
-    offsetHeight: '64px',
-  },
-};
-
-export { theme };
+  return 'en';
+}

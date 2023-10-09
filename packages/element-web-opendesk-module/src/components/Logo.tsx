@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-import { renderWithTheme, screen } from '../test-utils';
-import MatrixChatWrapper from './MatrixChatWrapper';
+import styled from 'styled-components';
 
-describe('MatrixChatWrapper', () => {
-  it('renders with children', () => {
-    const children = 'foo';
-    renderWithTheme(<MatrixChatWrapper>{children}</MatrixChatWrapper>);
-    expect(screen.getByText(children)).toBeInTheDocument();
-  });
-});
+type Props = {
+  alt: string;
+  ariaLabel: string;
+  href: string;
+  src: string;
+};
+
+const Root = styled.a`
+  display: flex;
+  padding: 0 24px;
+`;
+
+const Image = styled.img`
+  width: 82px;
+`;
+
+export function Logo({ alt, ariaLabel, href, src }: Props) {
+  return (
+    <Root aria-label={ariaLabel} href={href}>
+      <Image alt={alt} src={src} />
+    </Root>
+  );
+}
