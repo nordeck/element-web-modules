@@ -7,10 +7,10 @@
   "private": true,
   "devDependencies": {
     "@axe-core/playwright": "^4.7.3",
-    "@playwright/test": "^1.38.0",
-    "@types/node": "^20.6.2",
+    "@playwright/test": "^1.38.1",
+    "@types/node": "^20.8.3",
     "cross-fetch": "^4.0.0",
-    "eslint": "^8.49.0",
+    "eslint": "^8.51.0",
     "eslint-plugin-playwright": "^0.16.0",
     "testcontainers": "^10.2.1",
     "typescript": "~5.0.4"
