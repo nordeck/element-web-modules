@@ -34,7 +34,7 @@ const theme: DefaultTheme = {
     },
   },
   navbar: {
-    border: `1px solid rgba(27, 29, 34, 0.1)`,
+    border: '1px solid rgba(27, 29, 34, 0.1)',
     boxShadow: '4px 4px 12px 0 rgba(118, 131, 156, 0.6)',
     color: '#fff',
     height: '63px',
