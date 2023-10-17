@@ -25,21 +25,37 @@ describe('assertValidNavigationJson', () => {
     expect(() => assertValidNavigationJson(undefined)).toThrow();
   });
 
-  it('should not accept the JSON without categories', () => {
-    expect(() => assertValidNavigationJson({})).toThrow();
-  });
-
-  it('should not accept the JSON without category entries', () => {
-    expect(() => assertValidNavigationJson({ categories: [{}] })).toThrow();
-  });
-
-  it('should accept the JSON', () => {
+  it('should accept a valid JSON', () => {
     expect(() => assertValidNavigationJson(json)).not.toThrow();
   });
 
-  it('should accept additional properties', () => {
+  it('should accept a JSON with additional properties', () => {
     expect(() =>
       assertValidNavigationJson({ ...json, additional: 'foo' }),
+    ).not.toThrow();
+  });
+
+  it('should not accept a JSON without categories', () => {
+    expect(() => assertValidNavigationJson({})).toThrow();
+  });
+
+  it('should accept a JSON with additional properties in categories', () => {
+    expect(() =>
+      assertValidNavigationJson({
+        categories: [{ entries: [], additional: 'foo' }],
+      }),
+    ).not.toThrow();
+  });
+
+  it('should not accept a JSON without category entries', () => {
+    expect(() => assertValidNavigationJson({ categories: [{}] })).toThrow();
+  });
+
+  it('should accept a JSON with additional properties in category entries', () => {
+    expect(() =>
+      assertValidNavigationJson({
+        categories: [{ entries: [{ additional: 'foo' }] }],
+      }),
     ).not.toThrow();
   });
 });
