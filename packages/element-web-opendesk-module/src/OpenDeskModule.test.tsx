@@ -54,10 +54,12 @@ describe('OpenDeskModule', () => {
 
   it('should react to the WrapperLifecycle.Wrapper lifecycle', () => {
     const module = new OpenDeskModule(moduleApi);
-    const wrapperOpts: WrapperOpts = { Wrapper: () => null };
+
+    const wrapperOpts: WrapperOpts = { Wrapper: React.Fragment };
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
-    const Wrapper = wrapperOpts.Wrapper;
-    render(<Wrapper>Matrix Chat</Wrapper>);
+
+    render(<wrapperOpts.Wrapper>Matrix Chat</wrapperOpts.Wrapper>);
+
     expect(screen.getByRole('navigation')).toBeInTheDocument();
     expect(screen.getByText('Matrix Chat')).toBeInTheDocument();
   });
