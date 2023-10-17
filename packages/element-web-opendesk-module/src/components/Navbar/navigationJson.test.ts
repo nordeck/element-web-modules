@@ -58,4 +58,70 @@ describe('assertValidNavigationJson', () => {
       }),
     ).not.toThrow();
   });
+
+  it.each<Object>([
+    { categories: [{ entries: [], display_name: '' }] },
+    { categories: [{ entries: [], display_name: 'foo' }] },
+    { categories: [{ entries: [], display_name: undefined }] },
+    { categories: [{ entries: [], identifier: '' }] },
+    { categories: [{ entries: [], identifier: 'foo' }] },
+    { categories: [{ entries: [], identifier: undefined }] },
+    { categories: [{ entries: [{ display_name: '' }] }] },
+    { categories: [{ entries: [{ display_name: 'foo' }] }] },
+    { categories: [{ entries: [{ display_name: undefined }] }] },
+    { categories: [{ entries: [{ icon_url: '' }] }] },
+    { categories: [{ entries: [{ icon_url: 'foo' }] }] },
+    { categories: [{ entries: [{ icon_url: undefined }] }] },
+    { categories: [{ entries: [{ identifier: '' }] }] },
+    { categories: [{ entries: [{ identifier: 'foo' }] }] },
+    { categories: [{ entries: [{ identifier: undefined }] }] },
+    { categories: [{ entries: [{ link: '' }] }] },
+    { categories: [{ entries: [{ link: 'foo' }] }] },
+    { categories: [{ entries: [{ link: undefined }] }] },
+    { categories: [{ entries: [{ target: '' }] }] },
+    { categories: [{ entries: [{ target: 'foo' }] }] },
+    { categories: [{ entries: [{ target: undefined }] }] },
+  ])('should not reject valid JSON %j', (json) => {
+    expect(() => assertValidNavigationJson(json)).not.toThrow();
+  });
+
+  it.each<Object>([
+    { categories: [{ entries: [], display_name: 123 }] },
+    { categories: [{ entries: [], display_name: [] }] },
+    { categories: [{ entries: [], display_name: null }] },
+    { categories: [{ entries: [], display_name: true }] },
+    { categories: [{ entries: [], display_name: {} }] },
+    { categories: [{ entries: [], identifier: 123 }] },
+    { categories: [{ entries: [], identifier: [] }] },
+    { categories: [{ entries: [], identifier: null }] },
+    { categories: [{ entries: [], identifier: true }] },
+    { categories: [{ entries: [], identifier: {} }] },
+    { categories: [{ entries: [{ display_name: 123 }] }] },
+    { categories: [{ entries: [{ display_name: [] }] }] },
+    { categories: [{ entries: [{ display_name: null }] }] },
+    { categories: [{ entries: [{ display_name: true }] }] },
+    { categories: [{ entries: [{ display_name: {} }] }] },
+    { categories: [{ entries: [{ icon_url: 123 }] }] },
+    { categories: [{ entries: [{ icon_url: [] }] }] },
+    { categories: [{ entries: [{ icon_url: null }] }] },
+    { categories: [{ entries: [{ icon_url: true }] }] },
+    { categories: [{ entries: [{ icon_url: {} }] }] },
+    { categories: [{ entries: [{ identifier: 123 }] }] },
+    { categories: [{ entries: [{ identifier: [] }] }] },
+    { categories: [{ entries: [{ identifier: null }] }] },
+    { categories: [{ entries: [{ identifier: true }] }] },
+    { categories: [{ entries: [{ identifier: {} }] }] },
+    { categories: [{ entries: [{ link: 123 }] }] },
+    { categories: [{ entries: [{ link: [] }] }] },
+    { categories: [{ entries: [{ link: null }] }] },
+    { categories: [{ entries: [{ link: true }] }] },
+    { categories: [{ entries: [{ link: {} }] }] },
+    { categories: [{ entries: [{ target: 123 }] }] },
+    { categories: [{ entries: [{ target: [] }] }] },
+    { categories: [{ entries: [{ target: null }] }] },
+    { categories: [{ entries: [{ target: true }] }] },
+    { categories: [{ entries: [{ target: {} }] }] },
+  ])('should reject wrong JSON %j', (json) => {
+    expect(() => assertValidNavigationJson(json)).toThrow(/must be a string/);
+  });
 });

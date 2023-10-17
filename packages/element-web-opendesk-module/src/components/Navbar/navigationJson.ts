@@ -17,17 +17,17 @@
 import Joi from 'joi';
 
 interface CategoryEntry {
-  display_name: string;
-  icon_url: string;
-  identifier: string;
-  link: string;
-  target: string;
+  display_name?: string;
+  icon_url?: string;
+  identifier?: string;
+  link?: string;
+  target?: string;
 }
 
 interface Category {
-  display_name: string;
+  display_name?: string;
   entries: Array<CategoryEntry>;
-  identifier: string;
+  identifier?: string;
 }
 
 export interface NavigationJson {
@@ -38,19 +38,19 @@ const navigationJsonSchema = Joi.object<NavigationJson, true>({
   categories: Joi.array()
     .items(
       Joi.object<Category, true>({
-        display_name: Joi.string(),
+        display_name: Joi.string().allow(''),
         entries: Joi.array()
           .items(
             Joi.object<CategoryEntry, true>({
-              display_name: Joi.string(),
-              icon_url: Joi.string(),
-              identifier: Joi.string(),
-              link: Joi.string(),
-              target: Joi.string(),
+              display_name: Joi.string().allow(''),
+              icon_url: Joi.string().allow(''),
+              identifier: Joi.string().allow(''),
+              link: Joi.string().allow(''),
+              target: Joi.string().allow(''),
             }).unknown(),
           )
           .required(),
-        identifier: Joi.string(),
+        identifier: Joi.string().allow(''),
       }).unknown(),
     )
     .required(),
