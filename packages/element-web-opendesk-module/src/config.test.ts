@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { assertValidNavbarModuleConfig } from './config';
+import { assertValidOpenDeskModuleConfig } from './config';
 
 describe('assertValidNavbarModuleConfig', () => {
   const config = {
@@ -25,16 +25,16 @@ describe('assertValidNavbarModuleConfig', () => {
   };
 
   it('should not accept a missing configuration', () => {
-    expect(() => assertValidNavbarModuleConfig(undefined)).toThrow();
+    expect(() => assertValidOpenDeskModuleConfig(undefined)).toThrow();
   });
 
   it('should accept the configuration', () => {
-    expect(() => assertValidNavbarModuleConfig(config)).not.toThrow();
+    expect(() => assertValidOpenDeskModuleConfig(config)).not.toThrow();
   });
 
   it('should accept additional properties', () => {
     expect(() =>
-      assertValidNavbarModuleConfig({ ...config, additional: 'foo' }),
+      assertValidOpenDeskModuleConfig({ ...config, additional: 'foo' }),
     ).not.toThrow();
   });
 
@@ -57,7 +57,7 @@ describe('assertValidNavbarModuleConfig', () => {
     { portal_url: 'no-uri' },
   ])('should reject wrong configuration permissions %j', (patch) => {
     expect(() =>
-      assertValidNavbarModuleConfig({ ...config, ...patch }),
+      assertValidOpenDeskModuleConfig({ ...config, ...patch }),
     ).toThrow(/is required|must be a string|must be a valid uri/);
   });
 });

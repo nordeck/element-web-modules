@@ -14,24 +14,4 @@
  * limitations under the License.
  */
 
-import { language } from './language';
-
-describe('language', () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
-  it('returns "en" if key does not exist', () => {
-    expect(language()).toBe('en');
-  });
-
-  it('returns "de-DE" if settings language is "de"', () => {
-    localStorage.setItem('mx_local_settings', '{"language":"de"}');
-    expect(language()).toBe('de-DE');
-  });
-
-  it('returns "en" if settings language is not supported', () => {
-    localStorage.setItem('mx_local_settings', '{"language":"fr"}');
-    expect(language()).toBe('en');
-  });
-});
+export { Navbar } from './Navbar';

@@ -16,7 +16,7 @@
 
 import { KeyboardEventHandler, MouseEventHandler } from 'react';
 import styled from 'styled-components';
-import { NavigationJson } from '../navigationJson';
+import { NavigationJson } from './navigationJson';
 
 type Props = {
   navigationJson: NavigationJson;

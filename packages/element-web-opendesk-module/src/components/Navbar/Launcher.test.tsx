@@ -14,30 +14,47 @@
  * limitations under the License.
  */
 
-import { fireEvent } from '@testing-library/react';
-import { renderWithTheme, screen } from '../test-utils';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithTheme } from '../../test-utils';
 import { Launcher } from './Launcher';
 
 describe('Launcher', () => {
+  const label = 'Show menu';
+
   it('renders with aria-expanded "false"', () => {
-    renderWithTheme(<Launcher ariaExpanded={false} onClick={() => {}} />);
+    renderWithTheme(
+      <Launcher ariaExpanded={false} ariaLabel={label} onClick={() => {}} />,
+    );
     expect(screen.getByRole('button', { expanded: false })).toBeInTheDocument();
   });
 
   it('renders with aria-expanded "true"', () => {
-    renderWithTheme(<Launcher ariaExpanded={true} onClick={() => {}} />);
+    renderWithTheme(
+      <Launcher ariaExpanded={true} ariaLabel={label} onClick={() => {}} />,
+    );
     expect(screen.getByRole('button', { expanded: true })).toBeInTheDocument();
+  });
+
+  it('renders with aria-label', () => {
+    renderWithTheme(
+      <Launcher ariaExpanded={true} ariaLabel={label} onClick={() => {}} />,
+    );
+    expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
   });
 
   it('triggers onClick-callback', () => {
     const callback = jest.fn();
-    renderWithTheme(<Launcher ariaExpanded={false} onClick={callback} />);
+    renderWithTheme(
+      <Launcher ariaExpanded={false} ariaLabel={label} onClick={callback} />,
+    );
     fireEvent.click(screen.getByRole('button'));
     expect(callback).toHaveBeenCalled();
   });
 
   it('renders with aria-haspopup "true"', () => {
-    renderWithTheme(<Launcher ariaExpanded={false} onClick={() => {}} />);
+    renderWithTheme(
+      <Launcher ariaExpanded={false} ariaLabel={label} onClick={() => {}} />,
+    );
     expect(screen.getByRole('button')).toHaveAttribute('aria-haspopup', 'true');
   });
 });

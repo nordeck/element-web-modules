@@ -19,18 +19,20 @@ import styled from 'styled-components';
 
 type Props = {
   onLoggedIn: (loggedIn: boolean) => void;
-  url: URL;
+  url: string;
 };
 
-const Root = styled.iframe`
+const HiddenIFrame = styled.iframe`
   display: none;
 `;
 
 export function SilentLogin({ onLoggedIn, url }: Props) {
   useEffect(() => {
     function listener(event: MessageEvent) {
+      const src = new URL(url);
+
       if (
-        event.origin === url.origin &&
+        event.origin === src.origin &&
         typeof event.data === 'object' &&
         event.data['loggedIn'] === true
       ) {
@@ -41,7 +43,7 @@ export function SilentLogin({ onLoggedIn, url }: Props) {
     window.addEventListener('message', listener);
 
     return () => window.removeEventListener('message', listener);
-  }, [onLoggedIn, url.origin]);
+  }, [onLoggedIn, url]);
 
-  return <Root src={url.toString()} title="Silent Login" />;
+  return <HiddenIFrame src={url} title="Silent Login" />;
 }

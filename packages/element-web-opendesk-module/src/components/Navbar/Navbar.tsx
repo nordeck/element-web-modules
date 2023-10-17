@@ -23,13 +23,13 @@ import {
 } from 'react';
 import FocusLock from 'react-focus-lock';
 import styled from 'styled-components';
-import { NavbarModuleConfig } from '../config';
-import { NavigationJson } from '../navigationJson';
-import { language } from '../utils';
+import { OpenDeskModuleConfig } from '../../config';
+import { language } from '../../utils';
 import { Launcher } from './Launcher';
 import { Logo } from './Logo';
 import { Menu } from './Menu';
 import { SilentLogin } from './SilentLogin';
+import { NavigationJson, assertValidNavigationJson } from './navigationJson';
 
 const Root = styled.nav`
   background-color: ${({ theme }) => theme.compound.color.bgCanvasDefault};
@@ -39,7 +39,7 @@ const Root = styled.nav`
 `;
 
 type Props = {
-  config: NavbarModuleConfig;
+  config: OpenDeskModuleConfig;
   moduleApi: ModuleApi;
 };
 
@@ -47,7 +47,6 @@ export function Navbar({ config, moduleApi }: Props) {
   const [ariaExpanded, setAriaExpanded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [navigationJson, setNavigationJson] = useState<NavigationJson>();
-  const url = new URL(config.ics_silent_url);
 
   useEffect(() => {
     async function fetchNavigationJson() {
@@ -61,6 +60,7 @@ export function Navbar({ config, moduleApi }: Props) {
 
         if (response.ok) {
           const data = await response.json();
+          assertValidNavigationJson(data);
           setNavigationJson(data);
         }
       } catch (error) {
@@ -104,6 +104,7 @@ export function Navbar({ config, moduleApi }: Props) {
           <>
             <Launcher
               ariaExpanded={ariaExpanded}
+              ariaLabel={moduleApi.translateString('Show menu')}
               onClick={handleAriaExpanded}
             />
             {ariaExpanded && (
@@ -118,7 +119,7 @@ export function Navbar({ config, moduleApi }: Props) {
           </>
         )
       ) : (
-        <SilentLogin onLoggedIn={handleLoggedIn} url={url} />
+        <SilentLogin onLoggedIn={handleLoggedIn} url={config.ics_silent_url} />
       )}
     </Root>
   );

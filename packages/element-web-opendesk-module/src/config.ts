@@ -16,12 +16,12 @@
 
 import Joi from 'joi';
 
-export const NAVBAR_MODULE_CONFIG_NAMESPACE =
+export const OPENDESK_MODULE_CONFIG_NAMESPACE =
   'net.nordeck.element_web.module.opendesk';
 
-export const NAVBAR_MODULE_CONFIG_KEY = 'config';
+export const OPENDESK_MODULE_CONFIG_KEY = 'config';
 
-export interface NavbarModuleConfig {
+export interface OpenDeskModuleConfig {
   /**
    * The URL of the navigation.json file that contains the navigation structure for the user.
    * @example `https://example.com/navigation.json`
@@ -47,7 +47,7 @@ export interface NavbarModuleConfig {
   portal_url: string;
 }
 
-const navbarModuleConfigSchema = Joi.object<NavbarModuleConfig, true>({
+const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
   ics_navigation_json_url: Joi.string().uri().required(),
   ics_silent_url: Joi.string().uri().required(),
   portal_logo_svg_url: Joi.string().uri().required(),
@@ -56,14 +56,14 @@ const navbarModuleConfigSchema = Joi.object<NavbarModuleConfig, true>({
   .unknown()
   .required();
 
-export function assertValidNavbarModuleConfig(
+export function assertValidOpenDeskModuleConfig(
   config: unknown,
-): asserts config is NavbarModuleConfig {
-  const result = navbarModuleConfigSchema.validate(config);
+): asserts config is OpenDeskModuleConfig {
+  const result = openDeskModuleConfigSchema.validate(config);
 
   if (result.error) {
     throw new Error(
-      `Errors in the module configuration in "${NAVBAR_MODULE_CONFIG_NAMESPACE}".${NAVBAR_MODULE_CONFIG_KEY}: ${result.error.message}`,
+      `Errors in the module configuration in "${OPENDESK_MODULE_CONFIG_NAMESPACE}".${OPENDESK_MODULE_CONFIG_KEY}: ${result.error.message}`,
     );
   }
 }

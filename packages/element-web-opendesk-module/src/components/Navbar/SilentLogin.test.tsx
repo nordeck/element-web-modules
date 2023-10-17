@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-import { fireEvent, renderWithTheme, screen } from '../test-utils';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithTheme } from '../../test-utils';
 import { SilentLogin } from './SilentLogin';
 
 describe('SilentLogin', () => {
-  const url = new URL('https://example.com/silent');
+  const url = 'https://example.com/silent';
 
   it('triggers onLoggedIn-callback', () => {
     const callback = jest.fn();
+    const src = new URL(url);
     renderWithTheme(<SilentLogin onLoggedIn={callback} url={url} />);
     fireEvent(
       window,
@@ -29,7 +31,7 @@ describe('SilentLogin', () => {
         data: {
           loggedIn: true,
         },
-        origin: url.origin,
+        origin: src.origin,
       }),
     );
     expect(callback).toHaveBeenCalledWith(true);

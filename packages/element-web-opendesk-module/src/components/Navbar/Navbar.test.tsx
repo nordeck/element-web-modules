@@ -15,18 +15,13 @@
  */
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
-import { NavbarModuleConfig } from '../config';
-import {
-  fireEvent,
-  renderWithTheme,
-  screen,
-  waitFor,
-  within,
-} from '../test-utils';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { OpenDeskModuleConfig } from '../../config';
+import { renderWithTheme } from '../../test-utils';
 import { Navbar } from './Navbar';
 
 describe('Navbar', () => {
-  const config: NavbarModuleConfig = {
+  const config: OpenDeskModuleConfig = {
     ics_navigation_json_url: 'https://example.com/navigation.json',
     ics_silent_url: 'https://example.com/silent',
     portal_logo_svg_url: 'https://example.com/logo.svg',
@@ -66,14 +61,14 @@ describe('Navbar', () => {
 
   it('fetches navigation JSON', async () => {
     renderWithTheme(<Navbar config={config} moduleApi={moduleApi} />);
-    jest
-      .spyOn(Storage.prototype, 'getItem')
-      .mockReturnValue(JSON.stringify({ language: 'de' }));
-    window.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => ({}) });
+    window.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => ({ categories: [{ entries: [] }] }),
+    });
     fireEvent(window, messageEvent);
     await waitFor(() =>
       expect(window.fetch).toHaveBeenCalledWith(
-        'https://example.com/navigation.json?language=de-DE',
+        'https://example.com/navigation.json?language=en',
         { credentials: 'include' },
       ),
     );

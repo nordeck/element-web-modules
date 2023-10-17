@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { fireEvent } from '@testing-library/react';
-import { renderWithTheme, screen, within } from '../test-utils';
+import { fireEvent, screen, within } from '@testing-library/react';
+import { renderWithTheme } from '../../test-utils';
 import { Menu } from './Menu';
 
 describe('Menu', () => {

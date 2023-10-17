@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { renderWithTheme, screen } from '../test-utils';
+import { screen } from '@testing-library/react';
+import { renderWithTheme } from '../test-utils';
 import { MatrixChatWrapper } from './MatrixChatWrapper';
 
 describe('MatrixChatWrapper', () => {

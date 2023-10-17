@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import Joi from 'joi';
+
 export interface NavigationJson {
   categories: Array<{
     display_name: string;
@@ -26,4 +28,34 @@ export interface NavigationJson {
     }>;
     identifier: string;
   }>;
+}
+
+const navigationJsonSchema = Joi.object<NavigationJson, true>({
+  categories: Joi.array()
+    .items({
+      display_name: Joi.string(),
+      entries: Joi.array()
+        .items({
+          display_name: Joi.string(),
+          icon_url: Joi.string(),
+          identifier: Joi.string(),
+          link: Joi.string(),
+          target: Joi.string(),
+        })
+        .required(),
+      identifier: Joi.string(),
+    })
+    .required(),
+})
+  .unknown()
+  .required();
+
+export function assertValidNavigationJson(
+  json: unknown,
+): asserts json is NavigationJson {
+  const { error } = navigationJsonSchema.validate(json);
+
+  if (error) {
+    throw error;
+  }
 }

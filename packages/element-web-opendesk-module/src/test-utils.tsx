@@ -34,5 +34,4 @@ function renderWithTheme(
   return render(ui, { wrapper: Wrapper, ...options });
 }
 
-export * from '@testing-library/react';
 export { renderWithTheme };

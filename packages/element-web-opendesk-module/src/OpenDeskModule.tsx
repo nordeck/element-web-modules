@@ -25,15 +25,15 @@ import { ThemeProvider } from 'styled-components';
 import { MatrixChatWrapper } from './components/MatrixChatWrapper';
 import { Navbar } from './components/Navbar';
 import {
-  NAVBAR_MODULE_CONFIG_KEY,
-  NAVBAR_MODULE_CONFIG_NAMESPACE,
-  NavbarModuleConfig,
-  assertValidNavbarModuleConfig,
+  OPENDESK_MODULE_CONFIG_KEY,
+  OPENDESK_MODULE_CONFIG_NAMESPACE,
+  OpenDeskModuleConfig,
+  assertValidOpenDeskModuleConfig,
 } from './config';
 import { theme } from './theme';
 
 export class OpenDeskModule extends RuntimeModule {
-  private readonly config: NavbarModuleConfig;
+  private readonly config: OpenDeskModuleConfig;
 
   public constructor(moduleApi: ModuleApi) {
     super(moduleApi);
@@ -43,6 +43,10 @@ export class OpenDeskModule extends RuntimeModule {
         en: 'Portal logo',
         de: 'Portal Logo',
       },
+      'Show menu': {
+        en: 'Show menu',
+        de: 'Menü anzeigen',
+      },
       'Show portal': {
         en: 'Show portal',
         de: 'Portal anzeigen',
@@ -50,11 +54,11 @@ export class OpenDeskModule extends RuntimeModule {
     });
 
     const config = this.moduleApi.getConfigValue(
-      NAVBAR_MODULE_CONFIG_NAMESPACE,
-      NAVBAR_MODULE_CONFIG_KEY,
+      OPENDESK_MODULE_CONFIG_NAMESPACE,
+      OPENDESK_MODULE_CONFIG_KEY,
     );
 
-    assertValidNavbarModuleConfig(config);
+    assertValidOpenDeskModuleConfig(config);
 
     this.config = config;
 

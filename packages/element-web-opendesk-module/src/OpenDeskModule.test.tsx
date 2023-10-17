@@ -20,6 +20,7 @@ import {
   WrapperOpts,
 } from '@matrix-org/react-sdk-module-api/lib/lifecycles/WrapperLifecycle';
 import { render, screen } from '@testing-library/react';
+import { Fragment } from 'react';
 import { OpenDeskModule } from './OpenDeskModule';
 
 describe('OpenDeskModule', () => {
@@ -45,6 +46,10 @@ describe('OpenDeskModule', () => {
         en: 'Portal logo',
         de: expect.any(String),
       },
+      'Show menu': {
+        en: 'Show menu',
+        de: expect.any(String),
+      },
       'Show portal': {
         en: 'Show portal',
         de: expect.any(String),
@@ -55,7 +60,7 @@ describe('OpenDeskModule', () => {
   it('should react to the WrapperLifecycle.Wrapper lifecycle', () => {
     const module = new OpenDeskModule(moduleApi);
 
-    const wrapperOpts: WrapperOpts = { Wrapper: React.Fragment };
+    const wrapperOpts: WrapperOpts = { Wrapper: Fragment };
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
 
     render(<wrapperOpts.Wrapper>Matrix Chat</wrapperOpts.Wrapper>);
