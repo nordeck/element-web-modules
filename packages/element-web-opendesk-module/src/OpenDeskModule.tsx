@@ -21,6 +21,7 @@ import {
   WrapperListener,
   WrapperOpts,
 } from '@matrix-org/react-sdk-module-api/lib/lifecycles/WrapperLifecycle';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { MatrixChatWrapper } from './components/MatrixChatWrapper';
 import { Navbar } from './components/Navbar';
@@ -34,6 +35,7 @@ import { theme } from './theme';
 
 export class OpenDeskModule extends RuntimeModule {
   private readonly config: OpenDeskModuleConfig;
+  private readonly Wrapper: WrapperOpts['Wrapper'];
 
   public constructor(moduleApi: ModuleApi) {
     super(moduleApi);
@@ -62,15 +64,40 @@ export class OpenDeskModule extends RuntimeModule {
 
     this.config = config;
 
+    // TODO: This should be a functional component. Element calls `ReactDOM.render` and uses the
+    // return value as a reference to the MatrixChat component. Then they call a function on this
+    // reference. This is deprecated behavior and only works if the root component is a class. Since
+    // our component is now the root it must be class and it must also forward the calls the are
+    // meant for the MatrixChat component. Element should be changed so it uses Ref's and pass this
+    // to the MatrixChat so that any parent components don't interfere with this logic.
+    this.Wrapper = class Wrapper extends React.Component {
+      private readonly ref = React.createRef<{
+        showScreen: (...args: unknown[]) => unknown;
+      }>();
+
+      public showScreen(...args: unknown[]) {
+        return this.ref.current?.showScreen(...args);
+      }
+
+      render() {
+        // Add the ref to our only children -> the MatrixChat component
+        const children =
+          React.Children.only(this.props.children) &&
+          React.isValidElement<{ ref: unknown }>(this.props.children)
+            ? React.cloneElement(this.props.children, { ref: this.ref })
+            : this.props.children;
+
+        return (
+          <ThemeProvider theme={theme}>
+            <Navbar config={config} moduleApi={moduleApi} />
+            <MatrixChatWrapper>{children}</MatrixChatWrapper>
+          </ThemeProvider>
+        );
+      }
+    };
+
     this.on(WrapperLifecycle.Wrapper, this.onWrapper);
   }
-
-  protected Wrapper: WrapperOpts['Wrapper'] = ({ children }) => (
-    <ThemeProvider theme={theme}>
-      <Navbar config={this.config} moduleApi={this.moduleApi} />
-      <MatrixChatWrapper>{children}</MatrixChatWrapper>
-    </ThemeProvider>
-  );
 
   protected onWrapper: WrapperListener = (wrapperOpts) => {
     wrapperOpts.Wrapper = this.Wrapper;

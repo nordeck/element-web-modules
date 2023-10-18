@@ -63,7 +63,11 @@ describe('OpenDeskModule', () => {
     const wrapperOpts: WrapperOpts = { Wrapper: Fragment };
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
 
-    render(<wrapperOpts.Wrapper>Matrix Chat</wrapperOpts.Wrapper>);
+    render(
+      <wrapperOpts.Wrapper>
+        <p>Matrix Chat</p>
+      </wrapperOpts.Wrapper>,
+    );
 
     expect(screen.getByRole('navigation')).toBeInTheDocument();
     expect(screen.getByText('Matrix Chat')).toBeInTheDocument();
