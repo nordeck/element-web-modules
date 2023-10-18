@@ -16,7 +16,7 @@
 
 import { assertValidOpenDeskModuleConfig } from './config';
 
-describe('assertValidNavbarModuleConfig', () => {
+describe('assertValidOpenDeskModuleConfig', () => {
   const config = {
     ics_navigation_json_url: 'https://example.com/navigation.json',
     ics_silent_url: 'https://example.com/silent',
