@@ -37,7 +37,6 @@ describe('assertValidOpenDeskModuleConfig', () => {
       assertValidOpenDeskModuleConfig({
         ...config,
         custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
-        additional: 'foo',
       }),
     ).not.toThrow();
   });
