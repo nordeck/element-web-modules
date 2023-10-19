@@ -1,4 +1,5 @@
 # Register the module that was created by `yarn build`
 modules:
   - 'file:nordeck-element-web-guest-module.tgz'
+  - 'file:nordeck-element-web-opendesk-module.tgz'
   - 'file:nordeck-element-web-widget-lifecycle-module.tgz'
