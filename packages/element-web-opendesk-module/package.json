@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.1.0",
-    "joi": "^17.10.2",
+    "joi": "^17.11.0",
     "react-focus-lock": "^2.9.5",
     "styled-components": "^6.0.8"
   },
