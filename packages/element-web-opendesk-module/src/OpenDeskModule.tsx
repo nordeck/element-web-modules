@@ -83,7 +83,9 @@ export class OpenDeskModule extends RuntimeModule {
         // Add the ref to our only children -> the MatrixChat component
         const children =
           React.Children.only(this.props.children) &&
-          React.isValidElement<{ ref: unknown }>(this.props.children)
+          React.isValidElement<{ ref: unknown }>(this.props.children) &&
+          'ref' in this.props.children &&
+          !this.props.children.ref
             ? React.cloneElement(this.props.children, { ref: this.ref })
             : this.props.children;
 
