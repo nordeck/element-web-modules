@@ -22,6 +22,9 @@ import {
 import { render, screen } from '@testing-library/react';
 import { Fragment } from 'react';
 import { OpenDeskModule } from './OpenDeskModule';
+import { applyStyles } from './utils/applyStyles';
+
+jest.mock('./utils/applyStyles');
 
 describe('OpenDeskModule', () => {
   let moduleApi: jest.Mocked<ModuleApi>;
@@ -41,6 +44,7 @@ describe('OpenDeskModule', () => {
 
   it('should register custom translations', () => {
     new OpenDeskModule(moduleApi);
+
     expect(moduleApi.registerTranslations).toBeCalledWith({
       'Portal logo': {
         en: 'Portal logo',
@@ -54,6 +58,22 @@ describe('OpenDeskModule', () => {
         en: 'Show portal',
         de: expect.any(String),
       },
+    });
+  });
+
+  it('should apply custom styles if configured', () => {
+    moduleApi.getConfigValue.mockReturnValue({
+      ics_navigation_json_url: 'https://example.com/navigation.json',
+      ics_silent_url: 'https://example.com/silent',
+      portal_logo_svg_url: 'https://example.com/logo.svg',
+      portal_url: 'https://example.com',
+      custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+    });
+
+    new OpenDeskModule(moduleApi);
+
+    expect(applyStyles).toBeCalledWith({
+      '--cpd-color-text-action-accent': 'purple',
     });
   });
 

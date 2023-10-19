@@ -32,6 +32,7 @@ import {
   assertValidOpenDeskModuleConfig,
 } from './config';
 import { theme } from './theme';
+import { applyStyles } from './utils/applyStyles';
 
 export class OpenDeskModule extends RuntimeModule {
   private readonly config: OpenDeskModuleConfig;
@@ -63,6 +64,10 @@ export class OpenDeskModule extends RuntimeModule {
     assertValidOpenDeskModuleConfig(config);
 
     this.config = config;
+
+    if (config.custom_css_variables) {
+      applyStyles(config.custom_css_variables);
+    }
 
     // TODO: This should be a functional component. Element calls `ReactDOM.render` and uses the
     // return value as a reference to the MatrixChat component. Then they call a function on this
