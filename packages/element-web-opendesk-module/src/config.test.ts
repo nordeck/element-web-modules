@@ -32,6 +32,15 @@ describe('assertValidOpenDeskModuleConfig', () => {
     expect(() => assertValidOpenDeskModuleConfig(config)).not.toThrow();
   });
 
+  it('should accept optional properties', () => {
+    expect(() =>
+      assertValidOpenDeskModuleConfig({
+        ...config,
+        custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+      }),
+    ).not.toThrow();
+  });
+
   it('should accept additional properties', () => {
     expect(() =>
       assertValidOpenDeskModuleConfig({ ...config, additional: 'foo' }),
@@ -55,9 +64,15 @@ describe('assertValidOpenDeskModuleConfig', () => {
     { portal_url: null },
     { portal_url: 123 },
     { portal_url: 'no-uri' },
+    { custom_css_variables: { '--other-name': 'purple' } },
+    { custom_css_variables: { '--cpd-color-blub': null } },
+    { custom_css_variables: { '--cpd-color-blub': 123 } },
+    { custom_css_variables: { '--cpd-color-blub': '' } },
   ])('should reject wrong configuration permissions %j', (patch) => {
     expect(() =>
       assertValidOpenDeskModuleConfig({ ...config, ...patch }),
-    ).toThrow(/is required|must be a string|must be a valid uri/);
+    ).toThrow(
+      /is required|must be a string|must be a valid uri|to be empty|is not allowed/,
+    );
   });
 });

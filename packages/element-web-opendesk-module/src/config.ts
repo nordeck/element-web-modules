@@ -45,6 +45,14 @@ export interface OpenDeskModuleConfig {
    * @example `https://example.com`
    */
   portal_url: string;
+
+  /**
+   * Set custom values to compound color css variables in the theme.
+   * Reference: https://compound.element.io/?path=/docs/tokens-semantic-colors--docs
+   *
+   * @example `{ "--cpd-color-text-action-accent": "purple" }`
+   */
+  custom_css_variables?: { [key: string]: string };
 }
 
 const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
@@ -52,6 +60,12 @@ const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
   ics_silent_url: Joi.string().uri().required(),
   portal_logo_svg_url: Joi.string().uri().required(),
   portal_url: Joi.string().uri().required(),
+  custom_css_variables: Joi.object().pattern(
+    Joi.string()
+      .pattern(/^--cpd-color-/)
+      .required(),
+    Joi.string(),
+  ),
 })
   .unknown()
   .required();

@@ -6,6 +6,11 @@ It uses the [Module API](https://www.npmjs.com/package/@matrix-org/react-sdk-mod
 
 <img src="./docs/navbar.png" alt="openDesk navbar" />
 
+Features:
+
+- Add a navigation bar to Element.
+- Customize the theme colors of Element.
+
 ## Requirements
 
 The minimal Element version to use this module is `1.11.41`.
@@ -32,6 +37,10 @@ The module provides required configuration options:
 - `portal_logo_svg_url` - The URL of the portal `logo.svg` file.
 - `portal_url` - The URL of the portal.
 
+There are also other optional configuration options:
+
+- `custom_css_variables` - a configuration of `--cpd-color-*` css variables to override selected colors in the Element theme. The [Element Compound](https://compound.element.io/?path=/docs/tokens-semantic-colors--docs) documentation has a list of all available options.
+
 Example configuration:
 
 ```json
@@ -41,7 +50,12 @@ Example configuration:
       "ics_navigation_json_url": "https://example.com/navigation.json",
       "ics_silent_url": "https://example.com/silent",
       "portal_logo_svg_url": "https://example.com/logo.svg",
-      "portal_url": "https://example.com"
+      "portal_url": "https://example.com",
+
+      // ... add more optional configurations
+      "custom_css_variables": {
+        "--cpd-color-text-action-accent": "purple"
+      }
     }
   }
 }

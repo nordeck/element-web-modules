@@ -22,4 +22,8 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  // TODO: jest doesn't support prettier 3.0 for inline snapshots in Jest <30.
+  // Remove this line when it is released and updated.
+  // See https://github.com/jestjs/jest/issues/14305
+  prettierPath: null,
 };

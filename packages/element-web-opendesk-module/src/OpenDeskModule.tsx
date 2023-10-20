@@ -32,6 +32,7 @@ import {
   assertValidOpenDeskModuleConfig,
 } from './config';
 import { theme } from './theme';
+import { applyStyles } from './utils/applyStyles';
 
 export class OpenDeskModule extends RuntimeModule {
   private readonly config: OpenDeskModuleConfig;
@@ -64,6 +65,10 @@ export class OpenDeskModule extends RuntimeModule {
 
     this.config = config;
 
+    if (config.custom_css_variables) {
+      applyStyles(config.custom_css_variables);
+    }
+
     // TODO: This should be a functional component. Element calls `ReactDOM.render` and uses the
     // return value as a reference to the MatrixChat component. Then they call a function on this
     // reference. This is deprecated behavior and only works if the root component is a class. Since
@@ -83,7 +88,9 @@ export class OpenDeskModule extends RuntimeModule {
         // Add the ref to our only children -> the MatrixChat component
         const children =
           React.Children.only(this.props.children) &&
-          React.isValidElement<{ ref: unknown }>(this.props.children)
+          React.isValidElement<{ ref: unknown }>(this.props.children) &&
+          'ref' in this.props.children &&
+          !this.props.children.ref
             ? React.cloneElement(this.props.children, { ref: this.ref })
             : this.props.children;
 
