@@ -1,6 +1,6 @@
 {
   "name": "@nordeck/element-web-opendesk-module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A module for Element to provide openDesk specific functionality",
   "author": "Nordeck IT + Consulting GmbH",
   "license": "Apache-2.0",
