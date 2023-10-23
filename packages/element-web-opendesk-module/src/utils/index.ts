@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
+export { applyStyles } from './applyStyles';
 export { language } from './language';

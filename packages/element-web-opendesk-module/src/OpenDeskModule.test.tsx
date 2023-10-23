@@ -22,7 +22,7 @@ import {
 import { render, screen } from '@testing-library/react';
 import { Fragment } from 'react';
 import { OpenDeskModule } from './OpenDeskModule';
-import { applyStyles } from './utils/applyStyles';
+import { applyStyles } from './utils';
 
 jest.mock('./utils/applyStyles');
 

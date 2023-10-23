@@ -32,7 +32,7 @@ import {
   assertValidOpenDeskModuleConfig,
 } from './config';
 import { theme } from './theme';
-import { applyStyles } from './utils/applyStyles';
+import { applyStyles } from './utils';
 
 export class OpenDeskModule extends RuntimeModule {
   private readonly config: OpenDeskModuleConfig;
