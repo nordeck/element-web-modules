@@ -21,7 +21,7 @@ export const OPENDESK_MODULE_CONFIG_NAMESPACE =
 
 export const OPENDESK_MODULE_CONFIG_KEY = 'config';
 
-export interface OpenDeskModuleConfig {
+export type BannerConfig = {
   /**
    * The URL of the navigation.json file that contains the navigation structure for the user.
    * @example `https://example.com/navigation.json`
@@ -45,6 +45,13 @@ export interface OpenDeskModuleConfig {
    * @example `https://example.com`
    */
   portal_url: string;
+};
+
+export interface OpenDeskModuleConfig {
+  /**
+   * If defined, a custom banner is displayed.
+   */
+  banner?: BannerConfig;
 
   /**
    * Set custom values to compound color css variables in the theme.
@@ -56,10 +63,12 @@ export interface OpenDeskModuleConfig {
 }
 
 const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
-  ics_navigation_json_url: Joi.string().uri().required(),
-  ics_silent_url: Joi.string().uri().required(),
-  portal_logo_svg_url: Joi.string().uri().required(),
-  portal_url: Joi.string().uri().required(),
+  banner: Joi.object<BannerConfig>({
+    ics_navigation_json_url: Joi.string().uri().required(),
+    ics_silent_url: Joi.string().uri().required(),
+    portal_logo_svg_url: Joi.string().uri().required(),
+    portal_url: Joi.string().uri().required(),
+  }).unknown(),
   custom_css_variables: Joi.object().pattern(
     Joi.string()
       .pattern(/^--cpd-color-/)

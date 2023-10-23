@@ -23,7 +23,7 @@ import {
 } from 'react';
 import FocusLock from 'react-focus-lock';
 import styled from 'styled-components';
-import { OpenDeskModuleConfig } from '../../config';
+import { BannerConfig } from '../../config';
 import { language } from '../../utils';
 import { Launcher } from './Launcher';
 import { Logo } from './Logo';
@@ -39,7 +39,7 @@ const Root = styled.nav`
 `;
 
 type Props = {
-  config: OpenDeskModuleConfig;
+  config: BannerConfig;
   moduleApi: ModuleApi;
 };
 
