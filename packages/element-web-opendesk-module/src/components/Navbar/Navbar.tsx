@@ -94,7 +94,7 @@ export function Navbar({ config, moduleApi }: Props) {
   return (
     <Root>
       <Logo
-        alt={moduleApi.translateString('Logo')}
+        alt={moduleApi.translateString('Portal logo')}
         ariaLabel={moduleApi.translateString('Show portal')}
         href={config.portal_url}
         src={config.portal_logo_svg_url}
