@@ -11,7 +11,7 @@
     "@types/node": "^20.8.7",
     "cross-fetch": "^4.0.0",
     "eslint": "^8.51.0",
-    "eslint-plugin-playwright": "^0.17.0",
+    "eslint-plugin-playwright": "^0.18.0",
     "testcontainers": "^10.2.1",
     "typescript": "~5.0.4"
   },
