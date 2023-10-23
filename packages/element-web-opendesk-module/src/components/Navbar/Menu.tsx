@@ -77,6 +77,12 @@ const Icon = styled.img`
   width: 20px;
 `;
 
+const PlaceholderIcon = styled.div`
+  height: 20px;
+  margin-right: 8px;
+  width: 20px;
+`;
+
 export function Menu({ navigationJson, onClick, onKeyDown }: Props) {
   return (
     <Root data-testid="menu-backdrop" onClick={onClick}>
@@ -88,11 +94,15 @@ export function Menu({ navigationJson, onClick, onKeyDown }: Props) {
               {category.entries.map((entry) => (
                 <li key={entry.identifier}>
                   <Link href={entry.link} target={entry.target}>
-                    <Icon
-                      alt={entry.display_name}
-                      role="presentation"
-                      src={entry.icon_url}
-                    />
+                    {entry.icon_url ? (
+                      <Icon
+                        alt={entry.display_name}
+                        role="presentation"
+                        src={entry.icon_url}
+                      />
+                    ) : (
+                      <PlaceholderIcon />
+                    )}
                     <span>{entry.display_name}</span>
                   </Link>
                 </li>
