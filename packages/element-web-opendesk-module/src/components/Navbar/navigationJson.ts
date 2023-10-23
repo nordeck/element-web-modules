@@ -18,7 +18,7 @@ import Joi from 'joi';
 
 interface CategoryEntry {
   display_name?: string;
-  icon_url?: string;
+  icon_url?: string | null;
   identifier?: string;
   link?: string;
   target?: string;
@@ -43,7 +43,7 @@ const navigationJsonSchema = Joi.object<NavigationJson, true>({
           .items(
             Joi.object<CategoryEntry, true>({
               display_name: Joi.string().allow(''),
-              icon_url: Joi.string().allow(''),
+              icon_url: Joi.string().allow('').allow(null),
               identifier: Joi.string().allow(''),
               link: Joi.string().allow(''),
               target: Joi.string().allow(''),
