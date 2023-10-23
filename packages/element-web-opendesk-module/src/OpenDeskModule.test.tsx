@@ -22,7 +22,7 @@ import {
 import { render, screen } from '@testing-library/react';
 import { Fragment } from 'react';
 import { OpenDeskModule } from './OpenDeskModule';
-import { applyStyles } from './utils/applyStyles';
+import { applyStyles } from './utils';
 
 jest.mock('./utils/applyStyles');
 
@@ -32,10 +32,12 @@ describe('OpenDeskModule', () => {
   beforeEach(() => {
     moduleApi = {
       getConfigValue: jest.fn().mockReturnValue({
-        ics_navigation_json_url: 'https://example.com/navigation.json',
-        ics_silent_url: 'https://example.com/silent',
-        portal_logo_svg_url: 'https://example.com/logo.svg',
-        portal_url: 'https://example.com',
+        banner: {
+          ics_navigation_json_url: 'https://example.com/navigation.json',
+          ics_silent_url: 'https://example.com/silent',
+          portal_logo_svg_url: 'https://example.com/logo.svg',
+          portal_url: 'https://example.com',
+        },
       }),
       registerTranslations: jest.fn(),
       translateString: jest.fn().mockImplementation((s) => s),
@@ -63,10 +65,6 @@ describe('OpenDeskModule', () => {
 
   it('should apply custom styles if configured', () => {
     moduleApi.getConfigValue.mockReturnValue({
-      ics_navigation_json_url: 'https://example.com/navigation.json',
-      ics_silent_url: 'https://example.com/silent',
-      portal_logo_svg_url: 'https://example.com/logo.svg',
-      portal_url: 'https://example.com',
       custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
     });
 
@@ -83,6 +81,8 @@ describe('OpenDeskModule', () => {
     const wrapperOpts: WrapperOpts = { Wrapper: Fragment };
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
 
+    expect(wrapperOpts).not.toEqual({ Wrapper: Fragment });
+
     render(
       <wrapperOpts.Wrapper>
         <p>Matrix Chat</p>
@@ -91,5 +91,16 @@ describe('OpenDeskModule', () => {
 
     expect(screen.getByRole('navigation')).toBeInTheDocument();
     expect(screen.getByText('Matrix Chat')).toBeInTheDocument();
+  });
+
+  it('should skip calling the wrapper if no banner is configured', () => {
+    moduleApi.getConfigValue.mockReturnValue({});
+
+    const module = new OpenDeskModule(moduleApi);
+
+    const wrapperOpts: WrapperOpts = { Wrapper: Fragment };
+    module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
+
+    expect(wrapperOpts).toEqual({ Wrapper: Fragment });
   });
 });

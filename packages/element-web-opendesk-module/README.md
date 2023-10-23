@@ -30,15 +30,13 @@ In case you want to create a docker-based build process, you might find inspirat
 
 ## Configure the Element Module
 
-The module provides required configuration options:
+The module provides the following optional configuration options:
 
-- `ics_navigation_json_url` - The URL of the `navigation.json` file that contains the navigation structure for the user.
-- `ics_silent_url` - The URL of the silent endpoint that is used via inline frame to log in the user.
-- `portal_logo_svg_url` - The URL of the portal `logo.svg` file.
-- `portal_url` - The URL of the portal.
-
-There are also other optional configuration options:
-
+- `banner` - Enable the banner component.
+  - `ics_navigation_json_url` - The URL of the `navigation.json` file that contains the navigation structure for the user.
+  - `ics_silent_url` - The URL of the silent endpoint that is used via inline frame to log in the user.
+  - `portal_logo_svg_url` - The URL of the portal `logo.svg` file.
+  - `portal_url` - The URL of the portal.
 - `custom_css_variables` - a configuration of `--cpd-color-*` css variables to override selected colors in the Element theme. The [Element Compound](https://compound.element.io/?path=/docs/tokens-semantic-colors--docs) documentation has a list of all available options.
 
 Example configuration:
@@ -47,10 +45,12 @@ Example configuration:
 {
   "net.nordeck.element_web.module.opendesk": {
     "config": {
-      "ics_navigation_json_url": "https://example.com/navigation.json",
-      "ics_silent_url": "https://example.com/silent",
-      "portal_logo_svg_url": "https://example.com/logo.svg",
-      "portal_url": "https://example.com",
+      "banner": {
+        "ics_navigation_json_url": "https://example.com/navigation.json",
+        "ics_silent_url": "https://example.com/silent",
+        "portal_logo_svg_url": "https://example.com/logo.svg",
+        "portal_url": "https://example.com"
+      },
 
       // ... add more optional configurations
       "custom_css_variables": {

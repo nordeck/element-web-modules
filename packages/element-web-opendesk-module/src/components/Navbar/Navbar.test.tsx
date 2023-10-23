@@ -16,12 +16,12 @@
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
-import { OpenDeskModuleConfig } from '../../config';
+import { BannerConfig } from '../../config';
 import { renderWithTheme } from '../../test-utils';
 import { Navbar } from './Navbar';
 
 describe('Navbar', () => {
-  const config: OpenDeskModuleConfig = {
+  const config: BannerConfig = {
     ics_navigation_json_url: 'https://example.com/navigation.json',
     ics_silent_url: 'https://example.com/silent',
     portal_logo_svg_url: 'https://example.com/logo.svg',

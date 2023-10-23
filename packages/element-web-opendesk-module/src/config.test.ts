@@ -17,25 +17,23 @@
 import { assertValidOpenDeskModuleConfig } from './config';
 
 describe('assertValidOpenDeskModuleConfig', () => {
-  const config = {
-    ics_navigation_json_url: 'https://example.com/navigation.json',
-    ics_silent_url: 'https://example.com/silent',
-    portal_logo_svg_url: 'https://example.com/logo.svg',
-    portal_url: 'https://example.com',
-  };
-
   it('should not accept a missing configuration', () => {
     expect(() => assertValidOpenDeskModuleConfig(undefined)).toThrow();
   });
 
-  it('should accept the configuration', () => {
-    expect(() => assertValidOpenDeskModuleConfig(config)).not.toThrow();
+  it('should accept the empty configuration', () => {
+    expect(() => assertValidOpenDeskModuleConfig({})).not.toThrow();
   });
 
   it('should accept optional properties', () => {
     expect(() =>
       assertValidOpenDeskModuleConfig({
-        ...config,
+        banner: {
+          ics_navigation_json_url: 'https://example.com/navigation.json',
+          ics_silent_url: 'https://example.com/silent',
+          portal_logo_svg_url: 'https://example.com/logo.svg',
+          portal_url: 'https://example.com',
+        },
         custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
       }),
     ).not.toThrow();
@@ -43,8 +41,39 @@ describe('assertValidOpenDeskModuleConfig', () => {
 
   it('should accept additional properties', () => {
     expect(() =>
-      assertValidOpenDeskModuleConfig({ ...config, additional: 'foo' }),
+      assertValidOpenDeskModuleConfig({
+        banner: {
+          ics_navigation_json_url: 'https://example.com/navigation.json',
+          ics_silent_url: 'https://example.com/silent',
+          portal_logo_svg_url: 'https://example.com/logo.svg',
+          portal_url: 'https://example.com',
+          additional: 'foo',
+        },
+        additional: 'foo',
+      }),
     ).not.toThrow();
+  });
+
+  it.each<Object>([
+    { banner: null },
+    { banner: 123 },
+    { custom_css_variables: { '--other-name': 'purple' } },
+    { custom_css_variables: { '--cpd-color-blub': null } },
+    { custom_css_variables: { '--cpd-color-blub': 123 } },
+    { custom_css_variables: { '--cpd-color-blub': '' } },
+  ])('should reject wrong configuration %j', (patch) => {
+    expect(() =>
+      assertValidOpenDeskModuleConfig({
+        banner: {
+          ics_navigation_json_url: 'https://example.com/navigation.json',
+          ics_silent_url: 'https://example.com/silent',
+          portal_logo_svg_url: 'https://example.com/logo.svg',
+          portal_url: 'https://example.com',
+        },
+        custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+        ...patch,
+      }),
+    ).toThrow(/must be of type object|must be a string|is not allowed/);
   });
 
   it.each<Object>([
@@ -64,15 +93,18 @@ describe('assertValidOpenDeskModuleConfig', () => {
     { portal_url: null },
     { portal_url: 123 },
     { portal_url: 'no-uri' },
-    { custom_css_variables: { '--other-name': 'purple' } },
-    { custom_css_variables: { '--cpd-color-blub': null } },
-    { custom_css_variables: { '--cpd-color-blub': 123 } },
-    { custom_css_variables: { '--cpd-color-blub': '' } },
-  ])('should reject wrong configuration permissions %j', (patch) => {
+  ])('should reject wrong banner configuration %j', (patch) => {
     expect(() =>
-      assertValidOpenDeskModuleConfig({ ...config, ...patch }),
-    ).toThrow(
-      /is required|must be a string|must be a valid uri|to be empty|is not allowed/,
-    );
+      assertValidOpenDeskModuleConfig({
+        banner: {
+          ics_navigation_json_url: 'https://example.com/navigation.json',
+          ics_silent_url: 'https://example.com/silent',
+          portal_logo_svg_url: 'https://example.com/logo.svg',
+          portal_url: 'https://example.com',
+          ...patch,
+        },
+        custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+      }),
+    ).toThrow(/is required|must be a string|must be a valid uri/);
   });
 });
