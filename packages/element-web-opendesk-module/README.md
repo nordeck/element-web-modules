@@ -2,14 +2,16 @@
 
 A module for Element to provide openDesk specific functionality.
 
-It uses the [Module API](https://www.npmjs.com/package/@matrix-org/react-sdk-module-api) to add the openDesk navbar.
+It uses the [Module API](https://www.npmjs.com/package/@matrix-org/react-sdk-module-api) to add the openDesk navbar and widget toggles.
 
-<img src="./docs/navbar.png" alt="openDesk navbar" />
+<img src="./docs/navbar.png" alt="navbar" />
+<img src="./docs/widget-toggles.png" alt="widget toggles" />
 
 Features:
 
 - Add a navigation bar to Element.
 - Customize the theme colors of Element.
+- Add widget toggles to the room header of Element.
 
 ## Requirements
 
@@ -38,6 +40,7 @@ The module provides the following optional configuration options:
   - `portal_logo_svg_url` - The URL of the portal `logo.svg` file.
   - `portal_url` - The URL of the portal.
 - `custom_css_variables` - a configuration of `--cpd-color-*` css variables to override selected colors in the Element theme. The [Element Compound](https://compound.element.io/?path=/docs/tokens-semantic-colors--docs) documentation has a list of all available options.
+- `widget_types` - The types of the widgets that should have a toggle in the room header.
 
 Example configuration:
 
@@ -55,7 +58,8 @@ Example configuration:
       // ... add more optional configurations
       "custom_css_variables": {
         "--cpd-color-text-action-accent": "purple"
-      }
+      },
+      "widget_types": ["com.example.widget", "org.example.widget"]
     }
   }
 }

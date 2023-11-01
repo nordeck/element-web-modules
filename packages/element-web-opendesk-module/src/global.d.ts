@@ -16,6 +16,47 @@
 
 import 'styled-components';
 
+type Container = 'right' | 'top';
+
+type Room = {
+  roomId: string;
+};
+
+type Widget = {
+  avatar_url?: string;
+  id: string;
+  name?: string;
+  type: string;
+};
+
+declare global {
+  interface Window {
+    mxWidgetLayoutStore: {
+      isInContainer: (
+        room: Room,
+        widget: Widget,
+        container: Container,
+      ) => boolean;
+      moveToContainer: (
+        room: Room,
+        widget: Widget,
+        container: Container,
+      ) => void;
+    };
+    mxWidgetStore: {
+      getApps: (roomId: string) => Array<Widget>;
+      matrixClient?: {
+        getRoom: (roomId: string | undefined) => Room | null;
+        mxcUrlToHttp: (
+          mxcUrl: string,
+          width?: number,
+          height?: number,
+        ) => string | null;
+      };
+    };
+  }
+}
+
 declare module 'styled-components' {
   export interface DefaultTheme {
     compound: {
