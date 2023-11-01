@@ -35,6 +35,7 @@ describe('assertValidOpenDeskModuleConfig', () => {
           portal_url: 'https://example.com',
         },
         custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+        widget_types: ['com.example.widget', 'org.example.widget'],
       }),
     ).not.toThrow();
   });
@@ -61,6 +62,10 @@ describe('assertValidOpenDeskModuleConfig', () => {
     { custom_css_variables: { '--cpd-color-blub': null } },
     { custom_css_variables: { '--cpd-color-blub': 123 } },
     { custom_css_variables: { '--cpd-color-blub': '' } },
+    { widget_types: null },
+    { widget_types: 123 },
+    { widget_types: '' },
+    { widget_types: [] },
   ])('should reject wrong configuration %j', (patch) => {
     expect(() =>
       assertValidOpenDeskModuleConfig({
@@ -71,9 +76,12 @@ describe('assertValidOpenDeskModuleConfig', () => {
           portal_url: 'https://example.com',
         },
         custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+        widget_types: ['com.example.widget', 'org.example.widget'],
         ...patch,
       }),
-    ).toThrow(/must be of type object|must be a string|is not allowed/);
+    ).toThrow(
+      /does not contain 1 required value|must be an array|must be of type object|must be a string|is not allowed/,
+    );
   });
 
   it.each<Object>([
@@ -104,6 +112,7 @@ describe('assertValidOpenDeskModuleConfig', () => {
           ...patch,
         },
         custom_css_variables: { '--cpd-color-text-action-accent': 'purple' },
+        widget_types: ['com.example.widget', 'org.example.widget'],
       }),
     ).toThrow(/is required|must be a string|must be a valid uri/);
   });

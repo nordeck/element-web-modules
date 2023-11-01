@@ -1805,10 +1805,10 @@
     globby "^11.0.0"
     read-yaml-file "^1.1.0"
 
-"@matrix-org/react-sdk-module-api@^2.0.0", "@matrix-org/react-sdk-module-api@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@matrix-org/react-sdk-module-api/-/react-sdk-module-api-2.1.0.tgz#ca9d67853512fda1df2786810b90be31dd8dc7b1"
-  integrity sha512-SARD5BsmZYv1hvuezLfBUafJ9+rPLbk5WO0S3vZgkLH3jJQrk7f/65qBB5fLKF2ljprfZ1GTpuBeq04wn7Tnmg==
+"@matrix-org/react-sdk-module-api@^2.0.0", "@matrix-org/react-sdk-module-api@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@matrix-org/react-sdk-module-api/-/react-sdk-module-api-2.2.0.tgz#cb284601a82448dc23fac31949c466eb34ec64b4"
+  integrity sha512-HSicxLdagZRbQp35d3t2SeDFTiT4GmEQDQGih8dWSKRHXK4krVQjb6Kf1NkwweiFDAeU0qgbz2pP4RZqbv0XIg==
   dependencies:
     "@babel/runtime" "^7.17.9"
 

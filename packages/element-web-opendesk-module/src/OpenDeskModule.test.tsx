@@ -16,20 +16,31 @@
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
 import {
+  RoomViewLifecycle,
+  ViewRoomOpts,
+} from '@matrix-org/react-sdk-module-api/lib/lifecycles/RoomViewLifecycle';
+import {
   WrapperLifecycle,
   WrapperOpts,
 } from '@matrix-org/react-sdk-module-api/lib/lifecycles/WrapperLifecycle';
 import { render, screen } from '@testing-library/react';
 import { Fragment } from 'react';
 import { OpenDeskModule } from './OpenDeskModule';
-import { applyStyles } from './utils';
+import { applyStyles, widgetToggles } from './utils';
 
 jest.mock('./utils/applyStyles');
+
+const mockedWidgetToggles = 'mocked-widget-toggles';
+jest.mock('./utils/widgetToggles', () => ({
+  widgetToggles: jest.fn().mockImplementation(() => mockedWidgetToggles),
+}));
 
 describe('OpenDeskModule', () => {
   let moduleApi: jest.Mocked<ModuleApi>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
+
     moduleApi = {
       getConfigValue: jest.fn().mockReturnValue({
         banner: {
@@ -48,8 +59,16 @@ describe('OpenDeskModule', () => {
     new OpenDeskModule(moduleApi);
 
     expect(moduleApi.registerTranslations).toBeCalledWith({
+      'Hide %(name)s': {
+        en: 'Hide %(name)s',
+        de: expect.any(String),
+      },
       'Portal logo': {
         en: 'Portal logo',
+        de: expect.any(String),
+      },
+      'Show %(name)s': {
+        en: 'Show %(name)s',
         de: expect.any(String),
       },
       'Show menu': {
@@ -102,5 +121,25 @@ describe('OpenDeskModule', () => {
     module.emit(WrapperLifecycle.Wrapper, wrapperOpts);
 
     expect(wrapperOpts).toEqual({ Wrapper: Fragment });
+  });
+
+  it('should listen on the RoomViewLifecycle.ViewRoom lifecycle', () => {
+    const widgetTypes = ['com.example.widget', 'org.example.widget'];
+    moduleApi.getConfigValue.mockReturnValue({ widget_types: widgetTypes });
+
+    const module = new OpenDeskModule(moduleApi);
+    const viewRoomOpts: ViewRoomOpts = { buttons: [] };
+    const roomId = '!room:example.com';
+    module.emit(RoomViewLifecycle.ViewRoom, viewRoomOpts, roomId);
+
+    expect(widgetToggles).toHaveBeenCalledWith(moduleApi, widgetTypes, roomId);
+    expect(viewRoomOpts.buttons).toBe(mockedWidgetToggles);
+  });
+
+  it('should not listen on the RoomViewLifecycle.ViewRoom lifecycle', () => {
+    const module = new OpenDeskModule(moduleApi);
+    module.emit(RoomViewLifecycle.ViewRoom, {});
+
+    expect(widgetToggles).not.toHaveBeenCalled();
   });
 });
