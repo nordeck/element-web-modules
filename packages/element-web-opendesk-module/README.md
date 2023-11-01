@@ -15,7 +15,7 @@ Features:
 
 ## Requirements
 
-The minimal Element version to use this module is `1.11.41`.
+The minimal Element version to use this module is `1.11.48`.
 
 ## Install the Element Module
 
