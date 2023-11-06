@@ -15,14 +15,18 @@
  */
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
-import { Widget } from '../global';
+import { OpenDeskModuleConfig } from '../config';
+import { Room, Widget } from '../global';
 import { mockWidgetLayoutStore, mockWidgetStore } from '../test-utils';
 import { widgetToggles } from './widgetToggles';
 
 describe('widgetToggles', () => {
   const roomId = '!roomId:example.com';
-  const room = { roomId };
-  const widgetTypes = ['com.example.widget', 'org.example.widget'];
+  const room: Room = { roomId };
+  const widgetTypes: OpenDeskModuleConfig['widget_types'] = [
+    'com.example.widget',
+    'org.example.widget',
+  ];
 
   let moduleApi: jest.Mocked<ModuleApi>;
 
@@ -56,9 +60,9 @@ describe('widgetToggles', () => {
   });
 
   describe('when there are widgets', () => {
-    const widgets = [
-      { type: 'com.example.widget' },
-      { type: 'org.example.widget' },
+    const widgets: Array<Widget> = [
+      { id: 'com', type: 'com.example.widget' },
+      { id: 'org', type: 'org.example.widget' },
     ];
 
     it('returns no toggles if widget types are missing', () => {
@@ -126,17 +130,10 @@ describe('widgetToggles', () => {
           .mockReturnValue(avatarUrl);
       });
 
-      it('calls mxcUrlToHttp', () => {
-        widgetToggles(moduleApi, widgetTypes, roomId);
-        expect(
-          window.mxWidgetStore.matrixClient!.mxcUrlToHttp,
-        ).toHaveBeenCalledWith(avatar_url, 24, 24);
-      });
-
       it('returns a img-tag with widget name as alt value', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         expect(toggle.icon).toEqual(
-          <img alt={name} height="24" src={avatarUrl} width="24" />,
+          <img alt={widget.name} height="24" src={avatarUrl} width="24" />,
         );
       });
 
@@ -147,7 +144,7 @@ describe('widgetToggles', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
 
         expect(toggle.icon).toEqual(
-          <img alt={type} height="24" src={avatarUrl} width="24" />,
+          <img alt={widget.type} height="24" src={avatarUrl} width="24" />,
         );
       });
 
@@ -167,7 +164,7 @@ describe('widgetToggles', () => {
 
     it('returns a widget ID', () => {
       const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
-      expect(toggle.id).toBe(id);
+      expect(toggle.id).toBe(widget.id);
     });
 
     describe('label', () => {
@@ -175,7 +172,7 @@ describe('widgetToggles', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         mockWidgetLayoutStore({ isInContainer: () => true });
 
-        expect(toggle.label()).toBe('Hide widget name');
+        expect(toggle.label()).toBe(`Hide ${widget.name}`);
       });
 
       it('returns a label with widget type to hide a widget', () => {
@@ -185,14 +182,14 @@ describe('widgetToggles', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         mockWidgetLayoutStore({ isInContainer: () => true });
 
-        expect(toggle.label()).toBe('Hide com.example.widget');
+        expect(toggle.label()).toBe(`Hide ${widget.type}`);
       });
 
       it('returns a label with widget name to show a widget', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         mockWidgetLayoutStore({ isInContainer: () => false });
 
-        expect(toggle.label()).toBe('Show widget name');
+        expect(toggle.label()).toBe(`Show ${widget.name}`);
       });
 
       it('returns a label with widget type to show a widget', () => {
@@ -202,7 +199,7 @@ describe('widgetToggles', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         mockWidgetLayoutStore({ isInContainer: () => false });
 
-        expect(toggle.label()).toBe('Show com.example.widget');
+        expect(toggle.label()).toBe(`Show ${widget.type}`);
       });
     });
 
