@@ -63,7 +63,7 @@ export interface OpenDeskModuleConfig {
 
   /**
    * The types of the widgets that should have a toggle in the room header.
-   * @example `["com.example.widget", "org.example.widget"]`
+   * @example `["com.example.*"]`
    */
   widget_types?: Array<string>;
 }
