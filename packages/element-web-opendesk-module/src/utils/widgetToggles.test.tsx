@@ -15,18 +15,20 @@
  */
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
+import { screen } from '@testing-library/react';
 import { OpenDeskModuleConfig } from '../config';
 import { Room, Widget } from '../global';
-import { mockWidgetLayoutStore, mockWidgetStore } from '../test-utils';
+import {
+  mockWidgetLayoutStore,
+  mockWidgetStore,
+  renderWithTheme,
+} from '../test-utils';
 import { widgetToggles } from './widgetToggles';
 
 describe('widgetToggles', () => {
   const roomId = '!roomId:example.com';
   const room: Room = { roomId };
-  const widgetTypes: OpenDeskModuleConfig['widget_types'] = [
-    'com.example.widget',
-    'org.example.widget',
-  ];
+  const widgetTypes: OpenDeskModuleConfig['widget_types'] = ['com.example.*'];
 
   let moduleApi: jest.Mocked<ModuleApi>;
 
@@ -61,8 +63,8 @@ describe('widgetToggles', () => {
 
   describe('when there are widgets', () => {
     const widgets: Array<Widget> = [
-      { id: 'com', type: 'com.example.widget' },
-      { id: 'org', type: 'org.example.widget' },
+      { id: 'widget1', type: 'com.example.widget1' },
+      { id: 'widget2', type: 'com.example.widget2' },
     ];
 
     it('returns no toggles if widget types are missing', () => {
@@ -81,8 +83,8 @@ describe('widgetToggles', () => {
         getApps: jest
           .fn()
           .mockReturnValue([
-            { type: 'com.example.app' },
-            { type: 'org.example.app' },
+            { type: 'org.example.widget1' },
+            { type: 'org.example.widget2' },
           ]),
         matrixClient: {
           getRoom: jest.fn().mockReturnValue(room),
@@ -128,37 +130,41 @@ describe('widgetToggles', () => {
         jest
           .spyOn(window.mxWidgetStore.matrixClient!, 'mxcUrlToHttp')
           .mockReturnValue(avatarUrl);
+
+        mockWidgetLayoutStore({ isInContainer: () => true });
       });
 
       it('returns a img-tag with widget name as alt value', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
-        expect(toggle.icon).toEqual(
-          <img alt={widget.name} height="24" src={avatarUrl} width="24" />,
-        );
+        renderWithTheme((toggle.icon as Function)());
+
+        const img = screen.getByRole('img');
+        expect(img).toHaveAttribute('alt', widget.name);
+        expect(img).toHaveAttribute('src', avatarUrl);
       });
 
       it('returns a img-tag with widget type as alt value', () => {
         jest
           .spyOn(window.mxWidgetStore, 'getApps')
           .mockReturnValue([{ avatar_url, id, type }]);
-        const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
 
-        expect(toggle.icon).toEqual(
-          <img alt={widget.type} height="24" src={avatarUrl} width="24" />,
-        );
+        const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
+        renderWithTheme((toggle.icon as Function)());
+
+        const img = screen.getByRole('img');
+        expect(img).toHaveAttribute('alt', widget.type);
+        expect(img).toHaveAttribute('src', avatarUrl);
       });
 
       it('returns a svg-tag', () => {
         jest
           .spyOn(window.mxWidgetStore.matrixClient!, 'mxcUrlToHttp')
           .mockReturnValue(null);
-        const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
 
-        expect(toggle.icon).toEqual(
-          <svg height="24" fill="currentColor" width="24">
-            <path d="M16 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 2.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3ZM16 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3ZM4 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3Z M8 2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" />
-          </svg>,
-        );
+        const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
+        renderWithTheme((toggle.icon as Function)());
+
+        expect(screen.getByRole('presentation')).toBeInTheDocument();
       });
     });
 

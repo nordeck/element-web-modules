@@ -16,8 +16,28 @@
 
 import { ModuleApi } from '@matrix-org/react-sdk-module-api';
 import { ViewRoomOpts } from '@matrix-org/react-sdk-module-api/lib/lifecycles/RoomViewLifecycle';
+import styled from 'styled-components';
 import { OpenDeskModuleConfig } from '../config';
 import { Widget } from '../global';
+
+type Props = { $pinned: boolean };
+
+const Img = styled.img<Props>`
+  border-color: ${({ theme }) => theme.compound.color.textActionAccent};
+  border-radius: 50%;
+  border-style: solid;
+  border-width: ${({ $pinned }) => ($pinned ? '2px' : '0px')};
+  box-sizing: border-box;
+  height: 24px;
+  width: 24px;
+`;
+
+const Svg = styled.svg<Props>`
+  height: 24px;
+  fill: ${({ $pinned }) =>
+    $pinned ? 'var(--cpd-color-text-action-accent)' : 'currentColor'};
+  width: 24px;
+`;
 
 function isMatching(
   widgetTypes: OpenDeskModuleConfig['widget_types'],
@@ -63,13 +83,21 @@ export function widgetToggles(
 
       if (isMatching(widgetTypes, widget)) {
         buttons.push({
-          icon: avatarUrl ? (
-            <img alt={nameOrType} height="24" src={avatarUrl} width="24" />
-          ) : (
-            <svg height="24" fill="currentColor" width="24">
-              <path d="M16 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 2.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3ZM16 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3ZM4 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3Z M8 2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" />
-            </svg>
-          ),
+          icon: () => {
+            const isPinned = window.mxWidgetLayoutStore.isInContainer(
+              room,
+              widget,
+              'top',
+            );
+
+            return avatarUrl ? (
+              <Img $pinned={isPinned} alt={nameOrType} src={avatarUrl} />
+            ) : (
+              <Svg $pinned={isPinned} role="presentation">
+                <path d="M16 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 2.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3ZM16 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3ZM4 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3Z M8 2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" />
+              </Svg>
+            );
+          },
           id: widget.id,
           label: () =>
             window.mxWidgetLayoutStore.isInContainer(room, widget, 'top')
