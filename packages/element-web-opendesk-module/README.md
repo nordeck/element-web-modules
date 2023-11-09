@@ -59,7 +59,7 @@ Example configuration:
       "custom_css_variables": {
         "--cpd-color-text-action-accent": "purple"
       },
-      "widget_types": ["com.example.widget", "org.example.widget"]
+      "widget_types": ["com.example.*"]
     }
   }
 }

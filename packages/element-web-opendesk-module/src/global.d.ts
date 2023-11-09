@@ -16,19 +16,7 @@
 
 import 'styled-components';
 
-type Container = 'right' | 'top';
-
-type Room = {
-  roomId: string;
-};
-
-type Widget = {
-  avatar_url?: string;
-  id: string;
-  name?: string;
-  type: string;
-};
-
+// TODO: Expose this via @matrix-org/react-sdk-module-api.
 declare global {
   interface Window {
     mxWidgetLayoutStore: {
@@ -56,6 +44,19 @@ declare global {
     };
   }
 }
+
+type Container = 'right' | 'top';
+
+type Room = {
+  roomId: string;
+};
+
+type Widget = {
+  avatar_url?: string;
+  id: string;
+  name?: string;
+  type: string;
+};
 
 declare module 'styled-components' {
   export interface DefaultTheme {
