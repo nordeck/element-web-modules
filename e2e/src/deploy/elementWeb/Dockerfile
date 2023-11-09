@@ -16,7 +16,6 @@ COPY /customisations.json /src
 
 # Build Element
 # RUN bash /src/scripts/docker-package.sh
-# RUN bash /src/scripts/docker-package.sh
 RUN VERSION=${ELEMENT_BRANCH} yarn build
 RUN echo ${ELEMENT_BRANCH} > /src/webapp/version
 
