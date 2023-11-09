@@ -15,7 +15,10 @@ COPY /build_config.yaml /src
 COPY /customisations.json /src
 
 # Build Element
-RUN bash /src/scripts/docker-package.sh
+# RUN bash /src/scripts/docker-package.sh
+# RUN bash /src/scripts/docker-package.sh
+RUN VERSION=${ELEMENT_BRANCH} yarn build
+RUN echo ${ELEMENT_BRANCH} > /src/webapp/version
 
 # Workaround for https://github.com/vector-im/element-web/issues/25941
 RUN sed -i 's/emitter.emit("closed")/emitter.emit("DISABLED")/' webapp/bundles/*/bundle.js
