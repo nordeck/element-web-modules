@@ -28,7 +28,10 @@ import { widgetToggles } from './widgetToggles';
 describe('widgetToggles', () => {
   const roomId = '!roomId:example.com';
   const room: Room = { roomId };
-  const widgetTypes: OpenDeskModuleConfig['widget_types'] = ['com.example.*'];
+  const widgetTypes: OpenDeskModuleConfig['widget_types'] = [
+    'com.example.*',
+    'jitsi',
+  ];
 
   let moduleApi: jest.Mocked<ModuleApi>;
 
@@ -110,7 +113,7 @@ describe('widgetToggles', () => {
     const avatar_url = 'mxc://example.com/hash';
     const id = 'widget id';
     const name = 'widget name';
-    const type = 'com.example.widget';
+    const type = 'com.example.widget1';
     const widget: Widget = { avatar_url, id, name, type };
 
     beforeEach(() => {
@@ -134,7 +137,22 @@ describe('widgetToggles', () => {
         mockWidgetLayoutStore({ isInContainer: () => true });
       });
 
-      it('returns a img-tag with widget name as alt value', () => {
+      it('returns a img-tag for Jitsi', () => {
+        jest
+          .spyOn(window.mxWidgetStore, 'getApps')
+          .mockReturnValue([{ avatar_url, id, type: 'jitsi' }]);
+
+        const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
+        renderWithTheme((toggle.icon as Function)());
+
+        const img = screen.getByRole('img');
+        expect(img).toHaveAttribute(
+          'src',
+          'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgcng9IjQiIGZpbGw9IiM1QUJGRjIiLz4KICAgIDxwYXRoIGQ9Ik0zIDcuODc1QzMgNi44Mzk0NyAzLjgzOTQ3IDYgNC44NzUgNkgxMS4xODc1QzEyLjIyMyA2IDEzLjA2MjUgNi44Mzk0NyAxMy4wNjI1IDcuODc1VjEyLjg3NUMxMy4wNjI1IDEzLjkxMDUgMTIuMjIzIDE0Ljc1IDExLjE4NzUgMTQuNzVINC44NzVDMy44Mzk0NyAxNC43NSAzIDEzLjkxMDUgMyAxMi44NzVWNy44NzVaIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTE0LjM3NSA4LjQ0NjQ0TDE2LjEyMDggNy4xMTAzOUMxNi40ODA2IDYuODM1MDIgMTcgNy4wOTE1OCAxNyA3LjU0NDY4VjEzLjAzOTZDMTcgMTMuNTE5OSAxNi40MjUxIDEzLjc2NjkgMTYuMDc2NyAxMy40MzYzTDE0LjM3NSAxMS44MjE0VjguNDQ2NDRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
+        );
+      });
+
+      it('returns a img-tag with widget name as alt and widget avatar URL as src value', () => {
         const toggle = widgetToggles(moduleApi, widgetTypes, roomId)[0];
         renderWithTheme((toggle.icon as Function)());
 
@@ -143,7 +161,7 @@ describe('widgetToggles', () => {
         expect(img).toHaveAttribute('src', avatarUrl);
       });
 
-      it('returns a img-tag with widget type as alt value', () => {
+      it('returns a img-tag with widget type as alt and widget avatar URL as src value', () => {
         jest
           .spyOn(window.mxWidgetStore, 'getApps')
           .mockReturnValue([{ avatar_url, id, type }]);
