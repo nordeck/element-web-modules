@@ -1,11 +1,11 @@
 FROM node:20-bullseye as builder
 
-ARG ELEMENT_VERSION="v1.11.46"
+ARG ELEMENT_VERSION="nic/feat/ms5-widget-toggles"
 
 WORKDIR /src
 
 # Clone the release tag from element
-RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/vector-im/element-web.git /src
+RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/nordeck/element-web.git /src
 
 RUN yarn --network-timeout=200000 install
 
