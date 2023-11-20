@@ -20,8 +20,8 @@
     "package": "yarn build && npm pack && shx mv nordeck-element-web-widget-lifecycle-module-*.tgz nordeck-element-web-widget-lifecycle-module.tgz"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.38.0",
-    "esbuild": "^0.19.5",
+    "@microsoft/api-extractor": "^7.38.3",
+    "esbuild": "^0.19.6",
     "typescript": "~5.0.4"
   },
   "dependencies": {
