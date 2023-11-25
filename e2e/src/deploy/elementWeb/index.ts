@@ -22,7 +22,7 @@ let container: StartedTestContainer | undefined;
 export async function startElementWeb({
   homeserverUrl,
   widgetServerUrl,
-  version = 'v1.11.48-rc.1',
+  version = 'v1.11.50',
 }: {
   homeserverUrl: string;
   widgetServerUrl: string;
