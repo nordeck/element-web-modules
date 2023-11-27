@@ -1,5 +1,15 @@
 # @nordeck/element-web-opendesk-module
 
+## 0.3.0
+
+### Minor Changes
+
+- b7c4063: Refactor the wrapper implementation.
+
+  **Breaking Change:**
+  This module requires at least Element 1.11.50.
+  The module did break the navigation feature in prior Element versions.
+
 ## 0.2.0
 
 ### Minor Changes
