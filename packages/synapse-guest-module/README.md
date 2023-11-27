@@ -28,7 +28,7 @@ Add module configuration into `modules` section of `homeserver.yaml`:
 
 ```yaml
 modules:
-  - module: phoenix_guest.GuestAuthProvider
+  - module: synapse_guest_module.GuestModule
     config: {}
 ```
 
@@ -45,7 +45,7 @@ Example configuration:
 
 ```yaml
 modules:
-  - module: phoenix_guest.GuestAuthProvider
+  - module: synapse_guest_module.GuestModule
     config:
       # Use a german suffix
       display_name_suffix: ' (Gast)'
