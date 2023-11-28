@@ -66,6 +66,32 @@ export class OpenDeskModule extends RuntimeModule {
         en: 'Show portal',
         de: 'Portal anzeigen',
       },
+      'room|header|n_people_asking_to_join': {
+        en: {
+          one: 'Asking to join',
+          other: '%(count)s people asking to join',
+        },
+        de: {
+          one: 'Möchte beitreten',
+          other: '%(count)s Personen möchten beitreten',
+        },
+      },
+      'room|knock_denied_subtitle': {
+        en: 'As you have been denied access, you cannot rejoin unless you are invited by the admin or moderator of the group.',
+        de: 'Da deine Beitrittsanfrage abgelehnt wurde, bitten wir um Geduld, bis du eine Einladung vom Administrator oder Moderator erhältst.',
+      },
+      'room|knock_denied_title': {
+        en: 'You have been denied access',
+        de: 'Deine Beitrittsanfrage wurde abgelehnt',
+      },
+      'room_settings|security|publish_room': {
+        en: 'Make this room visible in the public room directory.',
+        de: 'Diesen Raum im Raumverzeichnis veröffentlichen.',
+      },
+      'room_settings|security|publish_space': {
+        en: 'Make this space visible in the public room directory.',
+        de: 'Diesen Space im Raumverzeichnis veröffentlichen.',
+      },
     });
 
     const config = this.moduleApi.getConfigValue(

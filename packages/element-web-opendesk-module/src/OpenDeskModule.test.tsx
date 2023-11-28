@@ -79,6 +79,32 @@ describe('OpenDeskModule', () => {
         en: 'Show portal',
         de: expect.any(String),
       },
+      'room|header|n_people_asking_to_join': {
+        en: {
+          one: 'Asking to join',
+          other: '%(count)s people asking to join',
+        },
+        de: {
+          one: expect.any(String),
+          other: expect.any(String),
+        },
+      },
+      'room|knock_denied_subtitle': {
+        en: 'As you have been denied access, you cannot rejoin unless you are invited by the admin or moderator of the group.',
+        de: expect.any(String),
+      },
+      'room|knock_denied_title': {
+        en: 'You have been denied access',
+        de: expect.any(String),
+      },
+      'room_settings|security|publish_room': {
+        en: 'Make this room visible in the public room directory.',
+        de: expect.any(String),
+      },
+      'room_settings|security|publish_space': {
+        en: 'Make this space visible in the public room directory.',
+        de: expect.any(String),
+      },
     });
   });
 
