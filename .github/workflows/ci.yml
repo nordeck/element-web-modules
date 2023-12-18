@@ -174,7 +174,7 @@ jobs:
         working-directory: ./e2e/
         run: DEBUG=testcontainers:pull,testcontainers:build yarn playwright test --project=chromium
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-chromium
