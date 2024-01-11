@@ -1,0 +1,60 @@
+{
+  "name": "@nordeck/element-web-widget-toggles-module",
+  "version": "0.0.0",
+  "description": "A module for Element to provide widget toggles",
+  "author": "Nordeck IT + Consulting GmbH",
+  "license": "Apache-2.0",
+  "main": "./build/index.cjs",
+  "module": "./build/index.mjs",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "clean": "shx rm -rf lib build *.tgz",
+    "build": "yarn clean && yarn build:compile && yarn build:types",
+    "build:types": "tsc --emitDeclarationOnly && api-extractor run --verbose --local",
+    "build:compile": "node build.js",
+    "docker:build": "echo \"Nothing to build\"",
+    "tsc": "tsc",
+    "lint": "eslint . --max-warnings=0",
+    "test": "jest --watch",
+    "depcheck": "depcheck",
+    "package": "yarn build && npm pack && shx mv nordeck-element-web-widget-toggles-module-*.tgz nordeck-element-web-widget-toggles-module.tgz"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.39.1",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^12.1.5",
+    "@types/jest": "^29.5.11",
+    "esbuild": "^0.19.11",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "typescript": "~5.0.4"
+  },
+  "dependencies": {
+    "@matrix-org/react-sdk-module-api": "^2.3.0",
+    "joi": "^17.11.0",
+    "styled-components": "^6.1.8"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  },
+  "resolutions": {
+    "styled-components": "^6"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "yarn": ">=1.22.1 <2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nordeck/element-web-modules",
+    "directory": "packages/element-web-widget-toggles-module"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "element",
+    "matrix"
+  ]
+}
