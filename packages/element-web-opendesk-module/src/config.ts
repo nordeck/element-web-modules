@@ -60,12 +60,6 @@ export interface OpenDeskModuleConfig {
    * @example `{ "--cpd-color-text-action-accent": "purple" }`
    */
   custom_css_variables?: { [key: string]: string };
-
-  /**
-   * The types of the widgets that should have a toggle in the room header.
-   * @example `["com.example.*"]`
-   */
-  widget_types?: Array<string>;
 }
 
 const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
@@ -81,7 +75,6 @@ const openDeskModuleConfigSchema = Joi.object<OpenDeskModuleConfig, true>({
       .required(),
     Joi.string(),
   ),
-  widget_types: Joi.array().items(Joi.string().required()),
 })
   .unknown()
   .required();

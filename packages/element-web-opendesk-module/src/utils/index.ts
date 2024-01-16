@@ -16,4 +16,3 @@
 
 export { applyStyles } from './applyStyles';
 export { language } from './language';
-export { widgetToggles } from './widgetToggles';

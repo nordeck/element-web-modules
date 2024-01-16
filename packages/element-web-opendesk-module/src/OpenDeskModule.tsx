@@ -17,10 +17,6 @@
 import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
 import { RuntimeModule } from '@matrix-org/react-sdk-module-api/lib/RuntimeModule';
 import {
-  RoomViewLifecycle,
-  ViewRoomListener,
-} from '@matrix-org/react-sdk-module-api/lib/lifecycles/RoomViewLifecycle';
-import {
   WrapperLifecycle,
   WrapperListener,
   WrapperOpts,
@@ -36,7 +32,7 @@ import {
   assertValidOpenDeskModuleConfig,
 } from './config';
 import { theme } from './theme';
-import { applyStyles, widgetToggles } from './utils';
+import { applyStyles } from './utils';
 
 export class OpenDeskModule extends RuntimeModule {
   private readonly config: OpenDeskModuleConfig;
@@ -46,17 +42,9 @@ export class OpenDeskModule extends RuntimeModule {
     super(moduleApi);
 
     this.moduleApi.registerTranslations({
-      'Hide %(name)s': {
-        en: 'Hide %(name)s',
-        de: 'Verberge %(name)s',
-      },
       'Portal logo': {
         en: 'Portal logo',
         de: 'Portal Logo',
-      },
-      'Show %(name)s': {
-        en: 'Show %(name)s',
-        de: 'Zeige %(name)s',
       },
       'Show menu': {
         en: 'Show menu',
@@ -95,19 +83,7 @@ export class OpenDeskModule extends RuntimeModule {
 
       this.on(WrapperLifecycle.Wrapper, this.onWrapper);
     }
-
-    if (config.widget_types) {
-      this.on(RoomViewLifecycle.ViewRoom, this.onViewRoom);
-    }
   }
-
-  protected onViewRoom: ViewRoomListener = (viewRoomOpts, roomId) => {
-    viewRoomOpts.buttons = widgetToggles(
-      this.moduleApi,
-      this.config.widget_types,
-      roomId,
-    );
-  };
 
   protected onWrapper: WrapperListener = (wrapperOpts) => {
     wrapperOpts.Wrapper = this.Wrapper;

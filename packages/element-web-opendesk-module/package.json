@@ -16,7 +16,7 @@
     "tsc": "tsc",
     "lint": "eslint . --max-warnings=0",
     "test": "jest --watch",
-    "depcheck": "depcheck --ignore-patterns='customisations/*'",
+    "depcheck": "depcheck",
     "package": "yarn build && npm pack && shx mv nordeck-element-web-opendesk-module-*.tgz nordeck-element-web-opendesk-module.tgz"
   },
   "devDependencies": {
@@ -54,8 +54,7 @@
     "directory": "packages/element-web-opendesk-module"
   },
   "files": [
-    "build",
-    "customisations"
+    "build"
   ],
   "keywords": [
     "element",

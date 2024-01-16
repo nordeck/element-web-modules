@@ -27,27 +27,6 @@ function Wrapper({ children }: Props) {
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
 
-function mockWidgetLayoutStore(
-  partial: Partial<Window['mxWidgetLayoutStore']>,
-) {
-  window.mxWidgetLayoutStore = {
-    isInContainer: jest.fn(),
-    moveToContainer: jest.fn(),
-    ...partial,
-  };
-}
-
-function mockWidgetStore(partial: Partial<Window['mxWidgetStore']>) {
-  window.mxWidgetStore = {
-    getApps: jest.fn(),
-    matrixClient: {
-      getRoom: jest.fn(),
-      mxcUrlToHttp: jest.fn(),
-    },
-    ...partial,
-  };
-}
-
 function renderWithTheme(
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>,
@@ -55,4 +34,4 @@ function renderWithTheme(
   return render(ui, { wrapper: Wrapper, ...options });
 }
 
-export { mockWidgetLayoutStore, mockWidgetStore, renderWithTheme };
+export { renderWithTheme };
