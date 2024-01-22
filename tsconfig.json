@@ -15,9 +15,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "noEmit": false,
-    "declaration": true
+    "declaration": true,
   },
   "exclude": ["node_modules"],
   // Include all source code for building
-  "include": ["packages/*/src", "e2e/src"]
+  "include": ["packages/*/src", "e2e/src"],
 }
