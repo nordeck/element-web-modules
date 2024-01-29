@@ -20,13 +20,13 @@
     "package": "yarn build && npm pack && shx mv nordeck-element-web-opendesk-module-*.tgz nordeck-element-web-opendesk-module.tgz"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.39.1",
-    "@testing-library/jest-dom": "^6.2.0",
+    "@microsoft/api-extractor": "^7.39.4",
+    "@testing-library/jest-dom": "^6.3.0",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^29.5.11",
     "@types/react": "^17",
     "cross-fetch": "^4.0.0",
-    "esbuild": "^0.19.11",
+    "esbuild": "^0.20.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "typescript": "~5.0.4"
