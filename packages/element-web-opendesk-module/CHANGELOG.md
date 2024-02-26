@@ -1,5 +1,15 @@
 # @nordeck/element-web-opendesk-module
 
+## 0.4.0
+
+### Minor Changes
+
+- 13ee5ae: Remove widget toggles
+
+  **Breaking Change:**
+  The module does not support the widget toggles anymore.
+  The widget toggles are an own module now. See https://www.npmjs.com/package/@nordeck/element-web-widget-toggles-module.
+
 ## 0.3.0
 
 ### Minor Changes
