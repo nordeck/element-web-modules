@@ -34,7 +34,7 @@
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.2.1",
     "joi": "^17.12.2",
-    "react-focus-lock": "^2.9.7",
+    "react-focus-lock": "^2.11.1",
     "styled-components": "^6.1.8"
   },
   "peerDependencies": {
