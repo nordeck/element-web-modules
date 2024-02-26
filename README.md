@@ -26,6 +26,12 @@ A module to approve widget capabilities so the user is asked:
 
 - See the [Readme of the `element-web-widget-lifecycle-module`](./packages/element-web-widget-lifecycle-module/README.md) for instructions on how to install it in Element.
 
+### Element Web Widget Toggles Module
+
+A module to provide widget toggles.
+
+- See the [Readme of the `element-web-widget-toggles-module`](./packages/element-web-widget-toggles-module/README.md) for instructions on how to install it in Element.
+
 ## Getting Started
 
 Development on the module happens at [GitHub](https://github.com/nordeck/element-web-modules).
