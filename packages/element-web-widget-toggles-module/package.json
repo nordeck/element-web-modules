@@ -32,7 +32,7 @@
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.3.0",
     "joi": "^17.12.2",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.9"
   },
   "peerDependencies": {
     "react": "^17",
