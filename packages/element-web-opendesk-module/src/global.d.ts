@@ -23,6 +23,7 @@ declare module 'styled-components' {
         bgCanvasDefault: string;
         textActionAccent: string;
         textPrimary: string;
+        iconOnSolidPrimary: string;
       };
       font: {
         bodyMdSemibold: string;
@@ -31,7 +32,6 @@ declare module 'styled-components' {
     navbar: {
       border: string;
       boxShadow: string;
-      color: string;
       height: string;
       hoverBackgroundColor: string;
       offsetHeight: string;
