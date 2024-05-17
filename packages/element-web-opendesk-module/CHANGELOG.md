@@ -1,5 +1,11 @@
 # @nordeck/element-web-opendesk-module
 
+## 0.5.0
+
+### Minor Changes
+
+- c63e67b: Launcher icon color when expanded is now configurable
+
 ## 0.4.0
 
 ### Minor Changes
