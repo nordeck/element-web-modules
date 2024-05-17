@@ -28,7 +28,9 @@ const Root = styled.button`
     ariaExpanded ? theme.compound.color.textActionAccent : 'transparent'};
   border: none;
   color: ${({ 'aria-expanded': ariaExpanded, theme }) =>
-    ariaExpanded ? theme.navbar.color : theme.compound.color.textPrimary};
+    ariaExpanded
+      ? theme.compound.color.iconOnSolidPrimary
+      : theme.compound.color.textPrimary};
   cursor: pointer;
   display: flex;
   padding: 0 22px;

@@ -39,6 +39,12 @@ The module provides the following optional configuration options:
   - `portal_url` - The URL of the portal.
 - `custom_css_variables` - a configuration of `--cpd-color-*` css variables to override selected colors in the Element theme. The [Element Compound](https://compound.element.io/?path=/docs/tokens-semantic-colors--docs) documentation has a list of all available options.
 
+For the navigation bar and launcher, the following variables are relevant:
+
+- `--cpd-color-text-action-accent` sets the background of the launcher icon when expanded and the top border of the menu
+- `--cpd-color-icon-on-solid-primary` sets the color of the launcher icon when expanded
+- `
+
 Example configuration:
 
 ```json
@@ -54,7 +60,8 @@ Example configuration:
 
       // ... add more optional configurations
       "custom_css_variables": {
-        "--cpd-color-text-action-accent": "purple"
+        "--cpd-color-text-action-accent": "#dadada",
+        "--cpd-color-icon-on-solid-primary": "#aa0000"
       }
     }
   }
