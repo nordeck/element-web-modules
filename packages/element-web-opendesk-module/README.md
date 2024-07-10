@@ -43,7 +43,10 @@ For the navigation bar and launcher, the following variables are relevant:
 
 - `--cpd-color-text-action-accent` sets the background of the launcher icon when expanded and the top border of the menu
 - `--cpd-color-icon-on-solid-primary` sets the color of the launcher icon when expanded
-- `
+
+To have the primary button background color consistent with your menu color, use the following variable:
+
+- `--cpd-color-bg-action-primary-rest`
 
 Example configuration:
 
