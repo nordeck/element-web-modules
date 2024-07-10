@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@matrix-org/react-sdk-module-api": "^2.0.0",
-    "joi": "^17.13.1"
+    "joi": "^17.13.3"
   },
   "peerDependencies": {
     "react": "^17",
