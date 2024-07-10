@@ -60,8 +60,9 @@ Example configuration:
 
       // ... add more optional configurations
       "custom_css_variables": {
-        "--cpd-color-text-action-accent": "#dadada",
-        "--cpd-color-icon-on-solid-primary": "#aa0000"
+        "--cpd-color-bg-action-primary-rest": "#5e27dd",
+        "--cpd-color-text-action-accent": "#5e27dd",
+        "--cpd-color-icon-on-solid-primary": "#000000"
       }
     }
   }
@@ -112,7 +113,8 @@ Example configuration:
               "portal_url": "https://example.com/portal"
           },
           "custom_css_variables": {
-              "--cpd-color-bg-action-primary-rest": "#5e27dd"
+              "--cpd-color-bg-action-primary-rest": "#5e27dd",
+              "--cpd-color-text-action-accent": "#5e27dd"
           }
       }
   }
