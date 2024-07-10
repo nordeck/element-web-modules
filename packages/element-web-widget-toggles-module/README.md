@@ -51,7 +51,19 @@ Example configuration:
 
 2. Checkout Element and set up the development environment according to [their documentation](https://github.com/vector-im/element-web/#building-from-source).
 
-3. (In the `element-web` folder) Create a `build_config.yaml` with the following content:
+3. (In the `element-web` folder) Add the following to the `config.json`:
+
+```json
+  "net.nordeck.element_web.module.widget_toggles": {
+      "config": {
+          "types": ["jitsi", "net.nordeck"]
+      }
+  },
+```
+
+This will show toggles for the Jitsi and Nordeck widget
+
+4. (In the `element-web` folder) Create a `build_config.yaml` with the following content:
 
    ```yaml
    # Directory structure:
@@ -77,6 +89,8 @@ Example configuration:
      - 'file:../element-web-modules/packages/element-web-widget-toggles-module'
    ```
 
-4. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
+5. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
+
+6. Add a Jitsi and e.g. [NeoBoard](https://github.com/nordeck/matrix-neoboard?tab=readme-ov-file#demo) widget to a room
 
 > **Important**: You must run `yarn build` in this repo and restart Element after each change in the module.
