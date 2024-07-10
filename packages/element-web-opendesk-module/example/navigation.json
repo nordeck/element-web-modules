@@ -7,14 +7,14 @@
         {
           "identifier": "app1",
           "display_name": "App 1",
-          "icon_url": "http://localhost:8080/open-desk/app1.png",
+          "icon_url": "http://localhost:8080/open-desk/app.png",
           "link": "https://example.com/app1",
           "target": "_blank"
         },
         {
           "identifier": "app2",
           "display_name": "App 2",
-          "icon_url": "http://localhost:8080/open-desk/app2.png",
+          "icon_url": "http://localhost:8080/open-desk/app.png",
           "link": "https://example.com/app2",
           "target": "_blank"
         }
@@ -27,14 +27,14 @@
         {
           "identifier": "app3",
           "display_name": "App 3",
-          "icon_url": "http://localhost:8080/open-desk/app3.png",
+          "icon_url": "http://localhost:8080/open-desk/app.png",
           "link": "https://example.com/app3",
           "target": "_blank"
         },
         {
           "identifier": "app4",
           "display_name": "App 4",
-          "icon_url": "http://localhost:8080/open-desk/app4.png",
+          "icon_url": "http://localhost:8080/open-desk/app.png",
           "link": "https://example.com/app4",
           "target": "_blank"
         }
