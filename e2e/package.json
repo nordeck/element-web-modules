@@ -6,13 +6,13 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
-    "@axe-core/playwright": "^4.8.5",
-    "@playwright/test": "^1.42.1",
-    "@types/node": "^20.12.2",
+    "@axe-core/playwright": "^4.9.1",
+    "@playwright/test": "^1.45.3",
+    "@types/node": "^22.0.0",
     "cross-fetch": "^4.0.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-playwright": "^1.5.4",
-    "testcontainers": "^10.8.0",
+    "eslint": "^9.8.0",
+    "eslint-plugin-playwright": "^1.6.2",
+    "testcontainers": "^10.10.4",
     "typescript": "~5.0.4"
   },
   "scripts": {
