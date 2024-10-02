@@ -20,6 +20,8 @@ from synapse.module_api import (
     ProfileInfo,
     UserProfile,
     run_as_background_process,
+    NOT_SPAM,
+    errors,
 )
 from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
@@ -46,6 +48,7 @@ class GuestModule:
         self._api.register_spam_checker_callbacks(
             user_may_create_room=self.callback_user_may_create_room,
             user_may_invite=self.callback_user_may_invite,
+            user_may_join_room=self.callback_user_may_join_room,
             check_username_for_spam=self.callback_check_username_for_spam,
         )
 
@@ -137,6 +140,34 @@ class GuestModule:
         """
         user_is_guest = inviter.startswith("@" + self._config.user_id_prefix)
         return not user_is_guest
+
+    async def callback_user_may_join_room(
+        self,
+        user_id: str,
+        room_id: str,
+        is_invited: bool
+    ) -> str:
+        """Returns whether this user is allowed to join a room. Guest users
+        should only be able to do that if the room is Ask to Join (knock).
+        """
+        user_is_guest = user_id.startswith("@" + self._config.user_id_prefix)
+        if not user_is_guest or is_invited:
+            return NOT_SPAM
+
+        join_rules_events = await self._api.get_state_events_in_room(
+            room_id,
+            [("m.room.join_rules", None)]
+        )
+        if join_rules_events is None or len(join_rules_events) == 0:
+            return errors.Codes.BAD_STATE
+
+        for event in join_rules_events:
+            join_rule = event.get("content", {})
+            is_knock = join_rule.get("join_rule") == "knock"
+            if user_is_guest and is_knock:
+                return NOT_SPAM
+
+        return errors.Codes.FORBIDDEN
 
     async def callback_check_username_for_spam(self, user_profile: UserProfile) -> bool:
         """Returns whether this user should appear in the user directory. Since
