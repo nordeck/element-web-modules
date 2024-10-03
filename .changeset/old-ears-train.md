@@ -1,5 +1,5 @@
 ---
-'@nordeck/synapse-guest-module': patch
+'@nordeck/synapse-guest-module': major
 ---
 
-Guest users can only join knock rooms
+Guest users are now only allowed in Ask to Join rooms
