@@ -20,7 +20,9 @@
   "uisi_autorageshake_app": "element-auto-uisi",
   "default_country_code": "GB",
   "show_labs_settings": false,
-  "features": {},
+  "features": {
+    "feature_ask_to_join": true
+  },
   "default_federate": true,
   "default_theme": "light",
   "room_directory": {

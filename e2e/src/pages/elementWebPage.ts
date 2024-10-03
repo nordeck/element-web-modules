@@ -78,6 +78,20 @@ export class ElementWebPage {
           name,
           visibility,
           power_level_content_override: { invite: 0 },
+          initial_state: [
+            {
+              type: 'm.room.join_rules',
+              content: {
+                join_rule: 'knock',
+              },
+            },
+            {
+              type: 'm.room.guest_access',
+              content: {
+                guest_access: 'forbidden',
+              },
+            },
+          ],
         });
 
         return { roomId: room_id };
@@ -304,12 +318,6 @@ export class ElementWebPage {
 
       // Controlled by UIComponent.CreateSpaces
       this.navigationRegion.getByRole('button', { name: 'Create a space' }),
-
-      // Controlled by UIComponent.InviteUsers
-      this.mainRegion.getByRole('button', { name: 'Invite to this room' }),
-
-      // Controlled by UIComponent.RoomOptionsMenu
-      this.headerRegion.getByRole('button', { name: 'Room options' }),
     ];
   }
 }

@@ -16,28 +16,24 @@
 
 import { Locator, Page, expect } from '@playwright/test';
 
-export class LoginFormPage {
-  public readonly nameInput: Locator;
-  private readonly alreadyAccountLink: Locator;
+export class AskToJoinPage {
+  public readonly requestInput: Locator;
   private readonly continueButton: Locator;
+  private readonly cancelButton: Locator;
 
   constructor(page: Page) {
-    this.nameInput = page.getByRole('textbox', { name: 'Name' });
-    this.alreadyAccountLink = page.getByRole('link', {
-      name: 'I already have an account',
-    });
+    this.requestInput = page.getByRole('textbox');
     this.continueButton = page.getByRole('button', {
-      name: 'Continue as guest',
+      name: 'Request access',
+    });
+    this.cancelButton = page.getByRole('button', {
+      name: 'Cancel request',
     });
   }
 
-  async continueAsGuest(name: string) {
-    await this.nameInput.fill(name);
+  async submitRequest(request: string) {
+    await this.requestInput.fill(request);
     await Promise.all([this.continueButton.click()]);
-    await expect(this.continueButton).toBeHidden();
-  }
-
-  async continueWithAccount() {
-    await this.alreadyAccountLink.click();
+    await expect(this.cancelButton).toBeVisible();
   }
 }

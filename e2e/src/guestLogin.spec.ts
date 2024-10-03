@@ -16,6 +16,7 @@
 
 import { expect } from '@playwright/test';
 import { test } from './fixtures';
+import { AskToJoinPage } from './pages/askToJoinPage';
 import { registerUser } from './util';
 
 test.describe('Guest Module', () => {
@@ -31,9 +32,7 @@ test.describe('Guest Module', () => {
     guestElementWebPage,
     runAxeAnalysis,
   }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room');
 
     await guestElementWebPage.navigateToRoomWithLink(roomId);
 
@@ -42,13 +41,12 @@ test.describe('Guest Module', () => {
     expect(await runAxeAnalysis(alicePage)).toMatchSnapshot();
   });
 
-  test('should join a meeting as a guest', async ({
+  test('should request to join a meeting as a guest', async ({
     aliceElementWebPage,
+    guestPage,
     guestElementWebPage,
   }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room');
 
     await guestElementWebPage.navigateToRoomWithLink(roomId);
 
@@ -56,7 +54,8 @@ test.describe('Guest Module', () => {
 
     await loginFormPage.continueAsGuest('My Name');
 
-    await guestElementWebPage.waitForRoom('My New Room');
+    const askToJoinPage = new AskToJoinPage(guestPage);
+    await askToJoinPage.submitRequest('Please let me in');
 
     const userSettingsPage = await guestElementWebPage.openUserSettings();
     await expect(userSettingsPage.displayNameInput).toHaveValue(
@@ -65,46 +64,11 @@ test.describe('Guest Module', () => {
     await userSettingsPage.close();
   });
 
-  test('should join a meeting with an existing account', async ({
-    aliceElementWebPage,
-    guestPage,
-    guestElementWebPage,
-    bob,
-  }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
-
-    await guestElementWebPage.navigateToRoomWithLink(roomId);
-
-    const loginFormPage = await guestElementWebPage.openGuestLoginForm();
-
-    await loginFormPage.continueWithAccount();
-    await guestElementWebPage.loginWithForm(bob);
-
-    await guestPage.getByRole('heading', { name: 'Welcome Bob' }).waitFor();
-
-    // The user is not forwarded to the correct room after a non-SSO login, so
-    // we manually navigate him there again.
-    await guestElementWebPage.navigateToRoomWithLink(roomId);
-
-    // The user will not be able to automatically join this room
-    // (even with SSO enabled).
-    await guestElementWebPage.joinRoom();
-
-    await guestElementWebPage.waitForRoom('My New Room');
-
-    const userSettingsPage = await guestElementWebPage.openUserSettings();
-    await expect(userSettingsPage.displayNameInput).toHaveValue('Bob');
-  });
-
   test('should always keep the guest suffix', async ({
     aliceElementWebPage,
     guestElementWebPage,
   }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room');
 
     await guestElementWebPage.navigateToRoomWithLink(roomId);
 
@@ -132,17 +96,13 @@ test.describe('Guest Module', () => {
     aliceElementWebPage,
     guestElementWebPage,
   }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room');
 
     await guestElementWebPage.navigateToRoomWithLink(roomId);
 
     const loginFormPage = await guestElementWebPage.openGuestLoginForm();
 
     await loginFormPage.continueAsGuest('My Name');
-
-    await guestElementWebPage.waitForRoom('My New Room');
 
     // Alice (i.e. a regular user) can do everything
     for (const locator of aliceElementWebPage.getHiddenGuestLocators()) {
@@ -160,17 +120,13 @@ test.describe('Guest Module', () => {
     guestElementWebPage,
     bob,
   }) => {
-    const { roomId } = await aliceElementWebPage.createRoom('My New Room', {
-      visibility: 'public',
-    });
+    const { roomId } = await aliceElementWebPage.createRoom('My New Room');
 
     await guestElementWebPage.navigateToRoomWithLink(roomId);
 
     const loginFormPage = await guestElementWebPage.openGuestLoginForm();
 
     await loginFormPage.continueAsGuest('My Name');
-
-    await guestElementWebPage.waitForRoom('My New Room');
 
     // Use the matrix client since the buttons are already hidden from the UI
 
