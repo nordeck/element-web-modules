@@ -1,5 +1,11 @@
 # @nordeck/synapse-guest-module
 
+## 2.0.0
+
+### Major Changes
+
+- 5539790: Guest users are now only allowed in Ask to Join rooms
+
 ## 1.0.0
 
 ### Major Changes
