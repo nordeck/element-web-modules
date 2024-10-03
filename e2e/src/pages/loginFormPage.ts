@@ -20,7 +20,6 @@ export class LoginFormPage {
   public readonly nameInput: Locator;
   private readonly alreadyAccountLink: Locator;
   private readonly continueButton: Locator;
-  private readonly loadingSpinner: Locator;
 
   constructor(page: Page) {
     this.nameInput = page.getByRole('textbox', { name: 'Name' });
@@ -30,16 +29,12 @@ export class LoginFormPage {
     this.continueButton = page.getByRole('button', {
       name: 'Continue as guest',
     });
-    this.loadingSpinner = page.getByRole('progressbar');
   }
 
   async continueAsGuest(name: string) {
     await this.nameInput.fill(name);
-    await Promise.all([
-      this.loadingSpinner.waitFor(),
-      this.continueButton.click(),
-    ]);
-    await expect(this.loadingSpinner).toBeHidden();
+    await Promise.all([this.continueButton.click()]);
+    await expect(this.continueButton).toBeHidden();
   }
 
   async continueWithAccount() {
