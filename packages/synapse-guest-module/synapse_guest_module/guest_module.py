@@ -13,15 +13,15 @@
 # limitations under the License.
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Literal, Tuple, Union
 
 from synapse.module_api import (
+    NOT_SPAM,
     ModuleApi,
     ProfileInfo,
     UserProfile,
-    run_as_background_process,
-    NOT_SPAM,
     errors,
+    run_as_background_process,
 )
 from synapse.module_api.errors import ConfigError
 from synapse.types import UserID
@@ -142,11 +142,10 @@ class GuestModule:
         return not user_is_guest
 
     async def callback_user_may_join_room(
-        self,
-        user_id: str,
-        room_id: str,
-        is_invited: bool
-    ) -> str:
+        self, user_id: str, room_id: str, is_invited: bool
+    ) -> Union[
+        Literal["NOT_SPAM"], errors.Codes, Tuple[errors.Codes, Dict[str, Any]], bool
+    ]:
         """Returns whether this user is allowed to join a room. Guest users
         should only be able to do that if the room is Ask to Join (knock).
         """
@@ -155,15 +154,14 @@ class GuestModule:
             return NOT_SPAM
 
         join_rules_events = await self._api.get_state_events_in_room(
-            room_id,
-            [("m.room.join_rules", None)]
+            room_id, [("m.room.join_rules", None)]
         )
-        if join_rules_events is None or len(join_rules_events) == 0:
+        if join_rules_events is None or len(list(join_rules_events)) == 0:
             return errors.Codes.BAD_STATE
 
         for event in join_rules_events:
             join_rule = event.get("content", {})
-            is_knock = join_rule.get("join_rule") == "knock"
+            is_knock = join_rule.get("join_rule").startswith("knock")
             if user_is_guest and is_knock:
                 return NOT_SPAM
 
