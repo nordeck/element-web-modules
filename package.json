@@ -16,7 +16,7 @@
     "prettier:write": "prettier --write .",
     "depcheck": "yarn workspaces run depcheck",
     "deduplicate": "yarn-deduplicate",
-    "prepare": "husky install",
+    "prepare": "husky",
     "release": "node ./scripts/publishAllPackages.js",
     "version": "node ./scripts/versionAllPackages.js",
     "docker:build": "yarn workspaces run docker:build",
