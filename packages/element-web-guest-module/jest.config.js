@@ -21,5 +21,10 @@ module.exports = {
   roots: ['<rootDir>/src'],
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  // Fix imports not found
+  // https://mswjs.io/docs/migrations/1.x-to-2.x#cannot-find-module-mswnode-jsdom
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
 };

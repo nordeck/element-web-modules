@@ -18,7 +18,7 @@ import { ModuleApi } from '@matrix-org/react-sdk-module-api/lib/ModuleApi';
 import { AccountAuthInfo } from '@matrix-org/react-sdk-module-api/lib/types/AccountAuthInfo';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import React from 'react';
 import { generatePassword } from '../utils';
@@ -75,20 +75,24 @@ describe('<RegisterDialog />', () => {
     await userEvent.type(nameInput, 'My Name');
 
     let resolvePromise: (value: AccountAuthInfo) => void | undefined;
+
     server.use(
-      rest.post(
+      http.post(
         'http://synapse.local/_synapse/client/register_guest',
-        async (req, res, ctx) => {
-          const body = await req.json();
+        async ({ request }) => {
+          const body = (await request.json()) as { displayname: string };
+
           if (body.displayname !== 'My Name') {
-            return res(ctx.status(400));
+            return new HttpResponse(null, {
+              status: 400,
+            });
           }
 
           const response = await new Promise<AccountAuthInfo>((resolve) => {
             resolvePromise = resolve;
           });
 
-          return res(ctx.json(response));
+          return HttpResponse.json(response);
         },
       ),
     );
@@ -190,9 +194,9 @@ describe('<RegisterDialog />', () => {
     await userEvent.type(nameInput, 'My Name');
 
     server.use(
-      rest.post(
+      http.post(
         'http://synapse.local/_synapse/client/register_guest',
-        async (_, res, ctx) => res(ctx.status(400)),
+        async () => new Response(undefined, { status: 400 }),
       ),
     );
 
