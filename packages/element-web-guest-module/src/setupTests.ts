@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { TextDecoder, TextEncoder } from 'util';
+
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
@@ -23,3 +25,6 @@ import '@testing-library/jest-dom';
 // Jest don't support the native node-fetch in the jsdom environment yet
 // https://github.com/jsdom/jsdom/issues/1724
 import 'cross-fetch/polyfill';
+
+// Publish TextEncoder and TextDecoder in the global scope
+Object.assign(global, { TextDecoder, TextEncoder });
