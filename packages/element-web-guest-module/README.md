@@ -6,7 +6,7 @@ Users get a link to an [ask to join](https://spec.matrix.org/v1.11/client-server
 
 This was initially created to allow non-organisation members to join [NeoDateFix](https://github.com/nordeck/matrix-meetings) meeting rooms, even if they don't have a user account in the private and potentially non-federated homeserver.
 
-This module depends on having the `feature_ask_to_join` enabled in Element Web's `config.json` and `disable_guests` set to false:
+This module depends on having the `feature_ask_to_join` set to `true` in Element Web's `config.json` and `disable_guests` set to false:
 
 ```json
   "disable_guests": false,
