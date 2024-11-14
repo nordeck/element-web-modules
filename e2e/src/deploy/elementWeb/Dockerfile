@@ -5,7 +5,7 @@ ARG ELEMENT_VERSION="v1.11.84"
 WORKDIR /src
 
 # Clone the release tag from element
-RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/vector-im/element-web.git /src
+RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/element-hq/element-web.git /src
 
 RUN yarn --network-timeout=200000 install
 
