@@ -1,4 +1,4 @@
-FROM node:20-bullseye as builder
+FROM node:20-bullseye AS builder
 
 ARG ELEMENT_VERSION="v1.11.84"
 
