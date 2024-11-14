@@ -28,7 +28,8 @@ But these security features can lower the usability especially in more integrate
 This module was initially created to pre-approve capabilities and permission requests from the widgets if they were added by [NeoDateFix](https://github.com/nordeck/matrix-meetings) so the users are not always asked for permission in every meeting room.
 It allows you to selectively skip the permission dialogs for widgets that you trust, while they still appear for widgets that were added by third parties.
 
-> ⚠️ We recommend to only approve widgets that you deployed yourselves. These features should protect your users and you should only disable them for widgets that you trust!
+> [!WARNING]
+> We recommend to only approve widgets that you deployed yourselves. These features should protect your users and you should only disable them for widgets that you trust!
 
 ## Requirements
 
