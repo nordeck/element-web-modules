@@ -1,6 +1,6 @@
 FROM node:20-bullseye AS builder
 
-ARG ELEMENT_VERSION="v1.11.84"
+ARG ELEMENT_VERSION="master"
 
 WORKDIR /src
 
