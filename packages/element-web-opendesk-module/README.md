@@ -43,7 +43,10 @@ For the navigation bar and launcher, the following variables are relevant:
 
 - `--cpd-color-text-action-accent` sets the background of the launcher icon when expanded and the top border of the menu
 - `--cpd-color-icon-on-solid-primary` sets the color of the launcher icon when expanded
-- `
+
+To have the primary button background color consistent with your menu color, use the following variable:
+
+- `--cpd-color-bg-action-primary-rest`
 
 Example configuration:
 
@@ -60,15 +63,16 @@ Example configuration:
 
       // ... add more optional configurations
       "custom_css_variables": {
-        "--cpd-color-text-action-accent": "#dadada",
-        "--cpd-color-icon-on-solid-primary": "#aa0000"
+        "--cpd-color-bg-action-primary-rest": "#5e27dd",
+        "--cpd-color-text-action-accent": "#5e27dd",
+        "--cpd-color-icon-on-solid-primary": "#000000"
       }
     }
   }
 }
 ```
 
-## Running the Element Module Locally
+## Running the Element Web module locally
 
 1. Run `yarn build` in this repository.
 
@@ -100,6 +104,36 @@ Example configuration:
      - 'file:../element-web-modules/packages/element-web-opendesk-module'
    ```
 
-4. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
+4. Add the following example configuration to the Element Web `config.json`
+
+```json
+  "net.nordeck.element_web.module.opendesk": {
+      "config": {
+          "banner": {
+              "ics_navigation_json_url": "http://localhost:8080/open-desk/navigation.json",
+              "ics_silent_url": "http://localhost:8080/open-desk/silent-login.html",
+              "portal_logo_svg_url": "http://localhost:8080/open-desk/Nordeck-Logo_RGB.svg",
+              "portal_url": "https://example.com/portal"
+          },
+          "custom_css_variables": {
+              "--cpd-color-bg-action-primary-rest": "#5e27dd",
+              "--cpd-color-text-action-accent": "#5e27dd"
+          }
+      }
+  }
+
+```
+
+5. (In the `element-web` folder) Link the open desk module example files
+
+```
+ln -s ../element-web-modules/packages/element-web-opendesk-module/example webapp/open-desk
+```
+
+6. (In the `element-web` folder) Run `yarn start` and access it at `http://localhost:8080`
+
+7. There should now be purple buttons and a header with the Nordeck logo plus some example application links
+
+![](./docs/demo.png)
 
 > **Important**: You must run `yarn build` in this repo and restart Element after each change in the module.
