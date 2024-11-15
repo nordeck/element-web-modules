@@ -27,7 +27,7 @@ function randB64Bytes(numBytes: number): string {
 }
 
 export async function startSynapse({
-  containerImage = 'matrixdotorg/synapse:v1.90.0',
+  containerImage = 'matrixdotorg/synapse:latest',
   moduleContainerImage = 'nordeck/synapse-guest-module',
 }: { containerImage?: string; moduleContainerImage?: string } = {}): Promise<{
   synapseUrl: string;

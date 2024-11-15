@@ -64,7 +64,7 @@ The module is not published to a python registry, but we provide a docker contai
     # ...
     template:
       spec:
-+       # The init container copies the module to he `synapse-modules` volume
++       # The init container copies the module to the `synapse-modules` volume
 +       initContainers:
 +         - image: ghcr.io/nordeck/synapse-guest-module:<version>
 +           name: install-guest-module
@@ -91,3 +91,8 @@ The module is not published to a python registry, but we provide a docker contai
 +           name: synapse-modules
           # ...
 ```
+
+## Ingress/TLS proxy configuration
+
+The module exposes a new REST API POST endpoint at `/_synapse/client/register_guest`.
+Any Ingress or other proxying software used must therefore forward this path to synapse.

@@ -1,11 +1,11 @@
-FROM node:20-bullseye as builder
+FROM node:20-bullseye AS builder
 
-ARG ELEMENT_VERSION="v1.11.84"
+ARG ELEMENT_VERSION="master"
 
 WORKDIR /src
 
 # Clone the release tag from element
-RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/vector-im/element-web.git /src
+RUN git clone --depth 1 --branch $ELEMENT_VERSION https://github.com/element-hq/element-web.git /src
 
 RUN yarn --network-timeout=200000 install
 
