@@ -21,7 +21,8 @@
   "default_country_code": "GB",
   "show_labs_settings": false,
   "features": {
-    "feature_ask_to_join": true
+    "feature_ask_to_join": true,
+    "feature_release_announcement": false
   },
   "default_federate": true,
   "default_theme": "light",

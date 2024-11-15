@@ -31,8 +31,8 @@ export class ElementWebPage {
   private readonly startChatButton: Locator;
 
   constructor(private readonly page: Page) {
-    this.navigationRegion = page.getByRole('navigation');
-    this.mainRegion = page.getByRole('main');
+    this.navigationRegion = page.locator('.mx_LeftPanel_wrapper');
+    this.mainRegion = page.locator('.mx_RoomView_wrapper');
     this.headerRegion = this.mainRegion.locator('header');
     this.sendMessageTextbox = page.getByRole('textbox', { name: /message…/ });
     this.roomNameText = this.headerRegion.getByRole('heading');
@@ -140,7 +140,11 @@ export class ElementWebPage {
   }
 
   async toggleRoomInfo() {
-    await this.headerRegion.getByRole('button', { name: 'Room info' }).click();
+    // nth(1) targets the (i) button in the room header
+    await this.headerRegion
+      .getByRole('button', { name: 'Room info' })
+      .first()
+      .click();
   }
 
   async sendMessage(message: string) {
@@ -157,15 +161,10 @@ export class ElementWebPage {
     await this.sendMessage(`/addwidget ${url}`);
 
     await this.toggleRoomInfo();
-    await this.page
-      .getByRole('button', { name: 'Custom' })
-      .locator('..')
-      .getByRole('button', { name: 'Pin' })
-      .click();
+    await this.page.getByRole('menuitem', { name: 'Extensions' }).click();
+    await this.page.getByRole('button', { name: 'Pin' }).click();
 
-    await this.page
-      .getByRole('button', { name: 'Set my room layout for everyone' })
-      .click();
+    await this.page.getByText('Set layout for everyone').click();
   }
 
   async inviteUser(username: string) {
@@ -243,6 +242,12 @@ export class ElementWebPage {
       },
       { synapseUrl, credentials },
     );
+
+    // Bypass the unsupported browser toast by setting a local storage key
+    // https://github.com/element-hq/element-web/blob/9a126795a81d13aba2d331b38df75878682d54a1/src/SupportedBrowser.ts#L94
+    await this.page.evaluate(() => {
+      window.localStorage.setItem('mx_accepts_unsupported_browser', 'true');
+    });
 
     // Reload and use the credentials
     await this.page.goto(getElementWebUrl());
