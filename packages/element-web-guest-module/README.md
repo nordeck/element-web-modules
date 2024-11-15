@@ -25,7 +25,7 @@ Guest users...
 
 ## Requirements
 
-The minimal Element version to use this module is `1.11.40`.
+The minimal Element version to use this module is `1.11.84`.
 
 ## Install the Element Module
 

@@ -34,9 +34,13 @@ import {
   assertValidGuestModuleConfig,
   shouldShowComponent as shouldShowComponentShared,
 } from '@nordeck/element-web-guest-module';
-import { MatrixClientPeg } from 'matrix-react-sdk/src/MatrixClientPeg';
-import SdkConfig from 'matrix-react-sdk/src/SdkConfig';
-import { UIComponent } from 'matrix-react-sdk/src/settings/UIFeature';
+// The next two imports are a hack to make it work after React SDK was merged into Element Web.
+// The idea is to start with matrix-js-sdk, that is placed into node_modules, and
+// then use a relative path to import something from /src in Element Web.
+// /src in Element Web is now what previously matrix-react-sdk was.
+// matrix-js-sdk should be relatively safe, as Element Web uses it itself.
+import { MatrixClientPeg } from 'matrix-js-sdk/../../src/MatrixClientPeg';
+import SdkConfig from 'matrix-js-sdk/../../src/SdkConfig';
 
 export function getConfig(): GuestModuleConfig {
   const rawConfig =
