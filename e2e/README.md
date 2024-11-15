@@ -6,7 +6,9 @@ End-to-end tests for the components in this repository.
 
 ### Prerequisites
 
-Running the e2e tests requires Docker to be installed.
+Running the e2e tests requires Docker or Podman to be installed.
+
+If using Podman be sure to [set up the `DOCKER_HOST` environment variable](https://node.testcontainers.org/supported-container-runtimes/).
 
 ### Running Tests
 
