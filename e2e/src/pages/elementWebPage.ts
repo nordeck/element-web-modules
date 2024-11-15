@@ -140,7 +140,6 @@ export class ElementWebPage {
   }
 
   async toggleRoomInfo() {
-    // nth(1) targets the (i) button in the room header
     await this.headerRegion
       .getByRole('button', { name: 'Room info' })
       .first()
