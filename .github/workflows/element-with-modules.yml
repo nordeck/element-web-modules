@@ -1,0 +1,290 @@
+name: Element with modules
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: '0 5 * * 1-6'
+  dispatch:
+    inputs:
+      element:
+        description: 'Element Web version (git ref)'
+        required: true
+        type: 'string'
+      guestModule:
+        description: 'Element Guest module version (release tag/git ref/none)'
+        required: true
+        type: 'string'
+      opendeskModule:
+        description: 'Element openDesk module version (release tag/git ref/none)'
+        required: true
+        type: 'string'
+      lifecycleModule:
+        description: 'Element Widget Lifecycle module version (release tag/git ref/none)'
+        required: true
+        type: 'string'
+      togglesModule:
+        description: 'Element Widget Toggles module version (release tag/git ref/none)'
+        required: true
+        type: 'string'
+
+jobs:
+  determine-versions:
+    name: Determine the versions for which to build containers
+    runs-on: gh-runner-nordeck
+    timeout-minutes: 15
+    permission:
+      contents: read
+    outputs:
+      matrix: ${{ env.MATRIX }}
+    steps:
+      - name: Determine Element Web version
+        working-directory: element-web
+        run: |
+          VERSION_ELEMENT="develop"  # Element develop branch
+          VERSION_ELEMENT="staging"  # Element branch with the latest release candidate
+          VERSION_ELEMENT="master"  # Element cut their releases from master branch
+          if [[ ${{ inputs.element }} != "" ]]; then VERSION_ELEMENT="${{ inputs.element }}"; fi
+          git checkout $VERSION_ELEMENT
+
+      - uses: actions/checkout@v4
+
+      - name: Determine Guest module version
+        run: |
+          VERSION_MOD_GUEST="main"  # Development version
+          VERSION_MOD_GUEST="$(git describe --match="@nordeck/element-web-guest-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_GUEST=${{ github.sha }}; fi  # the local PR version
+          if [[ ${{ inputs.guestModule }} != "" ]]; then VERSION_MOD_GUEST=${{ inputs.guestModule }}; fi
+          echo "VERSION_MOD_GUEST=$VERSION_MOD_GUEST" >> $GITHUB_ENV
+
+      - name: Determine openDesk module version
+        run: |
+          VERSION_MOD_OPENDESK="main"  # Development version
+          VERSION_MOD_OPENDESK="$(git describe --match="@nordeck/element-web-opendesk-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_OPENDESK=${{ github.sha }}; fi  # the local PR version
+          if [[ ${{ inputs.opendeskModule }} != "" ]]; then VERSION_MOD_OPENDESK=${{ inputs.opendeskModule }}; fi
+          echo "VERSION_MOD_OPENDESK=$VERSION_MOD_OPENDESK" >> $GITHUB_ENV
+
+      - name: Determine Widget Lifecycle module version
+        run: |
+          VERSION_MOD_LIFECYCLE="main"  # Development version
+          VERSION_MOD_LIFECYCLE="$(git describe --match="@nordeck/element-web-widget-lifecycle-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_LIFECYCLE=${{ github.sha }}; fi  # the local PR version
+          if [[ ${{ inputs.lifecycleModule }} != "" ]]; then VERSION_MOD_LIFECYCLE=${{ inputs.lifecycleModule }}; fi
+          echo "VERSION_MOD_LIFECYCLE=$VERSION_MOD_LIFECYCLE" >> $GITHUB_ENV
+
+      - name: Determine Widget Toggles module version
+        run: |
+          VERSION_MOD_TOGGLES="main"  # Development version
+          VERSION_MOD_TOGGLES="$(git describe --match="@nordeck/element-web-widget-toggles-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_TOGGLES=${{ github.sha }}; fi  # the local PR version
+          if [[ ${{ inputs.togglesModule }} != "" ]]; then VERSION_MOD_TOGGLES=${{ inputs.togglesModule }}; fi
+          echo "VERSION_MOD_TOGGLES=$VERSION_MOD_TOGGLES" >> $GITHUB_ENV
+
+      - name: Create job matrix
+        run: |
+          MATRIX='{"include": [{"element": "$VERSION_ELEMENT", "guest": "$VERSION_MOD_GUEST", "opendesk": "$VERSION_MOD_OPENDESK", "lifecycle": "$VERSION_MOD_LIFECYCLE", "toggles": "$VERSION_MOD_TOGGLES"}]}'
+          echo "MATRIX=$MATRIX" >> $GITHUB_ENV
+
+  build-container:
+    name: Build OCI container of stable Element with all stable modules
+    runs-on: gh-runner-nordeck
+    timeout-minutes: 15
+    permission:
+      contents: read
+      packages: write
+    needs: determine-versions
+    strategy:
+      matrix:
+        fail-fast: false
+        include: ${{ fromJson(needs.determine-versions.outputs.matrix) }}
+    env:
+      DOCKER_PLATFORMS: linux/amd64,linux/arm64,linux/s390x
+    steps:
+      - run: |
+          echo "Building Element Web with modules, versions:"
+          echo "- Dockerfile ${{ github.sha }}"
+          echo "- Element Web ${{ matrix.element }}"
+          echo "- Guest module ${{ matrix.guest }}"
+          echo "- openDesk module ${{ matrix.opendesk }}"
+          echo "- Widget Lifecycle module ${{ matrix.lifecycle }}"
+          echo "- Widget Toggles module ${{ matrix.toggles }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set up build_config.yaml
+        run: |
+          echo "modules:" > e2e/src/deploy/elementWeb/build_config.yaml
+
+      - name: Checkout Guest module version
+        if: ${{ matrix.guest != 'none') }}
+        uses: actions/checkout@v4
+        ref: '${{ matrix.guest }}'
+
+      - name: Build Guest module
+        if: ${{ ! (startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none')) }}
+        run: |
+          yarn install --frozen-lockfile
+          cd packages/element-web-guest-module
+          yarn package
+          mv element-web-guest-module.tgz ../
+
+      - name: Generate Guest module build_config.yaml entry and customisations.json
+        if: ${{ matrix.guest != 'none') }}
+        env:
+          VERSION: ${{ matrix.guest }}
+          IS_REF: ${{ ! startsWith(matrix.guest, '@nordeck') }}
+        run: |
+          VERSION=${{ env.VERSION }}
+          if [[ ${{ env.IS_REF }} ]]
+          then
+            VERSION="file:nordeck-element-web-guest-module.tgz"
+          fi
+          echo "  - '$VERSION'" >> ../build_config.yaml
+
+      - name: Checkout openDesk module version
+        if: ${{ matrix.opendesk != 'none') }}
+        uses: actions/checkout@v4
+        ref: '${{ matrix.opendesk }}'
+
+      - name: Build openDesk module
+        if: ${{ ! (startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none')) }}
+        run: |
+          yarn install --frozen-lockfile
+          cd packages/element-web-opendesk-module
+          yarn package
+          mv element-web-opendesk-module.tgz ../
+
+      - name: Generate openDesk module build_config.yaml entry
+        if: ${{ matrix.opendesk != 'none') }}
+        env:
+          VERSION: ${{ matrix.opendesk }}
+          IS_REF: ${{ ! startsWith(matrix.opendesk, '@nordeck') }}
+        run: |
+          VERSION=${{ env.VERSION }}
+          if [[ ${{ env.IS_REF }} ]]
+          then
+            VERSION="file:nordeck-element-web-opendesk-module.tgz"
+          fi
+          echo "  - '$VERSION'" >> ../build_config.yaml
+
+      - name: Checkout Widget Lifecycle module version
+        if: ${{ matrix.lifecycle != 'none') }}
+        uses: actions/checkout@v4
+        ref: '${{ matrix.lifecycle }}'
+
+      - name: Build Widget Lifecycle module
+        if: ${{ ! (startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none')) }}
+        run: |
+          yarn install --frozen-lockfile
+          cd packages/element-web-widget-lifecycle-module
+          yarn package
+          mv element-web-widget-lifecycle-module.tgz ../
+
+      - name: Generate Widget Lifecycle module build_config.yaml entry
+        if: ${{ matrix.lifecycle != 'none') }}
+        env:
+          VERSION: ${{ matrix.lifecycle }}
+          IS_REF: ${{ ! startsWith(matrix.lifecycle, '@nordeck') }}
+        run: |
+          VERSION=${{ env.VERSION }}
+          if [[ ${{ env.IS_REF }} ]]
+          then
+            VERSION="file:nordeck-element-web-widget-lifecycle-module.tgz"
+          fi
+          echo "  - '$VERSION'" >> ../build_config.yaml
+
+      - name: Checkout Widget Toggles module version
+        if: ${{ matrix.toggles != 'none') }}
+        uses: actions/checkout@v4
+        ref: '${{ matrix.toggles }}'
+
+      - name: Build Widget Toggles module
+        if: ${{ ! (startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none')) }}
+        run: |
+          yarn install --frozen-lockfile
+          cd packages/element-web-widget-toggles-module
+          yarn package
+          mv element-web-widget-toggles-module.tgz ../
+
+      - name: Generate Widget Toggles module build_config.yaml entry
+        if: ${{ matrix.toggles != 'none') }}
+        env:
+          VERSION: ${{ matrix.toggles }}
+          IS_REF: ${{ ! startsWith(matrix.toggles, '@nordeck') }}
+        run: |
+          VERSION=${{ env.VERSION }}
+          if [[ ${{ env.IS_REF }} ]]
+          then
+            VERSION="file:nordeck-element-web-widget-toggles-module.tgz"
+          fi
+          echo "  - '$VERSION'" >> ../build_config.yaml
+
+      - name: Checkout Element version
+        if: ${{ matrix.element == 'staging' || matrix.element == 'master' }}
+        uses: actions/checkout@v4
+        with:
+          repository: element-hq/element-web
+          ref: ${{ matrix.element }}
+          path: ../element-web
+
+      - name: Determine Element Web tag from branch name
+        env:
+          IS_RELEASE: ${{ matrix.element == 'staging' || matrix.element == 'master' }}
+        working-directory: ../element-web
+        run: ELEMENT="$(git describe --exclude='*' --always)"
+          if [[ ${{ env.IS_RELEASE }} ]]; then ELEMENT="$(git describe --abbrev=0)"; fi
+          echo "ELEMENT=$ELEMENT" >> $GITHUB_ENV
+
+      - name: Checkout Dockerfile version
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/nordeck/element-web-modules
+          labels: |
+            org.opencontainers.image.title=Element Web with modules
+            org.opencontainers.image.description=A ready to use Element Web with all Nordeck modules.
+            org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
+          tags: |
+            type=raw,value=${{ env.ELEMENT }}+
+
+        # TODO: reasonable tagging scheme
+
+      - name: Collect module source files
+        run: |
+          mv ../build_config.yaml e2e/src/deploy/elementWeb/
+          mv ../customisations.json e2e/src/deploy/elementWeb/ || true
+          mv ../element-web-guest-module.tgz e2e/src/deploy/elementWeb/ || true
+          mv ../element-web-opendesk-module.tgz e2e/src/deploy/elementWeb/ || true
+          mv ../element-web-widget-lifecycle-module.tgz e2e/src/deploy/elementWeb/ || true
+          mv ../element-web-widget-toggles-module.tgz e2e/src/deploy/elementWeb/ || true
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: e2e/src/deploy/elementWeb/
+          build-args: |
+            ELEMENT_VERSION=${{ matrix.element }}
+          platforms: ${{ env.DOCKER_PLATFORMS }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' && matrix.element == 'master' }}
