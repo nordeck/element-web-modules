@@ -35,7 +35,7 @@ on:
 jobs:
   determine-versions:
     name: Determine the versions for which to build containers
-    runs-on: gh-runner-nordeck
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
