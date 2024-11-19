@@ -2,12 +2,14 @@ name: Element with modules
 
 on:
   push:
-    branches:
+    branches: # we want to build the widgets from the push into Element staging and publish a main container
       - main
-  pull_request:
-  schedule:
+    tags: # we want to build the stable widgets into stable Element and publish the container
+      - '@nordeck/element*module*'
+  pull_request: # we want to build the widgets from the PR into Element develop & staging
+  schedule: # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions
     - cron: '0 5 * * 1-6'
-  dispatch:
+  dispatch: # we build whatever the user inputs and publish the container
     inputs:
       element:
         description: 'Element Web version (git ref)'
@@ -43,49 +45,74 @@ jobs:
       - name: Determine Element Web version
         working-directory: element-web
         run: |
-          VERSION_ELEMENT="develop"  # Element develop branch
-          VERSION_ELEMENT="staging"  # Element branch with the latest release candidate
-          VERSION_ELEMENT="master"  # Element cut their releases from master branch
+          VERSION_ELEMENT_DEV="develop"  # Element develop branch
+          VERSION_ELEMENT_STAGING="staging"  # Element branch with the latest release candidate
+          VERSION_ELEMENT_STABLE="master"  # Element cut their releases from master branch
+          VERSION_ELEMENT="$VERSION_ELEMENT_DEV"
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/heads/main') }} ]]; then VERSION_ELEMENT="$VERSION_ELEMENT_STAGING"; fi
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_ELEMENT="$VERSION_ELEMENT_STABLE"; fi
           if [[ ${{ inputs.element }} != "" ]]; then VERSION_ELEMENT="${{ inputs.element }}"; fi
-          git checkout $VERSION_ELEMENT
+          echo "VERSION_ELEMENT=$VERSION_ELEMENT" >> $GITHUB_ENV
+          echo "VERSION_ELEMENT_STAGING=$VERSION_ELEMENT_STAGING" >> $GITHUB_ENV
+          echo "VERSION_ELEMENT_STABLE=$VERSION_ELEMENT_STABLE" >> $GITHUB_ENV
 
       - uses: actions/checkout@v4
 
       - name: Determine Guest module version
         run: |
+          VERSION_MOD_GUEST_STABLE="$(git describe --match="@nordeck/element-web-guest-module*" --abbrev=0)"
           VERSION_MOD_GUEST="main"  # Development version
-          VERSION_MOD_GUEST="$(git describe --match="@nordeck/element-web-guest-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_GUEST="$VERSION_MOD_GUEST_STABLE"; fi  # latest release
           if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_GUEST=${{ github.sha }}; fi  # the local PR version
           if [[ ${{ inputs.guestModule }} != "" ]]; then VERSION_MOD_GUEST=${{ inputs.guestModule }}; fi
           echo "VERSION_MOD_GUEST=$VERSION_MOD_GUEST" >> $GITHUB_ENV
+          echo "VERSION_MOD_GUEST_STABLE=$VERSION_MOD_GUEST_STABLE" >> $GITHUB_ENV
 
       - name: Determine openDesk module version
         run: |
+          VERSION_MOD_OPENDESK_STABLE="$(git describe --match="@nordeck/element-web-opendesk-module*" --abbrev=0)"
           VERSION_MOD_OPENDESK="main"  # Development version
-          VERSION_MOD_OPENDESK="$(git describe --match="@nordeck/element-web-opendesk-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_OPENDESK="$VERSION_MOD_OPENDESK_STABLE"; fi  # latest release
           if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_OPENDESK=${{ github.sha }}; fi  # the local PR version
           if [[ ${{ inputs.opendeskModule }} != "" ]]; then VERSION_MOD_OPENDESK=${{ inputs.opendeskModule }}; fi
           echo "VERSION_MOD_OPENDESK=$VERSION_MOD_OPENDESK" >> $GITHUB_ENV
+          echo "VERSION_MOD_OPENDESK_STABLE=$VERSION_MOD_OPENDESK_STABLE" >> $GITHUB_ENV
 
       - name: Determine Widget Lifecycle module version
         run: |
+          VERSION_MOD_LIFECYCLE_STABLE="$(git describe --match="@nordeck/element-web-widget-lifecycle-module*" --abbrev=0)"  # latest release
           VERSION_MOD_LIFECYCLE="main"  # Development version
-          VERSION_MOD_LIFECYCLE="$(git describe --match="@nordeck/element-web-widget-lifecycle-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_LIFECYCLE="$VERSION_MOD_LIFECYCLE_STABLE"; fi  # latest release
           if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_LIFECYCLE=${{ github.sha }}; fi  # the local PR version
           if [[ ${{ inputs.lifecycleModule }} != "" ]]; then VERSION_MOD_LIFECYCLE=${{ inputs.lifecycleModule }}; fi
           echo "VERSION_MOD_LIFECYCLE=$VERSION_MOD_LIFECYCLE" >> $GITHUB_ENV
+          echo "VERSION_MOD_LIFECYCLE_STABLE=$VERSION_MOD_LIFECYCLE_STABLE" >> $GITHUB_ENV
 
       - name: Determine Widget Toggles module version
         run: |
+          VERSION_MOD_TOGGLES_STABLE="$(git describe --match="@nordeck/element-web-widget-toggles-module*" --abbrev=0)"
           VERSION_MOD_TOGGLES="main"  # Development version
-          VERSION_MOD_TOGGLES="$(git describe --match="@nordeck/element-web-widget-toggles-module*" --abbrev=0)"  # latest release
+          if [[ ${{ github.event_name }} == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_TOGGLES="$VERSION_MOD_TOGGLES_STABLE"; fi
           if [[ ${{ github.event_name }} == "pull_request" ]]; then VERSION_MOD_TOGGLES=${{ github.sha }}; fi  # the local PR version
           if [[ ${{ inputs.togglesModule }} != "" ]]; then VERSION_MOD_TOGGLES=${{ inputs.togglesModule }}; fi
           echo "VERSION_MOD_TOGGLES=$VERSION_MOD_TOGGLES" >> $GITHUB_ENV
+          echo "VERSION_MOD_TOGGLES_STABLE=$VERSION_MOD_TOGGLES_STABLE" >> $GITHUB_ENV
 
       - name: Create job matrix
         run: |
-          MATRIX='{"include": [{"element": "$VERSION_ELEMENT", "guest": "$VERSION_MOD_GUEST", "opendesk": "$VERSION_MOD_OPENDESK", "lifecycle": "$VERSION_MOD_LIFECYCLE", "toggles": "$VERSION_MOD_TOGGLES"}]}'
+          LOCAL="{\"element\": \"$VERSION_ELEMENT\", \"guest\": \"$VERSION_MOD_GUEST\", \"opendesk\": \"$VERSION_MOD_OPENDESK\", \"lifecycle\": \"$VERSION_MOD_LIFECYCLE\", \"toggles\": \"$VERSION_MOD_TOGGLES\"}"
+          echo $LOCAL | jq
+          SECONDARY=""
+          if [[ ${{ github.event_name }} == "pull_request" ]]
+          then
+            SECONDARY=",{\"element\": \"$VERSION_ELEMENT_STAGING\", \"guest\": \"$VERSION_MOD_GUEST\", \"opendesk\": \"$VERSION_MOD_OPENDESK\", \"lifecycle\": \"$VERSION_MOD_LIFECYCLE\", \"toggles\": \"$VERSION_MOD_TOGGLES\"}"
+          elif [[ ${{ github.event_name }} == "pull_request" ]]
+          then
+            SECONDARY=",{\"element\": \"$VERSION_ELEMENT_STABLE\", \"guest\": \"$VERSION_MOD_GUEST_STABLE\", \"opendesk\": \"$VERSION_MOD_OPENDESK_STABLE\", \"lifecycle\": \"$VERSION_MOD_LIFECYCLE_STABLE\", \"toggles\": \"$VERSION_MOD_TOGGLES_STABLE\"}"
+          fi
+          echo $SECONDARY | jq
+          MATRIX="{\"include\": [${LOCAL}]}"
+          echo $MATRIX | jq
           echo "MATRIX=$MATRIX" >> $GITHUB_ENV
 
   build-container:
@@ -131,9 +158,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          cd packages/element-web-guest-module
-          yarn package
-          mv element-web-guest-module.tgz ../
+          yarn workspace element-web-guest-module package
+          mv packages/element-web-guest-module/element-web-guest-module.tgz ../
 
       - name: Generate Guest module build_config.yaml entry and customisations.json
         if: ${{ matrix.guest != 'none') }}
@@ -141,12 +167,16 @@ jobs:
           VERSION: ${{ matrix.guest }}
           IS_REF: ${{ ! startsWith(matrix.guest, '@nordeck') }}
         run: |
-          VERSION=${{ env.VERSION }}
+          VERSION="${{ env.VERSION }}"
+          HUMAN_GUEST="$(git describe --exclude='*' --always)"
           if [[ ${{ env.IS_REF }} ]]
           then
             VERSION="file:nordeck-element-web-guest-module.tgz"
+            HUMAN_GUEST="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
+          HUMAN_GUEST="+g-${ HUMAN_GUEST }"
+          echo "HUMAN_GUEST=$HUMAN_GUEST" >> $GITHUB_ENV
 
       - name: Checkout openDesk module version
         if: ${{ matrix.opendesk != 'none') }}
@@ -157,9 +187,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          cd packages/element-web-opendesk-module
-          yarn package
-          mv element-web-opendesk-module.tgz ../
+          yarn workspace element-web-opendesk-module package
+          mv packages/element-web-opendesk-module/element-web-opendesk-module.tgz ../
 
       - name: Generate openDesk module build_config.yaml entry
         if: ${{ matrix.opendesk != 'none') }}
@@ -167,12 +196,16 @@ jobs:
           VERSION: ${{ matrix.opendesk }}
           IS_REF: ${{ ! startsWith(matrix.opendesk, '@nordeck') }}
         run: |
-          VERSION=${{ env.VERSION }}
+          VERSION="${{ env.VERSION }}"
+          HUMAN_OPENDESK="$(git describe --exclude='*' --always)"
           if [[ ${{ env.IS_REF }} ]]
           then
             VERSION="file:nordeck-element-web-opendesk-module.tgz"
+            HUMAN_OPENDESK="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
+          HUMAN_OPENDESK="+od-${ HUMAN_OPENDESK }"
+          echo "HUMAN_OPENDESK=$HUMAN_OPENDESK" >> $GITHUB_ENV
 
       - name: Checkout Widget Lifecycle module version
         if: ${{ matrix.lifecycle != 'none') }}
@@ -183,9 +216,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          cd packages/element-web-widget-lifecycle-module
-          yarn package
-          mv element-web-widget-lifecycle-module.tgz ../
+          yarn workspace element-web-widget-lifecycle-module package
+          mv packages/element-web-widget-lifecycle-module/element-web-widget-lifecycle-module.tgz ../
 
       - name: Generate Widget Lifecycle module build_config.yaml entry
         if: ${{ matrix.lifecycle != 'none') }}
@@ -193,12 +225,16 @@ jobs:
           VERSION: ${{ matrix.lifecycle }}
           IS_REF: ${{ ! startsWith(matrix.lifecycle, '@nordeck') }}
         run: |
-          VERSION=${{ env.VERSION }}
+          VERSION="${{ env.VERSION }}"
+          HUMAN_LIFECYCLE="$(git describe --exclude='*' --always)"
           if [[ ${{ env.IS_REF }} ]]
           then
             VERSION="file:nordeck-element-web-widget-lifecycle-module.tgz"
+            HUMAN_LIFECYCLE="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
+          HUMAN_LIFECYCLE="+wl-${ HUMAN_LIFECYCLE }"
+          echo "HUMAN_LIFECYCLE=$HUMAN_LIFECYCLE" >> $GITHUB_ENV
 
       - name: Checkout Widget Toggles module version
         if: ${{ matrix.toggles != 'none') }}
@@ -209,9 +245,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          cd packages/element-web-widget-toggles-module
-          yarn package
-          mv element-web-widget-toggles-module.tgz ../
+          yarn workspace element-web-widget-toggles-module package
+          mv packages/element-web-widget-toggles-module/element-web-widget-toggles-module.tgz ../
 
       - name: Generate Widget Toggles module build_config.yaml entry
         if: ${{ matrix.toggles != 'none') }}
@@ -220,27 +255,31 @@ jobs:
           IS_REF: ${{ ! startsWith(matrix.toggles, '@nordeck') }}
         run: |
           VERSION=${{ env.VERSION }}
+          HUMAN_TOGGLES="$(git describe --exclude='*' --always)"
           if [[ ${{ env.IS_REF }} ]]
           then
             VERSION="file:nordeck-element-web-widget-toggles-module.tgz"
+            HUMAN_TOGGLES="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
+          HUMAN_TOGGLES="+wt-${ HUMAN_TOGGLES }"
+          echo "HUMAN_TOGGLES=$HUMAN_TOGGLES" >> $GITHUB_ENV
 
       - name: Checkout Element version
-        if: ${{ matrix.element == 'staging' || matrix.element == 'master' }}
         uses: actions/checkout@v4
         with:
           repository: element-hq/element-web
           ref: ${{ matrix.element }}
           path: ../element-web
 
-      - name: Determine Element Web tag from branch name
+      - name: Determine human readable Element Web version
         env:
           IS_RELEASE: ${{ matrix.element == 'staging' || matrix.element == 'master' }}
         working-directory: ../element-web
-        run: ELEMENT="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_RELEASE }} ]]; then ELEMENT="$(git describe --abbrev=0)"; fi
-          echo "ELEMENT=$ELEMENT" >> $GITHUB_ENV
+        run: |
+          HUMAN_ELEMENT="$(git describe --exclude='*' --always)"
+          if [[ ${{ env.IS_RELEASE }} ]]; then HUMAN_ELEMENT="$(git describe --abbrev=0)"; fi
+          echo "HUMAN_ELEMENT=$HUMAN_ELEMENT" >> $GITHUB_ENV
 
       - name: Checkout Dockerfile version
         uses: actions/checkout@v4
@@ -265,9 +304,8 @@ jobs:
             org.opencontainers.image.description=A ready to use Element Web with all Nordeck modules.
             org.opencontainers.image.vendor=Nordeck IT + Consulting GmbH
           tags: |
-            type=raw,value=${{ env.ELEMENT }}+
-
-        # TODO: reasonable tagging scheme
+            type=raw,value=ew-${{ env.HUMAN_ELEMENT }}${{ env.HUMAN_GUEST }}${{ env.HUMAN_OPENDESK }}${{ env.HUMAN_LIFECYCLE }}${{ env.HUMAN_TOGGLES }}
+          # It can't start with a period or hyphen and must be no longer than 128 characters.
 
       - name: Collect module source files
         run: |
