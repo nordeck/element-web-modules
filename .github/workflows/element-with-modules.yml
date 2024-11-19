@@ -152,7 +152,8 @@ jobs:
       - name: Checkout Guest module version
         if: ${{ matrix.guest != 'none' }}
         uses: actions/checkout@v4
-        ref: '${{ matrix.guest }}'
+        with:
+          ref: '${{ matrix.guest }}'
 
       - name: Build Guest module
         if: ${{ ! (startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none')) }}
@@ -181,7 +182,8 @@ jobs:
       - name: Checkout openDesk module version
         if: ${{ matrix.opendesk != 'none' }}
         uses: actions/checkout@v4
-        ref: '${{ matrix.opendesk }}'
+        with:
+          ref: '${{ matrix.opendesk }}'
 
       - name: Build openDesk module
         if: ${{ ! (startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none')) }}
@@ -210,7 +212,8 @@ jobs:
       - name: Checkout Widget Lifecycle module version
         if: ${{ matrix.lifecycle != 'none' }}
         uses: actions/checkout@v4
-        ref: '${{ matrix.lifecycle }}'
+        with:
+          ref: '${{ matrix.lifecycle }}'
 
       - name: Build Widget Lifecycle module
         if: ${{ ! (startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none')) }}
@@ -239,7 +242,8 @@ jobs:
       - name: Checkout Widget Toggles module version
         if: ${{ matrix.toggles != 'none' }}
         uses: actions/checkout@v4
-        ref: '${{ matrix.toggles }}'
+        with:
+          ref: '${{ matrix.toggles }}'
 
       - name: Build Widget Toggles module
         if: ${{ ! (startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none')) }}
