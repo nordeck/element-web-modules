@@ -48,8 +48,8 @@ jobs:
           VERSION_ELEMENT_STAGING="staging"  # Element branch with the latest release candidate
           VERSION_ELEMENT_STABLE="master"  # Element cut their releases from master branch
           VERSION_ELEMENT="$VERSION_ELEMENT_DEV"
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/heads/main') }} ]]; then VERSION_ELEMENT="$VERSION_ELEMENT_STAGING"; fi
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_ELEMENT="$VERSION_ELEMENT_STABLE"; fi
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/heads/main') }}; then VERSION_ELEMENT="$VERSION_ELEMENT_STAGING"; fi
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/tags/') }}; then VERSION_ELEMENT="$VERSION_ELEMENT_STABLE"; fi
           if [[ "${{ inputs.element }}" != "" ]]; then VERSION_ELEMENT="${{ inputs.element }}"; fi
           echo "VERSION_ELEMENT=$VERSION_ELEMENT" >> $GITHUB_ENV
           echo "VERSION_ELEMENT_STAGING=$VERSION_ELEMENT_STAGING" >> $GITHUB_ENV
@@ -61,7 +61,7 @@ jobs:
         run: |
           VERSION_MOD_GUEST_STABLE="$(git describe --match="@nordeck/element-web-guest-module*" --abbrev=0)"
           VERSION_MOD_GUEST="main"  # Development version
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_GUEST="$VERSION_MOD_GUEST_STABLE"; fi  # latest release
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/tags/') }}; then VERSION_MOD_GUEST="$VERSION_MOD_GUEST_STABLE"; fi  # latest release
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then VERSION_MOD_GUEST=${{ github.sha }}; fi  # the local PR version
           if [[ "${{ inputs.guestModule }}" != "" ]]; then VERSION_MOD_GUEST=${{ inputs.guestModule }}; fi
           echo "VERSION_MOD_GUEST=$VERSION_MOD_GUEST" >> $GITHUB_ENV
@@ -71,7 +71,7 @@ jobs:
         run: |
           VERSION_MOD_OPENDESK_STABLE="$(git describe --match="@nordeck/element-web-opendesk-module*" --abbrev=0)"
           VERSION_MOD_OPENDESK="main"  # Development version
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_OPENDESK="$VERSION_MOD_OPENDESK_STABLE"; fi  # latest release
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/tags/') }}; then VERSION_MOD_OPENDESK="$VERSION_MOD_OPENDESK_STABLE"; fi  # latest release
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then VERSION_MOD_OPENDESK=${{ github.sha }}; fi  # the local PR version
           if [[ "${{ inputs.opendeskModule }}" != "" ]]; then VERSION_MOD_OPENDESK=${{ inputs.opendeskModule }}; fi
           echo "VERSION_MOD_OPENDESK=$VERSION_MOD_OPENDESK" >> $GITHUB_ENV
@@ -81,7 +81,7 @@ jobs:
         run: |
           VERSION_MOD_LIFECYCLE_STABLE="$(git describe --match="@nordeck/element-web-widget-lifecycle-module*" --abbrev=0)"  # latest release
           VERSION_MOD_LIFECYCLE="main"  # Development version
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_LIFECYCLE="$VERSION_MOD_LIFECYCLE_STABLE"; fi  # latest release
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/tags/') }}; then VERSION_MOD_LIFECYCLE="$VERSION_MOD_LIFECYCLE_STABLE"; fi  # latest release
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then VERSION_MOD_LIFECYCLE=${{ github.sha }}; fi  # the local PR version
           if [[ "${{ inputs.lifecycleModule }}" != "" ]]; then VERSION_MOD_LIFECYCLE=${{ inputs.lifecycleModule }}; fi
           echo "VERSION_MOD_LIFECYCLE=$VERSION_MOD_LIFECYCLE" >> $GITHUB_ENV
@@ -91,7 +91,7 @@ jobs:
         run: |
           VERSION_MOD_TOGGLES_STABLE="$(git describe --match="@nordeck/element-web-widget-toggles-module*" --abbrev=0)"
           VERSION_MOD_TOGGLES="main"  # Development version
-          if [[ "${{ github.event_name }}" == "push" && ${{ startsWith(github.ref, 'refs/tags/') }} ]]; then VERSION_MOD_TOGGLES="$VERSION_MOD_TOGGLES_STABLE"; fi
+          if [[ "${{ github.event_name }}" == "push" ]] && ${{ startsWith(github.ref, 'refs/tags/') }}; then VERSION_MOD_TOGGLES="$VERSION_MOD_TOGGLES_STABLE"; fi
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then VERSION_MOD_TOGGLES=${{ github.sha }}; fi  # the local PR version
           if [[ "${{ inputs.togglesModule }}" != "" ]]; then VERSION_MOD_TOGGLES=${{ inputs.togglesModule }}; fi
           echo "VERSION_MOD_TOGGLES=$VERSION_MOD_TOGGLES" >> $GITHUB_ENV
@@ -104,12 +104,15 @@ jobs:
           SECONDARY=""
           if [[ "${{ github.event_name }}" == "pull_request" ]]
           then
-            SECONDARY=",{\"element\": \"${{ env.VERSION_ELEMENT_STAGING }}\", \"guest\": \"${{ env.VERSION_MOD_GUEST }}\", \"opendesk\": \"${{ env.VERSION_MOD_OPENDESK }}\", \"lifecycle\": \"${{ env.VERSION_MOD_LIFECYCLE }}\", \"toggles\": \"${{ env.VERSION_MOD_TOGGLES }}\"}"
+            SECONDARY="{\"element\": \"${{ env.VERSION_ELEMENT_STAGING }}\", \"guest\": \"${{ env.VERSION_MOD_GUEST }}\", \"opendesk\": \"${{ env.VERSION_MOD_OPENDESK }}\", \"lifecycle\": \"${{ env.VERSION_MOD_LIFECYCLE }}\", \"toggles\": \"${{ env.VERSION_MOD_TOGGLES }}\"}"
+            echo $SECONDARY | jq
+            SECONDARY=",$SECONDARY"
           elif [[ "${{ github.event_name }}" == "schedule" ]]
           then
-            SECONDARY=",{\"element\": \"${{ env.VERSION_ELEMENT_STABLE }}\", \"guest\": \"${{ env.VERSION_MOD_GUEST_STABLE }}\", \"opendesk\": \"${{ env.VERSION_MOD_OPENDESK_STABLE }}\", \"lifecycle\": \"${{ env.VERSION_MOD_LIFECYCLE_STABLE }}\", \"toggles\": \"${{ env.VERSION_MOD_TOGGLES_STABLE }}\"}"
+            SECONDARY="{\"element\": \"${{ env.VERSION_ELEMENT_STABLE }}\", \"guest\": \"${{ env.VERSION_MOD_GUEST_STABLE }}\", \"opendesk\": \"${{ env.VERSION_MOD_OPENDESK_STABLE }}\", \"lifecycle\": \"${{ env.VERSION_MOD_LIFECYCLE_STABLE }}\", \"toggles\": \"${{ env.VERSION_MOD_TOGGLES_STABLE }}\"}"
+            echo $SECONDARY | jq
+            SECONDARY=",$SECONDARY"
           fi
-          echo $SECONDARY | jq
           MATRIX="{\"include\": [${LOCAL}${SECONDARY}]}"
           echo $MATRIX | jq
           echo "MATRIX=$MATRIX" >> $GITHUB_ENV
