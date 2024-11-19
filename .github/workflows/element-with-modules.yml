@@ -2,14 +2,14 @@ name: Element with modules
 
 on:
   push:
-    branches: # we want to build the widgets from the push into Element staging and publish a main container
+    branches:  # we want to build the widgets from the push into Element staging and publish a main container
       - main
-    tags: # we want to build the stable widgets into stable Element and publish the container
+    tags:  # we want to build the stable widgets into stable Element and publish the container
       - '@nordeck/element*module*'
-  pull_request: # we want to build the widgets from the PR into Element develop & staging
-  schedule: # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
+  pull_request:  # we want to build the widgets from the PR into Element develop & staging
+  schedule:  # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
     - cron: '0 5 * * 1-6'
-  dispatch: # we build whatever the user inputs and publish the container
+  workflow_dispatch:  # we build whatever the user inputs and publish the container
     inputs:
       element:
         description: 'Element Web version (git ref)'
@@ -37,7 +37,7 @@ jobs:
     name: Determine the versions for which to build containers
     runs-on: gh-runner-nordeck
     timeout-minutes: 15
-    permission:
+    permissions:
       contents: read
     outputs:
       matrix: ${{ env.MATRIX }}
@@ -119,13 +119,13 @@ jobs:
     name: Build OCI container of stable Element with all stable modules
     runs-on: gh-runner-nordeck
     timeout-minutes: 15
-    permission:
+    permissions:
       contents: read
       packages: write
     needs: determine-versions
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         include: ${{ fromJson(needs.determine-versions.outputs.matrix) }}
     env:
       DOCKER_PLATFORMS: linux/amd64,linux/arm64,linux/s390x
@@ -150,7 +150,7 @@ jobs:
           echo "modules:" > e2e/src/deploy/elementWeb/build_config.yaml
 
       - name: Checkout Guest module version
-        if: ${{ matrix.guest != 'none') }}
+        if: ${{ matrix.guest != 'none' }}
         uses: actions/checkout@v4
         ref: '${{ matrix.guest }}'
 
@@ -162,7 +162,7 @@ jobs:
           mv packages/element-web-guest-module/element-web-guest-module.tgz ../
 
       - name: Generate Guest module build_config.yaml entry and customisations.json
-        if: ${{ matrix.guest != 'none') }}
+        if: ${{ matrix.guest != 'none' }}
         env:
           VERSION: ${{ matrix.guest }}
           IS_REF: ${{ ! startsWith(matrix.guest, '@nordeck') }}
@@ -179,7 +179,7 @@ jobs:
           echo "HUMAN_GUEST=$HUMAN_GUEST" >> $GITHUB_ENV
 
       - name: Checkout openDesk module version
-        if: ${{ matrix.opendesk != 'none') }}
+        if: ${{ matrix.opendesk != 'none' }}
         uses: actions/checkout@v4
         ref: '${{ matrix.opendesk }}'
 
@@ -191,7 +191,7 @@ jobs:
           mv packages/element-web-opendesk-module/element-web-opendesk-module.tgz ../
 
       - name: Generate openDesk module build_config.yaml entry
-        if: ${{ matrix.opendesk != 'none') }}
+        if: ${{ matrix.opendesk != 'none' }}
         env:
           VERSION: ${{ matrix.opendesk }}
           IS_REF: ${{ ! startsWith(matrix.opendesk, '@nordeck') }}
@@ -208,7 +208,7 @@ jobs:
           echo "HUMAN_OPENDESK=$HUMAN_OPENDESK" >> $GITHUB_ENV
 
       - name: Checkout Widget Lifecycle module version
-        if: ${{ matrix.lifecycle != 'none') }}
+        if: ${{ matrix.lifecycle != 'none' }}
         uses: actions/checkout@v4
         ref: '${{ matrix.lifecycle }}'
 
@@ -220,7 +220,7 @@ jobs:
           mv packages/element-web-widget-lifecycle-module/element-web-widget-lifecycle-module.tgz ../
 
       - name: Generate Widget Lifecycle module build_config.yaml entry
-        if: ${{ matrix.lifecycle != 'none') }}
+        if: ${{ matrix.lifecycle != 'none' }}
         env:
           VERSION: ${{ matrix.lifecycle }}
           IS_REF: ${{ ! startsWith(matrix.lifecycle, '@nordeck') }}
@@ -237,7 +237,7 @@ jobs:
           echo "HUMAN_LIFECYCLE=$HUMAN_LIFECYCLE" >> $GITHUB_ENV
 
       - name: Checkout Widget Toggles module version
-        if: ${{ matrix.toggles != 'none') }}
+        if: ${{ matrix.toggles != 'none' }}
         uses: actions/checkout@v4
         ref: '${{ matrix.toggles }}'
 
@@ -249,7 +249,7 @@ jobs:
           mv packages/element-web-widget-toggles-module/element-web-widget-toggles-module.tgz ../
 
       - name: Generate Widget Toggles module build_config.yaml entry
-        if: ${{ matrix.toggles != 'none') }}
+        if: ${{ matrix.toggles != 'none' }}
         env:
           VERSION: ${{ matrix.toggles }}
           IS_REF: ${{ ! startsWith(matrix.toggles, '@nordeck') }}
