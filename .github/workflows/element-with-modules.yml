@@ -58,6 +58,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-tags: true
+          fetch-depth: 0
 
       - name: Determine Guest module version
         run: |
@@ -163,6 +164,7 @@ jobs:
         with:
           ref: '${{ matrix.guest }}'
           fetch-tags: true
+          fetch-depth: 0
 
       - name: Build Guest module
         if: ${{ ! (startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none')) }}
@@ -195,6 +197,7 @@ jobs:
         with:
           ref: '${{ matrix.opendesk }}'
           fetch-tags: true
+          fetch-depth: 0
 
       - name: Build openDesk module
         if: ${{ ! (startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none')) }}
@@ -226,6 +229,7 @@ jobs:
         with:
           ref: '${{ matrix.lifecycle }}'
           fetch-tags: true
+          fetch-depth: 0
 
       - name: Build Widget Lifecycle module
         if: ${{ ! (startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none')) }}
@@ -257,6 +261,7 @@ jobs:
         with:
           ref: '${{ matrix.toggles }}'
           fetch-tags: true
+          fetch-depth: 0
 
       - name: Build Widget Toggles module
         if: ${{ ! (startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none')) }}
