@@ -8,7 +8,7 @@ on:
       - '@nordeck/element*module*'
   pull_request:  # we want to build the widgets from the PR into Element develop & staging
   schedule:  # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
-    - cron: '0 5 * * 1-6'
+    - cron: '0 5 * * 1-5'
   workflow_dispatch:  # we build whatever the user inputs and publish the container
     inputs:
       element:
@@ -113,13 +113,13 @@ jobs:
             echo $SECONDARY | jq
             SECONDARY=",$SECONDARY"
           fi
-          MATRIX="{\"include\": [${LOCAL}${SECONDARY}]}"
+          MATRIX="[${LOCAL}${SECONDARY}]"
           echo $MATRIX | jq
           echo "MATRIX=$MATRIX" >> $GITHUB_ENV
 
   build-container:
-    name: Build OCI container of stable Element with all stable modules
-    runs-on: gh-runner-nordeck
+    name: Build OCI container of Element with modules
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
@@ -132,7 +132,8 @@ jobs:
     env:
       DOCKER_PLATFORMS: linux/amd64,linux/arm64,linux/s390x
     steps:
-      - run: |
+      - name: Announce versions
+        run: |
           echo "Building Element Web with modules, versions:"
           echo "- Dockerfile ${{ github.sha }}"
           echo "- Element Web ${{ matrix.element }}"
@@ -141,7 +142,8 @@ jobs:
           echo "- Widget Lifecycle module ${{ matrix.lifecycle }}"
           echo "- Widget Toggles module ${{ matrix.toggles }}"
 
-      - uses: actions/setup-node@v4
+      - name: Set up node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'yarn'
@@ -149,7 +151,7 @@ jobs:
 
       - name: Set up build_config.yaml
         run: |
-          echo "modules:" > e2e/src/deploy/elementWeb/build_config.yaml
+          echo "modules:" > ../build_config.yaml
 
       - name: Checkout Guest module version
         if: ${{ matrix.guest != 'none' }}
@@ -331,4 +333,4 @@ jobs:
           platforms: ${{ env.DOCKER_PLATFORMS }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' && matrix.element == 'master' }}
+          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) || github.event_name == 'schedule' && matrix.element == 'master' }}
