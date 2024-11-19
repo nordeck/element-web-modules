@@ -7,7 +7,7 @@ on:
     tags: # we want to build the stable widgets into stable Element and publish the container
       - '@nordeck/element*module*'
   pull_request: # we want to build the widgets from the PR into Element develop & staging
-  schedule: # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions
+  schedule: # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
     - cron: '0 5 * * 1-6'
   dispatch: # we build whatever the user inputs and publish the container
     inputs:
