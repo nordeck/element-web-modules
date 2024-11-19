@@ -119,7 +119,7 @@ jobs:
 
   build-container:
     name: Build OCI container of Element with modules
-    runs-on: ubuntu-latest
+    runs-on: gh-runner-nordeck
     timeout-minutes: 15
     permissions:
       contents: read
