@@ -142,6 +142,8 @@ jobs:
           echo "- Widget Lifecycle module ${{ matrix.lifecycle }}"
           echo "- Widget Toggles module ${{ matrix.toggles }}"
 
+      - uses: actions/checkout@v4
+
       - name: Set up node
         uses: actions/setup-node@v4
         with:
@@ -163,8 +165,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          yarn workspace element-web-guest-module package
-          mv packages/element-web-guest-module/element-web-guest-module.tgz ../
+          yarn workspace @nordeck/element-web-guest-module package
+          mv packages/element-web-guest-module/nordeck-element-web-guest-module.tgz ../
 
       - name: Generate Guest module build_config.yaml entry and customisations.json
         if: ${{ matrix.guest != 'none' }}
@@ -174,13 +176,14 @@ jobs:
         run: |
           VERSION="${{ env.VERSION }}"
           HUMAN_GUEST="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_REF }} ]]
+          if ${{ env.IS_REF }}
           then
             VERSION="file:nordeck-element-web-guest-module.tgz"
             HUMAN_GUEST="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
-          HUMAN_GUEST="+g-${ HUMAN_GUEST }"
+          cp e2e/src/deploy/elementWeb/customisations.json ../
+          HUMAN_GUEST="+g-${HUMAN_GUEST}"
           echo "HUMAN_GUEST=$HUMAN_GUEST" >> $GITHUB_ENV
 
       - name: Checkout openDesk module version
@@ -193,8 +196,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          yarn workspace element-web-opendesk-module package
-          mv packages/element-web-opendesk-module/element-web-opendesk-module.tgz ../
+          yarn workspace @nordeck/element-web-opendesk-module package
+          mv packages/element-web-opendesk-module/nordeck-element-web-opendesk-module.tgz ../
 
       - name: Generate openDesk module build_config.yaml entry
         if: ${{ matrix.opendesk != 'none' }}
@@ -204,13 +207,13 @@ jobs:
         run: |
           VERSION="${{ env.VERSION }}"
           HUMAN_OPENDESK="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_REF }} ]]
+          if ${{ env.IS_REF }}
           then
             VERSION="file:nordeck-element-web-opendesk-module.tgz"
             HUMAN_OPENDESK="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
-          HUMAN_OPENDESK="+od-${ HUMAN_OPENDESK }"
+          HUMAN_OPENDESK="+od-${HUMAN_OPENDESK}"
           echo "HUMAN_OPENDESK=$HUMAN_OPENDESK" >> $GITHUB_ENV
 
       - name: Checkout Widget Lifecycle module version
@@ -223,8 +226,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          yarn workspace element-web-widget-lifecycle-module package
-          mv packages/element-web-widget-lifecycle-module/element-web-widget-lifecycle-module.tgz ../
+          yarn workspace @nordeck/element-web-widget-lifecycle-module package
+          mv packages/element-web-widget-lifecycle-module/nordeck-element-web-widget-lifecycle-module.tgz ../
 
       - name: Generate Widget Lifecycle module build_config.yaml entry
         if: ${{ matrix.lifecycle != 'none' }}
@@ -234,13 +237,13 @@ jobs:
         run: |
           VERSION="${{ env.VERSION }}"
           HUMAN_LIFECYCLE="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_REF }} ]]
+          if ${{ env.IS_REF }}
           then
             VERSION="file:nordeck-element-web-widget-lifecycle-module.tgz"
             HUMAN_LIFECYCLE="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
-          HUMAN_LIFECYCLE="+wl-${ HUMAN_LIFECYCLE }"
+          HUMAN_LIFECYCLE="+wl-${HUMAN_LIFECYCLE}"
           echo "HUMAN_LIFECYCLE=$HUMAN_LIFECYCLE" >> $GITHUB_ENV
 
       - name: Checkout Widget Toggles module version
@@ -253,8 +256,8 @@ jobs:
         if: ${{ ! (startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none')) }}
         run: |
           yarn install --frozen-lockfile
-          yarn workspace element-web-widget-toggles-module package
-          mv packages/element-web-widget-toggles-module/element-web-widget-toggles-module.tgz ../
+          yarn workspace @nordeck/element-web-widget-toggles-module package
+          mv packages/element-web-widget-toggles-module/nordeck-element-web-widget-toggles-module.tgz ../
 
       - name: Generate Widget Toggles module build_config.yaml entry
         if: ${{ matrix.toggles != 'none' }}
@@ -264,33 +267,33 @@ jobs:
         run: |
           VERSION=${{ env.VERSION }}
           HUMAN_TOGGLES="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_REF }} ]]
+          if ${{ env.IS_REF }}
           then
             VERSION="file:nordeck-element-web-widget-toggles-module.tgz"
             HUMAN_TOGGLES="v$(echo ${{ env.VERSION }} | tr "@" "\n" | tail -1)"
           fi
           echo "  - '$VERSION'" >> ../build_config.yaml
-          HUMAN_TOGGLES="+wt-${ HUMAN_TOGGLES }"
+          HUMAN_TOGGLES="+wt-${HUMAN_TOGGLES}"
           echo "HUMAN_TOGGLES=$HUMAN_TOGGLES" >> $GITHUB_ENV
+
+      - name: Checkout Dockerfile version
+        uses: actions/checkout@v4
 
       - name: Checkout Element version
         uses: actions/checkout@v4
         with:
           repository: element-hq/element-web
           ref: ${{ matrix.element }}
-          path: ../element-web
+          path: element-web
 
       - name: Determine human readable Element Web version
         env:
           IS_RELEASE: ${{ matrix.element == 'staging' || matrix.element == 'master' }}
-        working-directory: ../element-web
+        working-directory: element-web
         run: |
           HUMAN_ELEMENT="$(git describe --exclude='*' --always)"
-          if [[ ${{ env.IS_RELEASE }} ]]; then HUMAN_ELEMENT="$(git describe --abbrev=0)"; fi
+          if ${{ env.IS_RELEASE }}; then HUMAN_ELEMENT="$(git describe --abbrev=0)"; fi
           echo "HUMAN_ELEMENT=$HUMAN_ELEMENT" >> $GITHUB_ENV
-
-      - name: Checkout Dockerfile version
-        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -318,11 +321,11 @@ jobs:
       - name: Collect module source files
         run: |
           mv ../build_config.yaml e2e/src/deploy/elementWeb/
-          mv ../customisations.json e2e/src/deploy/elementWeb/ || true
-          mv ../element-web-guest-module.tgz e2e/src/deploy/elementWeb/ || true
-          mv ../element-web-opendesk-module.tgz e2e/src/deploy/elementWeb/ || true
-          mv ../element-web-widget-lifecycle-module.tgz e2e/src/deploy/elementWeb/ || true
-          mv ../element-web-widget-toggles-module.tgz e2e/src/deploy/elementWeb/ || true
+          mv ../customisations.json e2e/src/deploy/elementWeb/ || ${{ matrix.guest == 'none' }}
+          mv ../nordeck-element-web-guest-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none') }}
+          mv ../nordeck-element-web-opendesk-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none') }}
+          mv ../nordeck-element-web-widget-lifecycle-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none') }}
+          mv ../nordeck-element-web-widget-toggles-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.toggles, '@nordeck') || startsWith(matrix.toggles, 'none') }}
 
       - name: Build
         uses: docker/build-push-action@v6
