@@ -123,7 +123,7 @@ jobs:
   build-container:
     name: Build OCI container of Element with modules
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
