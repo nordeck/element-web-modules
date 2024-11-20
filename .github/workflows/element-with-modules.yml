@@ -2,14 +2,14 @@ name: Element with modules
 
 on:
   push:
-    branches:  # we want to build the widgets from the push into Element staging and publish a main container
+    branches: # we want to build the widgets from the push into Element staging and publish a main container
       - main
-    tags:  # we want to build the stable widgets into stable Element and publish the container
+    tags: # we want to build the stable widgets into stable Element and publish the container
       - '@nordeck/element*module*'
-  pull_request:  # we want to build the widgets from the PR into Element develop & staging
-  schedule:  # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
+  pull_request: # we want to build the widgets from the PR into Element develop & staging
+  schedule: # we want to build the stable widgets into stable Element and publish the container, plus a verification of all dev versions on a daily basis
     - cron: '0 5 * * 1-5'
-  workflow_dispatch:  # we build whatever the user inputs and publish the container
+  workflow_dispatch: # we build whatever the user inputs and publish the container
     inputs:
       element:
         description: 'Element Web version (git ref)'

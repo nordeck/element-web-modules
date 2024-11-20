@@ -7,5 +7,3 @@ api-report.md
 # Ignore the helm chart
 charts/
 e2e/playwright-report/
-
-.github/
