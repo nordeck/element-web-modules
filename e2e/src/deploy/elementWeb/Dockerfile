@@ -1,4 +1,4 @@
-FROM node:20-bullseye AS builder
+FROM node:20-bookworm AS builder
 
 ARG ELEMENT_VERSION="master"
 
