@@ -133,7 +133,7 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.determine-versions.outputs.matrix) }}
     env:
-      DOCKER_PLATFORMS: linux/amd64,linux/arm64,linux/s390x
+      DOCKER_PLATFORMS: linux/amd64,linux/arm64
     steps:
       - name: Announce versions
         run: |
