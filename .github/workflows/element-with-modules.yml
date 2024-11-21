@@ -29,7 +29,7 @@ on:
 
 jobs:
   determine-versions:
-    name: Determine the versions for which to build containers
+    name: Determine the versions for which to build containers to feed into the next job
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -95,7 +95,11 @@ jobs:
           echo "VERSION_MOD_TOGGLES=$VERSION_MOD_TOGGLES" >> $GITHUB_ENV
           echo "VERSION_MOD_TOGGLES_STABLE=$VERSION_MOD_TOGGLES_STABLE" >> $GITHUB_ENV
 
-      - name: Create job matrix
+      - name: Create job matrix from version combinations to build
+        # Create a JSON array of maps, each map being a combination of element + module versions.
+        # The next step will consume this as an input to a "matrix" configuration.
+        # We use only the "include" list for the matrix to define (a number of) sets of specific versions.
+        # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow#expanding-or-adding-matrix-configurations
         run: |
           LOCAL="{\"element\": \"${{ env.VERSION_ELEMENT }}\", \"guest\": \"${{ env.VERSION_MOD_GUEST }}\", \"opendesk\": \"${{ env.VERSION_MOD_OPENDESK }}\", \"lifecycle\": \"${{ env.VERSION_MOD_LIFECYCLE }}\", \"toggles\": \"${{ env.VERSION_MOD_TOGGLES }}\"}"
           echo $LOCAL | jq
