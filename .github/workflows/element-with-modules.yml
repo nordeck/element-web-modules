@@ -12,24 +12,19 @@ on:
   workflow_dispatch: # we build whatever the user inputs and publish the container
     inputs:
       element:
-        description: 'Element Web version (git ref)'
-        required: true
+        description: 'Element Web version (git ref, default=develop)'
         type: 'string'
       guestModule:
-        description: 'Element Guest module version (release tag/git ref/none)'
-        required: true
+        description: 'Element Guest module version (release tag/git ref/none, default=main)'
         type: 'string'
       opendeskModule:
-        description: 'Element openDesk module version (release tag/git ref/none)'
-        required: true
+        description: 'Element openDesk module version (release tag/git ref/none, default=main)'
         type: 'string'
       lifecycleModule:
-        description: 'Element Widget Lifecycle module version (release tag/git ref/none)'
-        required: true
+        description: 'Element Widget Lifecycle module version (release tag/git ref/none, default=main)'
         type: 'string'
       togglesModule:
-        description: 'Element Widget Toggles module version (release tag/git ref/none)'
-        required: true
+        description: 'Element Widget Toggles module version (release tag/git ref/none, default=main)'
         type: 'string'
 
 jobs:
@@ -348,4 +343,4 @@ jobs:
           platforms: ${{ env.DOCKER_PLATFORMS }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) || github.event_name == 'schedule' && matrix.element == 'master' || github.event_name == 'workflow_dispatch'}}
+          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) || github.event_name == 'schedule' && matrix.element == 'master' || github.event_name == 'workflow_dispatch' }}
