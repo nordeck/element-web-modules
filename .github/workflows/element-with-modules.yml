@@ -37,7 +37,7 @@ jobs:
     outputs:
       matrix: ${{ env.MATRIX }}
     steps:
-      - name: Determine Element Web version
+      - name: Determine Element Web versions
         run: |
           VERSION_ELEMENT_DEV="develop"  # Element develop branch
           VERSION_ELEMENT_STAGING="staging"  # Element branch with the latest release candidate
@@ -55,7 +55,7 @@ jobs:
           fetch-tags: true
           fetch-depth: 0
 
-      - name: Determine Guest module version
+      - name: Determine Guest module versions
         run: |
           VERSION_MOD_GUEST_STABLE="$(git describe --match="@nordeck/element-web-guest-module*" --abbrev=0)"
           VERSION_MOD_GUEST="main"  # Development version
@@ -65,7 +65,7 @@ jobs:
           echo "VERSION_MOD_GUEST=$VERSION_MOD_GUEST" >> $GITHUB_ENV
           echo "VERSION_MOD_GUEST_STABLE=$VERSION_MOD_GUEST_STABLE" >> $GITHUB_ENV
 
-      - name: Determine openDesk module version
+      - name: Determine openDesk module versions
         run: |
           VERSION_MOD_OPENDESK_STABLE="$(git describe --match="@nordeck/element-web-opendesk-module*" --abbrev=0)"
           VERSION_MOD_OPENDESK="main"  # Development version
@@ -75,7 +75,7 @@ jobs:
           echo "VERSION_MOD_OPENDESK=$VERSION_MOD_OPENDESK" >> $GITHUB_ENV
           echo "VERSION_MOD_OPENDESK_STABLE=$VERSION_MOD_OPENDESK_STABLE" >> $GITHUB_ENV
 
-      - name: Determine Widget Lifecycle module version
+      - name: Determine Widget Lifecycle module versions
         run: |
           VERSION_MOD_LIFECYCLE_STABLE="$(git describe --match="@nordeck/element-web-widget-lifecycle-module*" --abbrev=0)"  # latest release
           VERSION_MOD_LIFECYCLE="main"  # Development version
@@ -85,7 +85,7 @@ jobs:
           echo "VERSION_MOD_LIFECYCLE=$VERSION_MOD_LIFECYCLE" >> $GITHUB_ENV
           echo "VERSION_MOD_LIFECYCLE_STABLE=$VERSION_MOD_LIFECYCLE_STABLE" >> $GITHUB_ENV
 
-      - name: Determine Widget Toggles module version
+      - name: Determine Widget Toggles module versions
         run: |
           VERSION_MOD_TOGGLES_STABLE="$(git describe --match="@nordeck/element-web-widget-toggles-module*" --abbrev=0)"
           VERSION_MOD_TOGGLES="main"  # Development version
