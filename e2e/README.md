@@ -2,6 +2,8 @@
 
 End-to-end tests for the components in this repository.
 
+The dockerfile herein is also used to build ready to use container images of Element Web + modules in different version combinations for both verification and production use.
+
 ## Getting Started
 
 ### Prerequisites
