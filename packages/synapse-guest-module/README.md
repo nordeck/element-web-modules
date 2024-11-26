@@ -6,7 +6,7 @@ A [pluggable synapse module](https://matrix-org.github.io/synapse/latest/modules
 
 1. Provides an endpoint that creates temporary users with a same pattern (default: `guest-[randomstring]`).
 2. The temporary users have a mandatory displayname suffix (default: ` (Guest)`) that they can't remove from their profile.
-3. The temporary users are limited in what they can do (examples: create room, invite users).
+3. The temporary users are limited in what they can do (can't create rooms, can't invite users, can join only "Ask to join" rooms).
 4. The temporary users won't be returned by the user directory search results.
 5. The temporary users are disabled after an expiration timeout (default: `24 hours`).
 
