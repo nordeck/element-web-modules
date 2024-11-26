@@ -32,27 +32,46 @@ A module to provide widget toggles.
 
 - See the [Readme of the `element-web-widget-toggles-module`](./packages/element-web-widget-toggles-module/README.md) for instructions on how to install it in Element.
 
+### Prebuilt Element Containers With Modules
+
+We provide some version combinations of Element Web with the modules as a container under [packages](https://github.com/nordeck/element-web-modules/pkgs/container/element-web-modules).
+These are built automatically by our CI and not tested further, but should otherwise be ready to use.
+
+The tagging scheme for the container signifies the versions of the components going into it: `<component>-[v if tagged version]<tag or git commit hash>`.
+This pattern repeats up to 5 times for the 5 possible components:
+
+- `ew` Element Web
+- `g` Guest module
+- `od` openDesk module
+- `wl` Widget Lifecycle module
+- `wt` Widget Toggles module
+
+For example, the tag `ew-v1.11.86-g-v2.0.0-od-v0.5.0-wl-v1.0.1-wt-v0.1.0` signifies the combination of all 5 latest stable releases at the time of writing.
+As another example, `ew-v1.11.84-g-v2.0.0-od-ae0b6e6-wl-54f75f3` is Element Web release 1.11.84, Guest module release 2.0.0, different git versions for the openDesk and Widget Lifecycle modules, and the Widget Toggles module was not included.
+
 ## Getting Started
 
-Development on the module happens at [GitHub](https://github.com/nordeck/element-web-modules).
+Development on the modules happens at [GitHub](https://github.com/nordeck/element-web-modules).
 
 ### How to Contribute
 
 Please take a look at our [Contribution Guidelines](https://github.com/nordeck/.github/blob/main/docs/CONTRIBUTING.md).
 
-### Requirements
+### Development
+
+#### Requirements
 
 You need to install Node.js (`>= 20.0.0`, prefer using an LTS version) and run
 `yarn` to work on this package.
 
-### Installation
+#### Install Dependencies
 
 After checkout, run `yarn install` to download the required dependencies
 
 > [!WARNING]
 > Do not use `npm install` when working with this package.
 
-### Available Scripts
+#### Available Scripts
 
 In the project root directory, you can run:
 
@@ -67,7 +86,7 @@ In the project root directory, you can run:
   change.
 - `yarn docker:build`: Builds a container from the output of `yarn build`.
 
-### Versioning
+#### Versioning
 
 This package uses automated versioning.
 Each change should be accompanied with a specification of the impact (`patch`, `minor`, or `major`) and a description of the change.
