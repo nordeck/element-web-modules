@@ -61,7 +61,7 @@ Example configuration:
         "portal_url": "https://example.com",
       },
 
-      // ... add more optional configurations
+      // ... add more optional configuration
       "custom_css_variables": {
         "--cpd-color-bg-action-primary-rest": "#5e27dd",
         "--cpd-color-text-action-accent": "#5e27dd",
