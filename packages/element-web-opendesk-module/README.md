@@ -50,7 +50,7 @@ To have the primary button background color consistent with your menu color, use
 
 Example configuration:
 
-```json
+```jsonc
 {
   "net.nordeck.element_web.module.opendesk": {
     "config": {
@@ -58,17 +58,17 @@ Example configuration:
         "ics_navigation_json_url": "https://example.com/navigation.json",
         "ics_silent_url": "https://example.com/silent",
         "portal_logo_svg_url": "https://example.com/logo.svg",
-        "portal_url": "https://example.com"
+        "portal_url": "https://example.com",
       },
 
-      // ... add more optional configurations
+      // ... add more optional configuration
       "custom_css_variables": {
         "--cpd-color-bg-action-primary-rest": "#5e27dd",
         "--cpd-color-text-action-accent": "#5e27dd",
-        "--cpd-color-icon-on-solid-primary": "#000000"
-      }
-    }
-  }
+        "--cpd-color-icon-on-solid-primary": "#000000",
+      },
+    },
+  },
 }
 ```
 

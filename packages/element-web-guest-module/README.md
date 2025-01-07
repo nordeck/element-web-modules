@@ -63,15 +63,15 @@ There are also other optional configuration options:
 
 Example configuration:
 
-```json
+```jsonc
 {
   "net.nordeck.element_web.module.guest": {
     "config": {
       "guest_user_homeserver_url": "https://matrix.local/",
-      "guest_user_prefix": "@guest-"
+      "guest_user_prefix": "@guest-",
       // ... add more optional configurations
-    }
-  }
+    },
+  },
 }
 ```
 
