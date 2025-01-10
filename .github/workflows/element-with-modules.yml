@@ -332,7 +332,7 @@ jobs:
       - name: Collect module source files
         run: |
           mv ../build_config.yaml e2e/src/deploy/elementWeb/
-          mv ../customisations.json e2e/src/deploy/elementWeb/ || ${{ matrix.guest == 'none' }}
+          if ${{ matrix.guest == 'none' }}; then rm e2e/src/deploy/elementWeb/customisations.json; else mv ../customisations.json e2e/src/deploy/elementWeb/; fi
           mv ../nordeck-element-web-guest-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.guest, '@nordeck') || startsWith(matrix.guest, 'none') }}
           mv ../nordeck-element-web-opendesk-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.opendesk, '@nordeck') || startsWith(matrix.opendesk, 'none') }}
           mv ../nordeck-element-web-widget-lifecycle-module.tgz e2e/src/deploy/elementWeb/ || ${{ startsWith(matrix.lifecycle, '@nordeck') || startsWith(matrix.lifecycle, 'none') }}
