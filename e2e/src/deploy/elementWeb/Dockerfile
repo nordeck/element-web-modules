@@ -27,7 +27,9 @@ FROM nginx:bookworm
 COPY --from=builder /src/webapp /app
 
 # Override default nginx config
-COPY --from=builder /src/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /src/docker/nginx-templates/* /etc/nginx/templates/
 
 RUN rm -rf /usr/share/nginx/html \
  && ln -s /app /usr/share/nginx/html
+
+ENV ELEMENT_WEB_PORT=80
