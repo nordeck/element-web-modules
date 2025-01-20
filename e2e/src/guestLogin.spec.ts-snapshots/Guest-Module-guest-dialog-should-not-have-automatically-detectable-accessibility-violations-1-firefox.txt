@@ -1,7 +1,7 @@
 [
   {
     "rule": "color-contrast",
-    "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
     "targets": [
       {
         "target": [
