@@ -39,7 +39,7 @@ describe('assertValidWidgetTogglesModuleConfig', () => {
     ).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { types: '' },
     { types: 123 },
     { types: [] },

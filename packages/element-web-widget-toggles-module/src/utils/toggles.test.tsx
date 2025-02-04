@@ -29,7 +29,7 @@ describe('toggles', () => {
   };
 
   let moduleApi: jest.Mocked<ModuleApi>;
-  let roomId = '!room:example.com';
+  const roomId = '!room:example.com';
 
   beforeEach(() => {
     moduleApi = {
@@ -68,6 +68,7 @@ describe('toggles', () => {
           .spyOn(moduleApi, 'getApps')
           .mockReturnValue([{ ...app, type: 'Jitsi' }]);
 
+        // eslint-disable-next-line
         render((toggle().icon as Function)());
 
         const img = screen.getByRole('img');
@@ -82,6 +83,7 @@ describe('toggles', () => {
           .spyOn(moduleApi, 'getAppAvatarUrl')
           .mockReturnValue(app.avatar_url!);
 
+        // eslint-disable-next-line
         render((toggle().icon as Function)());
 
         const img = screen.getByRole('img');
@@ -97,6 +99,7 @@ describe('toggles', () => {
           .spyOn(moduleApi, 'getApps')
           .mockReturnValue([{ ...app, name: undefined }]);
 
+        // eslint-disable-next-line
         render((toggle().icon as Function)());
 
         const img = screen.getByRole('img');
@@ -105,6 +108,7 @@ describe('toggles', () => {
       });
 
       it('returns svg-tag', () => {
+        // eslint-disable-next-line
         render((toggle().icon as Function)());
         expect(screen.getByRole('presentation')).toBeInTheDocument();
       });

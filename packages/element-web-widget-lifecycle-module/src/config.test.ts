@@ -65,7 +65,7 @@ describe('assertValidWidgetLifecycleModuleConfig', () => {
     ).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { preload_approved: null },
     { preload_approved: 123 },
     { identity_approved: null },

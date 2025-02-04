@@ -18,7 +18,7 @@
 // TypeScript file. We don't actually depend on the matrix-react-sdk, though
 // all relevant and testable code is imported from the bundled module.
 
-/* eslint-disable no-undef */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
 /*

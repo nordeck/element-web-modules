@@ -54,7 +54,7 @@ describe('assertValidOpenDeskModuleConfig', () => {
     ).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { banner: null },
     { banner: 123 },
     { custom_css_variables: { '--other-name': 'purple' } },
@@ -78,7 +78,7 @@ describe('assertValidOpenDeskModuleConfig', () => {
     );
   });
 
-  it.each<Object>([
+  it.each<object>([
     { ics_navigation_json_url: undefined },
     { ics_navigation_json_url: null },
     { ics_navigation_json_url: 123 },
