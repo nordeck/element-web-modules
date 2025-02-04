@@ -64,7 +64,7 @@ describe('assertValidGuestModuleConfig', () => {
     ).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { guest_user_homeserver_url: undefined },
     { guest_user_homeserver_url: null },
     { guest_user_homeserver_url: 123 },

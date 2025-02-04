@@ -59,7 +59,7 @@ describe('assertValidNavigationJson', () => {
     ).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { categories: [{ entries: [], display_name: '' }] },
     { categories: [{ entries: [], display_name: 'foo' }] },
     { categories: [{ entries: [], display_name: undefined }] },
@@ -86,7 +86,7 @@ describe('assertValidNavigationJson', () => {
     expect(() => assertValidNavigationJson(json)).not.toThrow();
   });
 
-  it.each<Object>([
+  it.each<object>([
     { categories: [{ entries: [], display_name: 123 }] },
     { categories: [{ entries: [], display_name: [] }] },
     { categories: [{ entries: [], display_name: null }] },

@@ -10,8 +10,8 @@
     "@playwright/test": "^1.49.1",
     "@types/node": "^20.12.2",
     "cross-fetch": "^4.0.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-playwright": "^1.5.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-playwright": "^2.2.0",
     "testcontainers": "^10.8.0",
     "typescript": "~5.0.4"
   },

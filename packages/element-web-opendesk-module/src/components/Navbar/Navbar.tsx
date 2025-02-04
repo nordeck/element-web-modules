@@ -50,7 +50,7 @@ export function Navbar({ config, moduleApi }: Props) {
 
   useEffect(() => {
     async function fetchNavigationJson() {
-      let url = new URL(config.ics_navigation_json_url);
+      const url = new URL(config.ics_navigation_json_url);
       url.search = `?language=${language()}`;
 
       try {
@@ -77,7 +77,7 @@ export function Navbar({ config, moduleApi }: Props) {
     setAriaExpanded(!ariaExpanded);
   };
 
-  const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = () => {
     handleAriaExpanded();
   };
 
