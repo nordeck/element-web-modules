@@ -1,3 +1,9 @@
+# element-web-modules are now maintained at [element-hq/element-modules](https://github.com/element-hq/element-modules)
+
+> [!NOTE]
+> These modules for the [Element Web](https://github.com/element-hq/element-web) matrix client were originally developed by Nordeck for the [sovereign workplace](#sponsors).
+> Maintenance was taken over by Element in March 2025 at <https://github.com/element-hq/element-modules>.
+
 # Element Web openDesk Module
 
 A module for Element to provide openDesk specific functionality.
